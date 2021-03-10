@@ -1,0 +1,372 @@
+\documentclass{article}
+
+\usepackage{graphicx}
+%\usepackage{geometry}
+\usepackage{placeins} % use float barriers
+\usepackage{float}
+\usepackage{subcaption}
+\usepackage{longtable}
+\usepackage[a4paper,margin=1in]{geometry}
+\usepackage{grffile}
+\usepackage{multirow}
+\usepackage{siunitx}
+\usepackage[table,xcdraw]{xcolor}
+\usepackage{amsmath}
+\usepackage{booktabs}
+
+\newcommand{\norm}[1]{\left\lVert#1\right\rVert}
+
+\title{Reward, observation and action shapes used in the training environments}
+\date{}
+
+\begin{document}
+
+\maketitle
+
+
+\section{Observation}
+
+\textbf{OBS1} 
+\begin{equation}
+[Ex, Ey, Ez, A1, A2, A3, A4, A5, A6]
+\end{equation}
+
+\textbf{OBS2}
+\begin{equation}
+[Gx, Gy, Gz, A1, A2, A3, A4, A5, A6]
+\end{equation}
+
+\textbf{OBS3}
+\begin{equation}
+[ETx, ETy, ETz, EGx, EGy, EGz, A1, A2, A3, A4, A5, A6]
+\end{equation}
+
+\textbf{OBS4}
+\begin{equation}
+[EGx, EGy, EGz, A1, A2, A3, A4, A5, A6]
+\end{equation}
+
+\textbf{OBS5}
+\begin{equation}
+[ETx, ETy, ETz, EGx, EGy, EGz, Gx, Gy, Gz, A1, A2, A3, A4, A5, A6]
+\end{equation}
+
+where
+\begin{itemize}  
+\item $Ei$ : End effector coordinate along the $i$ axis
+\item $Gi$ : Goal coordinate along the $i$ axis 
+\item $EGi$ : Vector End effector - Goal along the $i$ axis 
+\item $ETx$ : Vector End effector - Torso along the $i$ axis
+\item $Ai$ : Angular position of joint $i$
+\end{itemize}
+
+
+
+
+\section{Reward}
+
+\subsection{Dense reward functions}
+
+\textbf{REW1} 
+
+\begin{equation}
+r = - d_t^2
+\end{equation}
+
+\textbf{REW2} 
+
+\begin{equation}
+r = - d_t
+\end{equation}
+
+\textbf{REW3} 
+
+\begin{equation}
+r = - d_t^3
+\end{equation}
+
+\textbf{REW4} 
+
+\begin{equation}
+r = - d_t^4
+\end{equation}
+
+\textbf{REW5} 
+
+\begin{equation}
+r = - d_t^2 - \alpha \norm{A_t}
+\end{equation}
+
+\textbf{REW6} 
+
+\begin{equation}
+r = - d_t^2 - \alpha \frac{\norm{A_t}}{d_t^2}
+\end{equation}
+
+\textbf{REW7} 
+
+\begin{equation}
+r = \Delta d_t
+\end{equation}
+
+\textbf{REW8} 
+
+\begin{equation}
+r = - d_t^2 + \alpha abs( \frac{\Delta d_t}{d_t^2})
+\end{equation}
+
+\textbf{REW9} 
+
+\begin{equation}
+r = \Delta E_t
+\end{equation}
+
+\textbf{REW10} 
+
+\begin{equation}
+r = - d_t^2 + \alpha \frac{\Delta E_t}{d_t^2}
+\end{equation}
+
+
+\subsection{Sparse reward functions}
+
+\textbf{REW11} 
+
+\begin{equation}
+r = \begin{cases}
+    -1, & \text{if $d_t \geq \epsilon $}\\
+    0, & \text{if $d_t < \epsilon $}
+  \end{cases}
+\end{equation}
+
+\textbf{REW12}
+
+\begin{equation}
+r = \begin{cases}
+    1, & \text{if $d_t \geq \epsilon $}\\
+    0, & \text{if  $d_t < \epsilon $}
+  \end{cases}
+\end{equation}
+
+\textbf{REW13}
+
+\begin{equation}
+r = \begin{cases}
+    - 0.02 , & \text{if $d \geq \epsilon $}\\
+    1 , & \text{if $d < \epsilon $}
+  \end{cases}
+\end{equation}
+
+\textbf{REW14}
+
+\begin{equation}
+r = \begin{cases}
+    - 0.001 , & \text{if $d \geq \epsilon $}\\
+    10 , & \text{if $d < \epsilon $}
+  \end{cases}
+\end{equation}
+
+\subsection{Sparse + dense reward functions}
+
+
+\textbf{REW15: BEST REWARD FUNCTION FOR DISTANCE}
+
+\begin{equation}
+r = \begin{cases}
+    - d_t , & \text{if $d \geq \epsilon $}\\
+    1 , & \text{if $d < \epsilon $}
+  \end{cases}
+\end{equation}
+
+
+\textbf{REW16}
+
+\begin{equation}
+r = \begin{cases}
+\Delta d_t, & \text{if $d \geq \epsilon $}\\
+\Delta d_t + 10, & \text{if $d < \epsilon $}
+  \end{cases}
+\end{equation}
+
+
+\subsection{Position + orientation: Dense reward functions}
+
+\textbf{REW17}
+
+\begin{equation}
+r = - O_t^2
+\end{equation}
+
+\textbf{REW18}
+
+\begin{equation}
+r = - d_t^2 - O_t^2
+\end{equation}
+
+%%%% REWARD FUNCTION TO PREVENT JOINT 1 FROM MOVING
+
+
+%\textbf{REW2} 
+%
+%\begin{equation}
+%r = \frac{1}{abs(A_t[0])}
+%\end{equation}
+%
+%\textbf{REW3} 
+%
+%\begin{equation}
+%r = 1 - abs(A_t[0])
+%\end{equation}
+
+% REWARD FUNCTION TO PREVENT ALL JOINTS FROM MOVING
+
+%\textbf{REW12} 
+%
+%\begin{equation}
+%r = \norm{max(A_t)} - \norm{A_t}
+%\end{equation}
+
+
+
+where
+\begin{itemize}  
+\item $r$ : Reward
+\item $d_t$ : Distance at time $t$ 
+\item $O_t$ : Orientation vector (collinearity between the end effector and the goal orientation)
+\item $\Delta d_t$ : Change in distance
+\item $a_t$ : Action at time $t$ 
+\item $A_t$ : Action normalised between -1 and 1 
+\item $E_t$ : End effector position at time $t$
+\item $\Delta E_t$ : Change in position
+\item $\alpha$ : Scaling coefficient (0.1)
+\item $\epsilon$ : Threshold for sparse reward (0.001)
+\end{itemize}
+
+
+\subsection{Dense rewards (from the literature)}
+
+\begin{equation}
+r = - d_t^2
+\end{equation}
+
+
+\begin{equation}
+r = - d_t
+\end{equation}
+
+
+\begin{equation}
+r = -\alpha d_t - \beta a^T a
+\end{equation}
+
+\begin{equation}
+r = -\alpha d_{t-1}^p - d_t^p 
+\end{equation}
+
+$\alpha$ = 0 or 1 \\
+$p$ = 1 or 2 \\
+but don't work well...
+
+\begin{equation}
+r = - d_t -  \norm{a_{t-1}}
+\end{equation}
+
+Penalise large torque
+
+\begin{equation}
+r = - d_t^2+ \frac{d_{t-1} - d_t}{d_t}
+\end{equation}
+
+\subsection{Sparse rewards (from the literature)}
+
+\begin{equation}
+r = \begin{cases}
+    -1, & \text{if $d \geq \epsilon $}\\
+    0, & \text{if $d < \epsilon $}
+  \end{cases}
+\end{equation}
+
+\begin{equation}
+r = \begin{cases}
+    1, & \text{if $s \in G $}\\
+    0, & \text{otherwise}
+  \end{cases}
+\end{equation}
+
+
+\subsection{Dense + sparse rewards (from the literature)}
+
+\begin{equation}
+r = \begin{cases}
+    -d_t, & \text{if no collision and $d \geq 3$}\\
+    -d_t - 20\beta , & \text{if collision and $d \geq 3$}\\
+    -d_t + 2 , & \text{if no collision and $d < 3$} \\
+    -d_t - 20\beta + 2, & \text{if collision and $d < 3$}\\
+  \end{cases}
+\end{equation}
+
+\begin{equation}
+r = \begin{cases}
+    - 1 - \beta \norm{a_{t-1}}^2, & \text{if $d \geq \epsilon $}\\
+    1 - \beta \norm{a_{t-1}}^2, & \text{if $d < \epsilon $}
+  \end{cases}
+\end{equation}
+
+where $\beta \norm{a_{t-1}}^2 \ll 1$ (penalise large actions)
+
+\begin{equation}
+r = \begin{cases}
+    - d_t , & \text{if $d \geq \epsilon $}\\
+    1 , & \text{if $d < \epsilon $}
+  \end{cases}
+\end{equation}
+
+\begin{equation}
+r = \begin{cases}
+    - 0.02 , & \text{if $d \geq \epsilon $}\\
+    1 , & \text{if $d < \epsilon $}
+  \end{cases}
+\end{equation}
+
+\begin{equation}
+r = \begin{cases}
+\alpha (d_{t-1} - d_t), & \text{if $d \geq \epsilon $}\\
+\alpha (d_{t-1} - d_t) + 10, & \text{if $d < \epsilon $}
+  \end{cases}
+\end{equation}
+
+\begin{equation}
+r = \begin{cases}
+    - 0.001 , & \text{if $d \geq \epsilon $}\\
+    10 , & \text{if $d < \epsilon $}
+  \end{cases}
+\end{equation}
+
+
+Where
+$s$ = state \\
+$G$ = set of goals \\
+
+
+\section{Action}
+
+
+\textbf{ACT1 : Relative joint position}
+
+\begin{equation}
+[\delta_1, \delta_2, \delta_3, \delta_4, \delta_5, \delta_6]
+\end{equation}
+
+\textbf{ACT2 : Absolute joint position}
+
+\textbf{ACT3 : Relative joint torque}
+
+\textbf{ACT4 : Absolute joint torque}
+
+Where
+$\delta_i$ : Increment from previous joint position (in rad) \\
+
+TODO: Also make the difference between immediate reset and continuous position control.
+
+
+\end{document}

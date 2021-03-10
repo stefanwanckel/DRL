@@ -1,0 +1,4 @@
+env_id,random_position,random_orientation,target_type,goal_oriented,obs_type,reward_type,action_type,joint_limits,action_min,action_max,alpha_reward,reward_coeff
+widowx_reacher-v1,False,False,sphere,False,1,13,1,large,"[-0.05, -0.025, -0.025, -0.025, -0.05, -0.0005]","[0.05, 0.025, 0.025, 0.025, 0.05, 0.0005]",0.1,1
+ur5e_reacher-v1,False,False,sphere,True,1,13,1,large,"[-0.05, -0.025, -0.025, -0.025, -0.05, -0.0005]","[0.05, 0.025, 0.025, 0.025, 0.05, 0.0005]",0.1,1
+widowx_reacher-v2,False,False,sphere,False,2,1,1,large,"[-1, -1, -1, -1, -1, -1]","[1, 1, 1, 1, 1, 1]",0.1,1

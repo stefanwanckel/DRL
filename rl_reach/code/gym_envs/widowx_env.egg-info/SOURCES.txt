@@ -1,0 +1,9 @@
+README.md
+setup.py
+widowx_env/__init__.py
+widowx_env/export_env_list.py
+widowx_env.egg-info/PKG-INFO
+widowx_env.egg-info/SOURCES.txt
+widowx_env.egg-info/dependency_links.txt
+widowx_env.egg-info/requires.txt
+widowx_env.egg-info/top_level.txt

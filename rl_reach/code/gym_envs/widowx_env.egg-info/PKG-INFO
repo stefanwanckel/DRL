@@ -1,0 +1,22 @@
+Metadata-Version: 2.1
+Name: widowx-env
+Version: 0.0.1
+Summary: Gym environments for RL reaching tasks
+Home-page: https://github.com/pypa/sampleproject
+Author: Pierre Aumjaud
+Author-email: pierre.aumjaud@ucd.ie
+License: MIT
+Download-URL: https://pypi.org/project/elastictools/
+Description: # widowx_env
+        
+        widowx_env is a series of OpenAI Gym reinforcement learning environments. 
+        It simulates a robotic arm (WidowX MK-II) with the Pybullet engine. The goal is to bring the end-effector as close as possible to the target position (represented as a green sphere).
+        
+        
+Keywords: Reinforcement_Learning,OpenAI_Gym
+Platform: UNKNOWN
+Classifier: Programming Language :: Python :: 3
+Classifier: License :: OSI Approved :: MIT License
+Classifier: Operating System :: OS Independent
+Requires-Python: >=3.6
+Description-Content-Type: text/markdown
