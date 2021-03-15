@@ -14,19 +14,14 @@ import time
 
 
 # Initial joint angles
-RESET_VALUES = [
-    -0.1,
-    0.1,
-    -0.1,
-    0.1,
-    -0.1,
-    0]
-
+RESET_VALUES_CART = [0.1,0.1,0.3]
+RESET_VALUES = [ 4.06453904e-01, -1.08030241e+00,  1.08329535e+00,  5.63995981e-01,
+       -1.39857752e+00,  7.76366484e-17]
 # Global Variables to use instead of __init__
 MIN_GOAL_ORIENTATION = np.array([-np.pi, -np.pi, -np.pi])
 MAX_GOAL_ORIENTATION = np.array([np.pi, np.pi, np.pi])
-MIN_GOAL_COORDS = np.array([-.14, -.13, 0.26])
-MAX_GOAL_COORDS = np.array([.14, .13, .39])
+MIN_GOAL_COORDS = np.array([-.14, -.13, -0.1])
+MAX_GOAL_COORDS = np.array([.14, .13, .1])
 #MIN_GOAL_COORDS = np.array([-.5, -.5, 0.1])
 #MAX_GOAL_COORDS = np.array([.5, .5, .5])
 MIN_END_EFF_COORDS = np.array([-.90, -.90, 0.10])
@@ -41,7 +36,7 @@ PYBULLET_ACTION_MIN = [-0.03, -0.03, -0.03, -0.03, -0.03, -0.03]
 PYBULLET_ACTION_MAX = [0.03, 0.03, 0.03, 0.03, 0.03, 0.03]
 GOAL_ORIENTED = True
 REWARD_TYPE = 13
-ACTION_SCALE = 25
+ACTION_SCALE = 1
 RANDOM_GOAL = True
 
 class Ur5eEnv(gym.Env):
@@ -52,6 +47,7 @@ class Ur5eEnv(gym.Env):
         """
         Initialise the environment
         """
+        self.is_rendered = False
         self.joint_limits = JOINT_LIMITS
         self.action_min = ACTION_SCALE*np.array(ACTION_MIN)
         self.action_max = ACTION_SCALE*np.array(ACTION_MAX)
@@ -136,12 +132,14 @@ class Ur5eEnv(gym.Env):
         self.reset()
 
 
-    def sample_random_position(self):
+    def sample_random_position(self,mean):
         """ Sample random target position """
-        return np.random.uniform(low=MIN_GOAL_COORDS, high=MAX_GOAL_COORDS)
+        #only "+" is neded since min_goal_coords is negative
+        return np.random.uniform(low=mean-MIN_GOAL_COORDS, high=mean+MAX_GOAL_COORDS)
 
     def sample_random_orientation(self):
         """ Sample random target orientation """
+        
         return np.random.uniform(low=MIN_GOAL_ORIENTATION, high=MAX_GOAL_ORIENTATION)
 
     def create_world(self):
@@ -174,14 +172,15 @@ class Ur5eEnv(gym.Env):
         # Reset robot at the origin and move the target object to the goal position and orientation
         # Note: the arrow's STL is oriented  along a different axis and its
         # orientation vector must be corrected (for consistency with the Pybullet rendering)
-        p.resetBasePositionAndOrientation(
-            self.arm, [0, 0, 0], p.getQuaternionFromEuler([np.pi, np.pi, np.pi]))
+        #p.resetBasePositionAndOrientation(
+        #    self.arm, [0, 0, 0], p.getQuaternionFromEuler([np.pi, np.pi, np.pi]))
         p.resetBasePositionAndOrientation(
             self.target_object, self.goal_pos, p.getQuaternionFromEuler([0, 0, 1]))
 
         # Set gravity
         p.setGravity(0, 0, -9.81, physicsClientId=self.physics_client)
         # Reset joint at initial angles
+        #self.reset_values = self.calc_inv_kin()
         self._force_joint_positions(RESET_VALUES)
 
     def reset(self):
@@ -189,22 +188,24 @@ class Ur5eEnv(gym.Env):
         Reset robot and goal at the beginning of an episode.
         Returns observation
         """
-
+        #reset values for robot are defined earlier to make goal position around it
+        #self.reset_values = self.calc_inv_kin()
         # Initialise goal position
         if self.random_goal:
-            self.goal_pos = self.sample_random_position()
+            self.goal_pos = self.sample_random_position(RESET_VALUES_CART)
         else:
             self.goal_pos = FIXED_GOAL_COORDS
 
         # Reset robot at the origin and move the target object to the goal position and orientation
         # Note: the arrow's STL is oriented  along a different axis and its
         # orientation vector must be corrected (for consistency with the Pybullet rendering)
-        p.resetBasePositionAndOrientation(
-            self.arm, [0, 0, 0], p.getQuaternionFromEuler([np.pi, np.pi, np.pi]))
+        #p.resetBasePositionAndOrientation(
+            #self.arm, [0, 0, 0], p.getQuaternionFromEuler([np.pi, np.pi, np.pi]))
         p.resetBasePositionAndOrientation(
             self.target_object, self.goal_pos, p.getQuaternionFromEuler([0, 0, 1]))
 
         # Reset joint at initial angles
+       
         self._force_joint_positions(RESET_VALUES)
 
         # Get observation
@@ -332,9 +333,11 @@ class Ur5eEnv(gym.Env):
 
     def render(self, mode='human'):
         """ Render Pybullet simulation """
-        p.disconnect(self.physics_client)
-        self.physics_client = p.connect(p.GUI)
-        self.create_world()
+        if not self.is_rendered:
+            p.disconnect(self.physics_client)
+            self.physics_client = p.connect(p.GUI)
+            self.create_world()
+            self.is_rendered = True
 
 
 # helper functions in RESET and STEP
@@ -361,19 +364,19 @@ class Ur5eEnv(gym.Env):
 
     def _get_joint_positions(self):
         """ Return current joint position """
-        return np.array([x[0] for x in p.getJointStates(self.arm, range(6))])
+        return np.array([x[0] for x in p.getJointStates(self.arm, range(1,7))])
 
     def _get_end_effector_position(self):
         """ Get end effector coordinates """
         return np.array(p.getLinkState(
                 self.arm,
-                5,
+                7,
                 computeForwardKinematics=True)
             [0])
 
     def _get_end_effector_orientation(self):
         """ Get end effector orientation """
-        orient_quat = p.getLinkState(self.arm, 5, computeForwardKinematics=True)[1]
+        orient_quat = p.getLinkState(self.arm, 6, computeForwardKinematics=True)[1]
         orient_euler = p.getEulerFromQuaternion(orient_quat)
         return np.array(orient_euler)
 
@@ -520,7 +523,7 @@ class Ur5eEnv(gym.Env):
 
     def _get_reward13(self):
         """ Compute reward function 13 (sparse) """
-        if self.dist >= 0.3:
+        if self.dist >= 0.1:
             self.term1 = -0.02
         else:
             self.term1 = 1
@@ -597,35 +600,46 @@ class Ur5eEnv(gym.Env):
             controlMode=p.POSITION_CONTROL,
             targetPositions=joint_positions
         )
-        p.stepSimulation()
+        for _ in range(5):
+            p.stepSimulation()
 
     def _force_joint_positions(self, joint_positions):
         """ Instantaneous reset of the joint angles (not position control) """
-        for i in range(1,6):
+        for i in range(6):
             p.resetJointState(
                 self.arm,
-                i,
+                i+1,
                 joint_positions[i]
             )
         # In Pybullet, gripper halves are controlled separately
-        for i in range(7, 9):
-            p.resetJointState(
-                self.arm,
-                i,
-                joint_positions[-1]
-            )
+        #We dont have a gripper
+        # for i in range(8, 10):
+        #     p.resetJointState(
+        #         self.arm,
+        #         i,
+        #         joint_positions[-1]
+        #     )
     def get_revolute_joints_indices(self):
         lstRevJointsIndices = []
-        print("Number of Joints", p.getNumJoints(self.arm))
+        #print("Number of Joints", p.getNumJoints(self.arm))
         for index,joint in enumerate(range(p.getNumJoints(self.arm))):
-            print(index, p.getJointInfo(self.arm,joint)[2],p.getJointInfo(self.arm,joint)[1])
+            #print(index, p.getJointInfo(self.arm,joint)[2],p.getJointInfo(self.arm,joint)[1])
             if p.getJointInfo(self.arm,joint)[2] == 0:
                 lstRevJointsIndices.append(index)
             if str(p.getJointInfo(self.arm,joint)[12],'utf-8') == "ee_link":
                 endEffectorIndex = index
-                print(endEffectorIndex)
-        print(lstRevJointsIndices)
+                #print(endEffectorIndex)
+        #print(lstRevJointsIndices)
         return lstRevJointsIndices, endEffectorIndex
+
+    def calc_inv_kin(self):
+        #reset_joint_angles = p.calculateInverseKinematics(self.arm,self.get_revolute_joints_indices()[1],RESET_VALUES_CART)
+        #taking joint 6 as gripper because no gripper
+        reset_joint_angles = p.calculateInverseKinematics(self.arm,7,RESET_VALUES_CART)
+        return reset_joint_angles
+
+    #def goal_pos_around_end_effector(self):
+        
 
 
 # myRobot = Ur5eEnv()

@@ -17,11 +17,10 @@ pp = pprint.PrettyPrinter(indent=4)
 #make environment and wrap
 env=gym.make('ur5e_reacher-v1')
 env = Monitor(env,filename="logs",allow_early_resets=True)
-
 #***define model***
 #hyperparams
-n_actions = env.action_space.shape[-1]
-action_noise = OrnsteinUhlenbeckActionNoise(mean=np.zeros(n_actions), sigma=float(0.5) * np.ones(n_actions))
+# n_actions = env.action_space.shape[-1]
+# action_noise = OrnsteinUhlenbeckActionNoise(mean=np.zeros(n_actions), sigma=float(0.5) * np.ones(n_actions))
 model_class = DDPG#('MlpPolicy',env,verbose=1, action_noise=action_noise)
 model=HER('MlpPolicy',
           env, 
@@ -31,10 +30,9 @@ model=HER('MlpPolicy',
           verbose=1,
           #max_episode_steps=4800
           )
-#print(model.get_parameter_list())
 
 #train model
-train = False                                  
+train = True                                  
 if train:   
     model.learn(6000)
     model.save("./her_ur5e_model/model_3")
@@ -48,4 +46,4 @@ mean_reward, std_reward = evaluate_policy(model,
                                           render=True, 
                                           return_episode_rewards=True
                                           )
-print(mean_reward,std_reward)
+#print(mean_reward,std_reward)

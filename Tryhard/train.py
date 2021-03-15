@@ -10,7 +10,7 @@ model_class = DDPG
 goal_selection_strategy = 'future'
 env=gym.make('ur5e_reacher-v1')
 model=HER('MlpPolicy', env, model_class, n_sampled_goal=4, goal_selection_strategy=goal_selection_strategy,
-                                                verbose=1)
+                                                verbose=1,gamma=0.99)
 train = False                                  
 if train:   
     model.learn(4000)
