@@ -6,7 +6,7 @@ import time
 import pprint
 
 pp = pprint.PrettyPrinter(indent=4)
-
+print(float(1e5))
 print("hello")
 
 env = gym.make('ur5e_reacher-v1')

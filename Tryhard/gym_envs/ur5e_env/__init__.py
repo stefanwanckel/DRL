@@ -7,7 +7,7 @@ from gym.envs.registration import register
 register(
     id='ur5e_reacher-v1',
     entry_point='ur5e_env.envs.ur5e_env:Ur5eEnv',
-    max_episode_steps=1000,
+    max_episode_steps=4800,
     #kwargs={
         #'random_position' : False,
         #'random_orientation': False,

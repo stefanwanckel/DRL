@@ -20,8 +20,8 @@ RESET_VALUES = [ 4.06453904e-01, -1.08030241e+00,  1.08329535e+00,  5.63995981e-
 # Global Variables to use instead of __init__
 MIN_GOAL_ORIENTATION = np.array([-np.pi, -np.pi, -np.pi])
 MAX_GOAL_ORIENTATION = np.array([np.pi, np.pi, np.pi])
-MIN_GOAL_COORDS = np.array([-.14, -.13, -0.1])
-MAX_GOAL_COORDS = np.array([.14, .13, .1])
+MIN_GOAL_COORDS = np.array([-0.1, -0.1, 0.1])
+MAX_GOAL_COORDS = np.array([0.6, 0.6, 0.4])
 #MIN_GOAL_COORDS = np.array([-.5, -.5, 0.1])
 #MAX_GOAL_COORDS = np.array([.5, .5, .5])
 MIN_END_EFF_COORDS = np.array([-.90, -.90, 0.10])
@@ -29,7 +29,7 @@ MAX_END_EFF_COORDS = np.array([.90, .90, .90])
 FIXED_GOAL_COORDS  = np.array([0.1, .4, 0.5])
 FIXED_GOAL_ORIENTATION  = np.array([-np.pi/4, 0, -np.pi/2])
 ARROW_OBJECT_ORIENTATION_CORRECTION = np.array([np.pi/2, 0, 0])
-JOINT_LIMITS = "large"
+JOINT_LIMITS = "small"
 ACTION_MIN = [-0.03, -0.03, -0.03, -0.03, -0.03, -0.03]
 ACTION_MAX = [0.03, 0.03, 0.03, 0.03, 0.03, 0.03]
 PYBULLET_ACTION_MIN = [-0.03, -0.03, -0.03, -0.03, -0.03, -0.03]
@@ -39,7 +39,7 @@ REWARD_TYPE = 13
 ACTION_SCALE = 1
 RANDOM_GOAL = True
 
-class Ur5eEnv(gym.Env):
+class Ur5eEnv(gym.GoalEnv):
     """ Ur5e reacher Gym environment """
 
 
@@ -132,10 +132,10 @@ class Ur5eEnv(gym.Env):
         self.reset()
 
 
-    def sample_random_position(self,mean):
+    def sample_random_position(self):
         """ Sample random target position """
         #only "+" is neded since min_goal_coords is negative
-        return np.random.uniform(low=mean-MIN_GOAL_COORDS, high=mean+MAX_GOAL_COORDS)
+        return np.random.uniform(low=MIN_GOAL_COORDS, high=MAX_GOAL_COORDS)
 
     def sample_random_orientation(self):
         """ Sample random target orientation """
@@ -192,7 +192,7 @@ class Ur5eEnv(gym.Env):
         #self.reset_values = self.calc_inv_kin()
         # Initialise goal position
         if self.random_goal:
-            self.goal_pos = self.sample_random_position(RESET_VALUES_CART)
+            self.goal_pos = self.sample_random_position()
         else:
             self.goal_pos = FIXED_GOAL_COORDS
 
@@ -398,8 +398,8 @@ class Ur5eEnv(gym.Env):
         """ return goal_oriented observation """
         obs = {}
         obs['observation'] = self.obs
-        obs['desired_goal'] = self.goal_pos
         obs['achieved_goal'] = self.endeffector_pos
+        obs['desired_goal'] = self.goal_pos
         return obs
 
     def _take_action(self):
