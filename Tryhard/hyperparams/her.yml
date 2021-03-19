@@ -1,23 +1,86 @@
-
-#   # SAC hyperparams
-# ur5e_reacher-v1:
-#   n_timesteps: !!float 10000
-#   policy: 'MlpPolicy'
-#   model_class: 'sac'
-#   n_sampled_goal: 2
-#   goal_selection_strategy: 'future'
-#   buffer_size: 1000000
-#   ent_coef: 'auto'
-#   batch_size: 256
-#   gamma: 0.95
-#   learning_rate: 0.001
-#   learning_starts: 1000
-#   online_sampling: True
-#   normalize: True
-
  # DDPG hyperparams
 ur5e_reacher-v1:
- n_timesteps: !!float 1e5
+ n_timesteps: !!float 1e7
+ policy: 'MlpPolicy'
+ model_class: 'ddpg'
+ n_sampled_goal: 4
+ goal_selection_strategy: 'future'
+ buffer_size: 1000000
+ batch_size: 128
+ gamma: 0.95
+ learning_rate: !!float 1e-3
+ noise_type: 'normal'
+ noise_std: 0.2
+ policy_kwargs: "dict(net_arch=[512, 512, 512])"
+ online_sampling: True
+ #max_episode_length: 100
+
+ur5e_reacher-v2:
+ n_timesteps: !!float 1e7
+ policy: 'MlpPolicy'
+ model_class: 'ddpg'
+ n_sampled_goal: 4
+ goal_selection_strategy: 'future'
+ buffer_size: 1000000
+ batch_size: 128
+ gamma: 0.95
+ learning_rate: !!float 1e-3
+ noise_type: 'normal'
+ noise_std: 0.2
+ policy_kwargs: "dict(net_arch=[512, 512, 512])"
+ online_sampling: True
+ #max_episode_length: 100
+
+ur5e_reacher-v3:
+  n_timesteps: !!float 1e7
+  policy: 'MlpPolicy'
+  model_class: 'ddpg'
+  n_sampled_goal: 4
+  goal_selection_strategy: 'future'
+  buffer_size: 1000000
+  batch_size: 128
+  gamma: 0.95
+  learning_rate: !!float 1e-3
+  noise_type: 'normal'
+  noise_std: 0.2
+  policy_kwargs: "dict(net_arch=[512, 512, 512])"
+  online_sampling: True
+#max_episode_length: 100
+
+ur5e_reacher-v4:
+ n_timesteps: !!float 1e7
+ policy: 'MlpPolicy'
+ model_class: 'ddpg'
+ n_sampled_goal: 4
+ goal_selection_strategy: 'future'
+ buffer_size: 1000000
+ batch_size: 128
+ gamma: 0.95
+ learning_rate: !!float 1e-3
+ noise_type: 'normal'
+ noise_std: 0.2
+ policy_kwargs: "dict(net_arch=[512, 512, 512])"
+ online_sampling: True
+ #max_episode_length: 100
+
+ur5e_reacher-v5:
+ n_timesteps: !!float 1e7
+ policy: 'MlpPolicy'
+ model_class: 'ddpg'
+ n_sampled_goal: 4
+ goal_selection_strategy: 'future'
+ buffer_size: 1000000
+ batch_size: 128
+ gamma: 0.95
+ learning_rate: !!float 1e-3
+ noise_type: 'normal'
+ noise_std: 0.2
+ policy_kwargs: "dict(net_arch=[512, 512, 512])"
+ online_sampling: True
+ #max_episode_length: 100
+
+ur5e_reacher-v6:
+ n_timesteps: !!float 1e7
  policy: 'MlpPolicy'
  model_class: 'ddpg'
  n_sampled_goal: 4
