@@ -40,20 +40,23 @@ def Main():
             )
 
     #train model
-    train = True                                  
+    train = False                                 
     if train:   
         model.learn(2*10e5)
         model.save("./her_ur5e_model/model_")
 
         #load model, not really necessary
-        evaluate = False
-        if evaluate:
-            model = HER.load('./her_ur5e_model/model_200k', env=env)
-            mean_reward, std_reward = evaluate_policy(model,
-                                                env, 
-                                                n_eval_episodes=5, 
-                                                render=True, 
-                                                return_episode_rewards=True
-                                                )
+    evaluate = True
+    # if evaluate:
+    #     model = HER.load('./her_ur5e_model/model_', env=env)
+    #     mean_reward, std_reward = evaluate_policy(model,
+    #                                         env, 
+    #                                         n_eval_episodes=5, 
+    #                                         render=True, 
+    #                                         return_episode_rewards=True
+    #                                         )
+    
+
+
 if __name__ == "__main__":
     Main()

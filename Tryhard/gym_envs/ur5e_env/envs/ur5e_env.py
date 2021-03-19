@@ -15,48 +15,72 @@ import time
 
 # Initial joint angles
 RESET_VALUES_CART = [0.1,0.1,0.3]
-RESET_VALUES = [ 4.06453904e-01, -1.08030241e+00,  1.08329535e+00,  5.63995981e-01,
-       -1.39857752e+00,  7.76366484e-17]
+RESET_VALUES = [ 4.06453904e-01, -1.08030241e+00,  1.08329535e+00,  5.63995981e-01,-1.39857752e+00,  1]
+
 # Global Variables to use instead of __init__
-MIN_GOAL_ORIENTATION = np.array([-np.pi, -np.pi, -np.pi])
-MAX_GOAL_ORIENTATION = np.array([np.pi, np.pi, np.pi])
 MIN_GOAL_COORDS = np.array([-0.1, -0.1, 0.1])
 MAX_GOAL_COORDS = np.array([0.6, 0.6, 0.4])
-#MIN_GOAL_COORDS = np.array([-.5, -.5, 0.1])
-#MAX_GOAL_COORDS = np.array([.5, .5, .5])
 MIN_END_EFF_COORDS = np.array([-.90, -.90, 0.10])
 MAX_END_EFF_COORDS = np.array([.90, .90, .90])
-FIXED_GOAL_COORDS  = np.array([0.1, .4, 0.5])
+MIN_GOAL_ORIENTATION = np.array([-np.pi, -np.pi, -np.pi])
+MAX_GOAL_ORIENTATION = np.array([np.pi, np.pi, np.pi])
+
+#FIXED_GOAL_COORDS  = np.array([0.1, .4, 0.5])
+FIXED_GOAL_COORDS_SPHERE = np.array([0.1, .4, 0.5])
+FIXED_GOAL_COORDS_ARROW = np.array([0.1, .4, 0.5])
+FIXED_GOAL_COORDS_MOVING = np.array([0.1, .4, 0.5])
 FIXED_GOAL_ORIENTATION  = np.array([-np.pi/4, 0, -np.pi/2])
 ARROW_OBJECT_ORIENTATION_CORRECTION = np.array([np.pi/2, 0, 0])
-JOINT_LIMITS = "small"
-ACTION_MIN = [-0.03, -0.03, -0.03, -0.03, -0.03, -0.03]
-ACTION_MAX = [0.03, 0.03, 0.03, 0.03, 0.03, 0.03]
+
+
 PYBULLET_ACTION_MIN = [-0.03, -0.03, -0.03, -0.03, -0.03, -0.03]
 PYBULLET_ACTION_MAX = [0.03, 0.03, 0.03, 0.03, 0.03, 0.03]
-GOAL_ORIENTED = True
-REWARD_TYPE = 13
-ACTION_SCALE = 1
-RANDOM_GOAL = True
 
-class Ur5eEnv(gym.GoalEnv):
+
+class Ur5eEnv(gym.Env):
     """ Ur5e reacher Gym environment """
 
 
-    def __init__(self):
+    def __init__(self,
+                random_position,
+                random_orientation,
+                moving_target,
+                target_type,
+                goal_oriented,
+                obs_type,
+                reward_type,
+                action_type,
+                joint_limits,
+                action_min,
+                action_max,
+                alpha_reward,
+                reward_coeff,
+                action_scale,
+                eps
+                ):
         """
         Initialise the environment
         """
         self.is_rendered = False
-        self.joint_limits = JOINT_LIMITS
-        self.action_min = ACTION_SCALE*np.array(ACTION_MIN)
-        self.action_max = ACTION_SCALE*np.array(ACTION_MAX)
-        #self.alpha_reward = alpha_reward
-        self.reward_type = REWARD_TYPE
-        self.goal_oriented = GOAL_ORIENTED
+    
+        self.random_position = random_position
+        self.random_orientation = random_orientation
+        self.moving_target = moving_target
+        self.target_type = target_type
+        self.reward_type = reward_type
+        self.action_type = action_type
+        self.obs_type = obs_type
+        self.joint_limits = joint_limits
+        self.goal_oriented = goal_oriented
+        self.alpha_reward = alpha_reward
+        self.action_min = action_scale*np.array(action_min)
+        self.action_max = action_scale*np.array(action_max)
+        self.reward_coeff = reward_coeff
+
         self.endeffector_pos = None
         self.old_endeffector_pos = None
         self.endeffector_orient = None
+        self.old_endeffector_orient = None
         self.torso_pos = None
         self.torso_orient = None
         self.end_torso_pos = None
@@ -64,12 +88,17 @@ class Ur5eEnv(gym.GoalEnv):
         self.end_torso_orient = None
         self.end_goal_orient = None
         self.joint_positions = None
+        self.delta_orient = None
+        self.delta_endeff_orient = None
+        self.goal_orient = None
+        self.target_object_orient = None
         self.reward = None
         self.obs = None
+
         self.action = np.zeros(6)
         self.pybullet_action = np.zeros(6)
-        self.pybullet_action_min = ACTION_SCALE*np.array(PYBULLET_ACTION_MIN)
-        self.pybullet_action_max = ACTION_SCALE*np.array(PYBULLET_ACTION_MAX)
+        self.pybullet_action_min = action_scale*np.array(PYBULLET_ACTION_MIN)
+        self.pybullet_action_max = action_scale*np.array(PYBULLET_ACTION_MAX)
         self.new_joint_positions = None
         self.dist = 0
         self.old_dist = 0
@@ -78,13 +107,14 @@ class Ur5eEnv(gym.GoalEnv):
         self.delta_pos = 0
         self.delta_dist = 0
         self.target_object_orient = None
-        self.goal_pos = FIXED_GOAL_COORDS
-        self.random_goal = RANDOM_GOAL
+        self.goal_pos = FIXED_GOAL_COORDS_SPHERE
+        self.eps = eps
+
         # Initialise goal orientation
         # if self.random_orientation:
         #     self.goal_orient = self.sample_random_orientation()
         # else:
-        self.goal_orient = FIXED_GOAL_ORIENTATION
+        
 
         # Define action space
         self.action_space = spaces.Box(
@@ -94,22 +124,70 @@ class Ur5eEnv(gym.GoalEnv):
 
         # Define observation space
         if self.joint_limits == "small":
-            self.joint_min = np.array([-3.1, -1.6, -1.6, -1.8, -3.1, 0.0])
-            self.joint_max = np.array([3.1, 1.6, 1.6, 1.8, 3.1, 0.0])
+            self.joint_min = np.array([-3.2, -3.2, -3.2, -3.2, -3.2, -3.2])
+            self.joint_max = np.array([3.2, 3.2, 3.2, 3.2, 3.2, 3.2])
         elif self.joint_limits == "large":
             self.joint_min = 2*np.array([-3.2, -3.2, -3.2, -3.2, -3.2, -3.2])
             self.joint_max = 2*np.array([3.2, 3.2, 3.2, 3.2, 3.2, 3.2])
 
-        self.obs_space_low = np.float32(
-            np.concatenate((MIN_END_EFF_COORDS, self.joint_min), axis=0))
-        self.obs_space_high = np.float32(
-            np.concatenate((MAX_END_EFF_COORDS, self.joint_max), axis=0))
+        #Define observations 
+        if self.obs_type == 1:
+            self.obs_space_low = np.float32(
+                np.concatenate((MIN_END_EFF_COORDS, self.joint_min), axis=0))
+            self.obs_space_high = np.float32(
+                np.concatenate((MAX_END_EFF_COORDS, self.joint_max), axis=0))
+
+        elif self.obs_type == 2:
+            self.obs_space_low = np.float32(
+                np.concatenate((MIN_GOAL_COORDS, self.joint_min), axis=0))
+            self.obs_space_high = np.float32(
+                np.concatenate((MAX_GOAL_COORDS, self.joint_max), axis=0))
+
+        elif self.obs_type == 3:
+            self.obs_space_low = np.float32(
+                np.concatenate(([-1.0]*6, self.joint_min), axis=0))
+            self.obs_space_high = np.float32(
+                np.concatenate(([1.0]*6, self.joint_max), axis=0))
+
+        elif self.obs_type == 4:
+            self.obs_space_low = np.float32(
+                np.concatenate(([-1.0]*3, self.joint_min), axis=0))
+            self.obs_space_high = np.float32(
+                np.concatenate(([1.0]*3, self.joint_max), axis=0))
+
+        elif self.obs_type == 5:
+            self.obs_space_low = np.float32(
+                np.concatenate(([-1.0]*6, MIN_GOAL_COORDS, self.joint_min), axis=0))
+            self.obs_space_high = np.float32(
+                np.concatenate(([1.0]*6, MAX_GOAL_COORDS, self.joint_max), axis=0))
+
+        elif self.obs_type == 6:
+            self.obs_space_low = np.float32(
+                np.concatenate((
+                    [-1.0]*6,
+                    [-2*np.pi]*6,
+                    MIN_GOAL_COORDS,
+                    MIN_GOAL_ORIENTATION,
+                    MIN_END_EFF_COORDS,
+                    [-np.pi]*3,
+                    self.joint_min
+                    ), axis=0))
+            self.obs_space_high = np.float32(
+                np.concatenate((
+                    [1.0]*6,
+                    [2*np.pi]*6,
+                    MAX_GOAL_COORDS,
+                    MAX_GOAL_ORIENTATION,
+                    MAX_END_EFF_COORDS,
+                    [np.pi]*3,
+                    self.joint_max
+                    ), axis=0))
 
         self.observation_space = spaces.Box(
                     low=self.obs_space_low,
                     high=self.obs_space_high,
                     dtype=np.float32)
-
+        #IMPORTANT FOR HER
         if self.goal_oriented:
             self.observation_space = spaces.Dict(dict(
                 desired_goal=spaces.Box(
@@ -134,7 +212,7 @@ class Ur5eEnv(gym.GoalEnv):
 
     def sample_random_position(self):
         """ Sample random target position """
-        #only "+" is neded since min_goal_coords is negative
+        
         return np.random.uniform(low=MIN_GOAL_COORDS, high=MAX_GOAL_COORDS)
 
     def sample_random_orientation(self):
@@ -162,54 +240,77 @@ class Ur5eEnv(gym.GoalEnv):
                 "URDFs/ur_e_description/urdf/ur5e.urdf"),
             useFixedBase=True,basePosition=[0,0,0])
 
-        self.target_object = p.loadURDF(
-            os.path.join(
-                path,
-                "URDFs/sphere.urdf"),
-            useFixedBase=True)
+        if self.target_type == "arrow":
+            self.target_object = p.loadURDF(
+                os.path.join(
+                    path,
+                    "URDFs/arrow.urdf"),
+                useFixedBase=True)
+        elif self.target_type == "sphere":
+            self.target_object = p.loadURDF(
+                os.path.join(
+                    path,
+                    "URDFs/sphere.urdf"),
+                useFixedBase=True)
+
         self.plane = p.loadURDF('plane.urdf')
-        #self.box = p.loadURDF('URDFs/cube/cube_small.urdf',useFixedBase=True,basePosition=[0,0,0])
-        # Reset robot at the origin and move the target object to the goal position and orientation
-        # Note: the arrow's STL is oriented  along a different axis and its
-        # orientation vector must be corrected (for consistency with the Pybullet rendering)
-        #p.resetBasePositionAndOrientation(
-        #    self.arm, [0, 0, 0], p.getQuaternionFromEuler([np.pi, np.pi, np.pi]))
-        p.resetBasePositionAndOrientation(
-            self.target_object, self.goal_pos, p.getQuaternionFromEuler([0, 0, 1]))
 
         # Set gravity
         p.setGravity(0, 0, -9.81, physicsClientId=self.physics_client)
-        # Reset joint at initial angles
-        #self.reset_values = self.calc_inv_kin()
-        self._force_joint_positions(RESET_VALUES)
+
+        #self._force_joint_positions(RESET_VALUES)
 
     def reset(self):
         """
         Reset robot and goal at the beginning of an episode.
         Returns observation
         """
-        #reset values for robot are defined earlier to make goal position around it
-        #self.reset_values = self.calc_inv_kin()
         # Initialise goal position
-        if self.random_goal:
+        if self.random_position:
             self.goal_pos = self.sample_random_position()
         else:
-            self.goal_pos = FIXED_GOAL_COORDS
+            if self.moving_target:
+                # deepcopy is necessary to avoid changing the value of FIXED_GOAL_COORDS_MOVING
+                self.goal_pos = copy.deepcopy(FIXED_GOAL_COORDS_MOVING)
+            else:
+                if self.target_type == "arrow":
+                    self.goal_pos = FIXED_GOAL_COORDS_ARROW
+                elif self.target_type == "sphere":
+                    self.goal_pos = FIXED_GOAL_COORDS_SPHERE
+
+        # Initialise goal orientation
+        if self.random_orientation:
+            self.goal_orient = self.sample_random_orientation()
+        else:
+            self.goal_orient = FIXED_GOAL_ORIENTATION
+        
+        # Correct the orientation of the target object for consistency with rendering
+        # in Pybullet (This is due to the arrow's STL being oriented along a different axis)
+        self.target_object_orient = self.goal_orient + ARROW_OBJECT_ORIENTATION_CORRECTION
 
         # Reset robot at the origin and move the target object to the goal position and orientation
-        # Note: the arrow's STL is oriented  along a different axis and its
-        # orientation vector must be corrected (for consistency with the Pybullet rendering)
-        #p.resetBasePositionAndOrientation(
-            #self.arm, [0, 0, 0], p.getQuaternionFromEuler([np.pi, np.pi, np.pi]))
         p.resetBasePositionAndOrientation(
-            self.target_object, self.goal_pos, p.getQuaternionFromEuler([0, 0, 1]))
+            self.arm, [0, 0, 0], p.getQuaternionFromEuler([np.pi, np.pi, np.pi]))
+        p.resetBasePositionAndOrientation(
+            self.target_object, self.goal_pos, p.getQuaternionFromEuler(self.target_object_orient))
 
         # Reset joint at initial angles
-       
         self._force_joint_positions(RESET_VALUES)
 
         # Get observation
-        self.obs = self._get_obs()
+        if self.obs_type == 1:
+            self.obs = self._get_obs1()
+        elif self.obs_type == 2:
+            self.obs = self._get_obs2()
+        elif self.obs_type == 3:
+            self.obs = self._get_obs3()
+        elif self.obs_type == 4:
+            self.obs = self._get_obs4()
+        elif self.obs_type == 5:
+            self.obs = self._get_obs5()
+        elif self.obs_type == 6:
+            self.obs = self._get_obs6()
+
         # update observation if goal oriented environment
         if self.goal_oriented:
             self.obs = self._get_goal_oriented_obs()
@@ -237,6 +338,14 @@ class Ur5eEnv(gym.GoalEnv):
         self.old_orient = np.linalg.norm(self.endeffector_orient - self.goal_orient)
         self.old_endeffector_orient = self.endeffector_orient
 
+        # Update target position and move the target object
+        if self.moving_target:
+            self.goal_pos[1] += TARGET_SPEED
+            p.resetBasePositionAndOrientation(
+                self.target_object,
+                self.goal_pos,
+                p.getQuaternionFromEuler(self.target_object_orient)) 
+
         # take action
         self.action = np.array(action, dtype=np.float32)
 
@@ -245,8 +354,19 @@ class Ur5eEnv(gym.GoalEnv):
 
         self._take_action()
 
-        # get observation
-        self.obs = self._get_obs()
+      # get observation
+        if self.obs_type == 1:
+            self.obs = self._get_obs1()
+        elif self.obs_type == 2:
+            self.obs = self._get_obs2()
+        elif self.obs_type == 3:
+            self.obs = self._get_obs3()
+        elif self.obs_type == 4:
+            self.obs = self._get_obs4()
+        elif self.obs_type == 5:
+            self.obs = self._get_obs5()
+        elif self.obs_type == 6:
+            self.obs = self._get_obs6()  
 
         # update observation if goal oriented environment
         if self.goal_oriented:
@@ -296,6 +416,9 @@ class Ur5eEnv(gym.GoalEnv):
         elif self.reward_type == 19:
             self.reward = self._get_reward19()
 
+        # Apply reward coefficient
+        self.reward *= self.reward_coeff
+
         # Create info
         self.delta_dist = self.old_dist - self.dist
         self.delta_pos = np.linalg.norm(self.old_endeffector_pos - self.endeffector_pos)
@@ -326,7 +449,7 @@ class Ur5eEnv(gym.GoalEnv):
 
         # Create "episode_over": never end episode prematurily
         episode_over = False
-        # if self.new_distance < 0.0005:
+        # if self.dist < self.eps:
         #     episode_over = True
 
         return self.obs, self.reward, episode_over, info
@@ -353,9 +476,69 @@ class Ur5eEnv(gym.GoalEnv):
         self.end_goal_orient = self.endeffector_orient - self.goal_orient
         self.joint_positions = self._get_joint_positions()
 
-    def _get_obs(self):
+    def _get_obs1(self):
         """ Returns observation #1 """
         self._get_general_obs()
+
+        robot_obs = np.concatenate(
+            [self.endeffector_pos, self.joint_positions]).ravel()
+
+        return robot_obs
+
+    def _get_obs2(self):
+        """ Returns observation #2 """
+        self._get_general_obs()
+
+        robot_obs = np.concatenate(
+            [self.goal_pos, self.joint_positions]).ravel()
+
+        return robot_obs
+
+    def _get_obs3(self):
+        """ Returns observation #3 """
+        self._get_general_obs()
+
+        robot_obs = np.concatenate(
+            [self.end_torso_pos, self.end_goal_pos, self.joint_positions]).ravel()
+
+        return robot_obs
+
+    def _get_obs4(self):
+        """ Returns observation #4 """
+        self._get_general_obs()
+
+        robot_obs = np.concatenate(
+            [self.end_goal_pos, self.joint_positions]).ravel()
+
+        return robot_obs
+
+    def _get_obs5(self):
+        """ Returns observation #5 """
+        self._get_general_obs()
+
+        robot_obs = np.concatenate(
+            [self.end_torso_pos, self.end_goal_pos, self.goal_pos, self.joint_positions]).ravel()
+
+        return robot_obs
+
+    def _get_obs6(self):
+        """ Returns observation #6 """
+        self._get_general_obs()
+
+        robot_obs = np.concatenate(
+            [
+                self.end_torso_pos,
+                self.end_goal_pos,
+                self.end_torso_orient,
+                self.end_goal_orient,
+                self.goal_pos,
+                self.goal_orient,
+                self.endeffector_pos,
+                self.endeffector_orient,
+                self.joint_positions
+                ]).ravel()
+
+        return robot_obs
 
         robot_obs = np.concatenate(
             [self.endeffector_pos, self.joint_positions]).ravel()
@@ -370,7 +553,7 @@ class Ur5eEnv(gym.GoalEnv):
         """ Get end effector coordinates """
         return np.array(p.getLinkState(
                 self.arm,
-                7,
+                6,
                 computeForwardKinematics=True)
             [0])
 
@@ -523,10 +706,10 @@ class Ur5eEnv(gym.GoalEnv):
 
     def _get_reward13(self):
         """ Compute reward function 13 (sparse) """
-        if self.dist >= 0.1:
+        if self.dist >= self.eps:
             self.term1 = -0.02
         else:
-            self.term1 = 1
+            self.term1 = 10
         self.term2 = 0
         rew = self.term1 + self.term2
         return rew
@@ -600,8 +783,8 @@ class Ur5eEnv(gym.GoalEnv):
             controlMode=p.POSITION_CONTROL,
             targetPositions=joint_positions
         )
-        for _ in range(5):
-            p.stepSimulation()
+        #for _ in range(1):
+        p.stepSimulation()
 
     def _force_joint_positions(self, joint_positions):
         """ Instantaneous reset of the joint angles (not position control) """
