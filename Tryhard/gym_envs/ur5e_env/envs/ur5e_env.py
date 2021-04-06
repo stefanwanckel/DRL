@@ -56,7 +56,8 @@ class Ur5eEnv(gym.Env):
                 alpha_reward,
                 reward_coeff,
                 action_scale,
-                eps
+                eps,
+                sim_rep
                 ):
         """
         Initialise the environment
@@ -109,6 +110,7 @@ class Ur5eEnv(gym.Env):
         self.target_object_orient = None
         self.goal_pos = FIXED_GOAL_COORDS_SPHERE
         self.eps = eps
+        self.sim_rep = sim_rep
 
         # Initialise goal orientation
         # if self.random_orientation:
@@ -783,8 +785,8 @@ class Ur5eEnv(gym.Env):
             controlMode=p.POSITION_CONTROL,
             targetPositions=joint_positions
         )
-        #for _ in range(1):
-        p.stepSimulation()
+        for _ in range(self.sim_rep):
+            p.stepSimulation()
 
     def _force_joint_positions(self, joint_positions):
         """ Instantaneous reset of the joint angles (not position control) """

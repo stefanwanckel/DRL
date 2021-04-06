@@ -11,7 +11,7 @@ ur5e_reacher-v1:
  learning_rate: !!float 1e-3
  noise_type: 'normal'
  noise_std: 0.2
- policy_kwargs: "dict(net_arch=[512, 512, 512])"
+ policy_kwargs: "dict(net_arch=[64, 64, 64])"
  online_sampling: True
  #max_episode_length: 100
 
@@ -94,3 +94,68 @@ ur5e_reacher-v6:
  policy_kwargs: "dict(net_arch=[512, 512, 512])"
  online_sampling: True
  #max_episode_length: 100
+
+ur5e_reacher-v7:
+ n_timesteps: !!float 1e7
+ policy: 'MlpPolicy'
+ model_class: 'ddpg'
+ n_sampled_goal: 4
+ goal_selection_strategy: 'future'
+ buffer_size: 1000000
+ batch_size: 128
+ gamma: 0.95
+ learning_rate: !!float 1e-3
+ noise_type: 'normal'
+ noise_std: 0.2
+ policy_kwargs: "dict(net_arch=[400, 300])"
+ online_sampling: True
+ #max_episode_length: 100
+
+ur5e_reacher-v8:
+ n_timesteps: !!float 1e7
+ policy: 'MlpPolicy'
+ model_class: 'ddpg'
+ n_sampled_goal: 4
+ goal_selection_strategy: 'future'
+ buffer_size: 1000000
+ batch_size: 128
+ gamma: 0.95
+ learning_rate: !!float 1e-3
+ noise_type: 'normal'
+ noise_std: 0.2
+ policy_kwargs: "dict(net_arch=[400, 300])"
+ online_sampling: True
+ #max_episode_length: 100
+
+ur5e_reacher-v9:
+ n_timesteps: !!float 1e7
+ policy: 'MlpPolicy'
+ model_class: 'ddpg'
+ n_sampled_goal: 4
+ goal_selection_strategy: 'future'
+ buffer_size: 1000000
+ batch_size: 128
+ gamma: 0.95
+ learning_rate: !!float 1e-3
+ noise_type: 'normal'
+ noise_std: 0.2
+ policy_kwargs: "dict(net_arch=[400, 300])"
+ online_sampling: True
+ #max_episode_length: 100
+
+ur5e_reacher-v10:
+ n_timesteps: !!float 1e7
+ policy: 'MlpPolicy'
+ model_class: 'ddpg'
+ n_sampled_goal: 4
+ goal_selection_strategy: 'future'
+ buffer_size: 1000000
+ batch_size: 128
+ gamma: 0.95
+ learning_rate: !!float 1e-3
+ noise_type: 'normal'
+ noise_std: 0.2
+ policy_kwargs: "dict(net_arch=[400, 300])"
+ online_sampling: True
+ #max_episode_length: 100
+ 
