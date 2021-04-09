@@ -360,6 +360,7 @@ register(
         'reward_coeff': 1,
         'action_scale': 1,
         'eps' : 0.1,
-        'sim_rep' : 10
+        'sim_rep' : 10,
+        'action_mode':"force"
         }
     )
