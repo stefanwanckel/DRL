@@ -20,22 +20,27 @@ RESET_VALUES = [ 4.06453904e-01, -1.08030241e+00,  1.08329535e+00,  5.63995981e-
 # Global Variables to use instead of __init__
 MIN_GOAL_COORDS = np.array([-0.1, -0.1, 0.1])
 MAX_GOAL_COORDS = np.array([0.6, 0.6, 0.4])
-MIN_END_EFF_COORDS = np.array([-.90, -.90, 0.10])
-MAX_END_EFF_COORDS = np.array([.90, .90, .90])
+MIN_END_EFF_COORDS = np.array([-0.90, -0.90, 0.10])
+MAX_END_EFF_COORDS = np.array([0.90, 0.90, 0.90])
 MIN_GOAL_ORIENTATION = np.array([-np.pi, -np.pi, -np.pi])
 MAX_GOAL_ORIENTATION = np.array([np.pi, np.pi, np.pi])
 
 #FIXED_GOAL_COORDS  = np.array([0.1, .4, 0.5])
-FIXED_GOAL_COORDS_SPHERE = np.array([0.1, .4, 0.5])
-FIXED_GOAL_COORDS_ARROW = np.array([0.1, .4, 0.5])
-FIXED_GOAL_COORDS_MOVING = np.array([0.1, .4, 0.5])
+FIXED_GOAL_COORDS_SPHERE = np.array([0.1, 0.4, 0.5])
+FIXED_GOAL_COORDS_ARROW = np.array([0.1, 0.4, 0.5])
+FIXED_GOAL_COORDS_MOVING = np.array([0.1, 0.4, 0.5])
 FIXED_GOAL_ORIENTATION  = np.array([-np.pi/4, 0, -np.pi/2])
 ARROW_OBJECT_ORIENTATION_CORRECTION = np.array([np.pi/2, 0, 0])
 
-
-PYBULLET_ACTION_MIN = [-0.03, -0.03, -0.03, -0.03, -0.03, -0.03]
-PYBULLET_ACTION_MAX = [0.03, 0.03, 0.03, 0.03, 0.03, 0.03]
-
+##Marius
+#PYBULLET_ACTION_MIN = [-0.03, -0.03, -0.03, -0.03, -0.03, -0.03]
+#PYBULLET_ACTION_MAX = [0.03, 0.03, 0.03, 0.03, 0.03, 0.03]
+##Wir
+# PYBULLET_ACTION_MIN = [-1, -1, -1, -1, -1, -1]
+# PYBULLET_ACTION_MAX = [1, 1, 1, 1, 1, 1]
+#Pierre
+PYBULLET_ACTION_MIN = [-0.05, -0.025, -0.025, -0.025, -0.05, 0]
+PYBULLET_ACTION_MAX = [0.05, 0.025, 0.025, 0.025, 0.05, 0.025]
 
 class Ur5eEnv(gym.Env):
     """ Ur5e reacher Gym environment """
@@ -728,7 +733,7 @@ class Ur5eEnv(gym.Env):
 
     def _get_reward15(self):
         """ Compute reward function 15 (sparse + dense) """
-        if self.dist >= 0.001:
+        if self.dist >= self.eps:
             self.term1 = - self.dist
         else:
             self.term1 = 1
@@ -823,9 +828,22 @@ class Ur5eEnv(gym.Env):
         reset_joint_angles = p.calculateInverseKinematics(self.arm,7,RESET_VALUES_CART)
         return reset_joint_angles
 
-    #def goal_pos_around_end_effector(self):
-        
-
-
-# myRobot = Ur5eEnv()
-# print(myRobot.get_revolute_joints_indices())
+    def set_joint_positions(self, joint_positions):
+        """ Position control (not reset) """
+        # In Pybullet, gripper halves are controlled separately
+        #joint_positions = list(joint_positions) + [joint_positions[-1]]
+        p.setJointMotorControlArray(
+            self.arm,
+            [1, 2, 3, 4, 5, 6],
+            controlMode=p.POSITION_CONTROL,
+            targetPositions=joint_positions
+        )
+        for _ in range(self.sim_rep):
+            p.stepSimulation()
+    def get_end_effector_position(self):
+        """ Get end effector coordinates """
+        return np.array(p.getLinkState(
+                self.arm,
+                6,
+                computeForwardKinematics=True)
+            [0])
