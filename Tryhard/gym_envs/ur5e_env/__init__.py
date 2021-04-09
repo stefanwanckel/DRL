@@ -364,3 +364,54 @@ register(
         'action_mode':"force"
         }
     )
+
+register(
+    id='ur5e_reacher-v17',
+    entry_point='ur5e_env.envs.ur5e_env:Ur5eEnv',
+    #max_episode_steps=100,
+    kwargs={
+        'random_position' : True,
+        'random_orientation': False,
+        'moving_target': False,
+        'target_type': "sphere",
+        'goal_oriented' : True,
+        'obs_type' : 2,
+        'reward_type' : 1,
+        'action_type' : 1,
+        'joint_limits' : "large",
+        'action_min': [-1, -1, -1, -1, -1, -1],
+        'action_max': [1, 1, 1, 1, 1, 1],
+        'alpha_reward': 0.1,
+        'reward_coeff': 1,
+        'action_scale': 1,
+        'eps' : 0.1,
+        'sim_rep' : 1,
+        'action_mode':"force"
+        }
+    )
+
+register(
+    id='ur5e_reacher-v18',
+    entry_point='ur5e_env.envs.ur5e_env:Ur5eEnv',
+    #max_episode_steps=100,
+    kwargs={
+        'random_position' : True,
+        'random_orientation': False,
+        'moving_target': False,
+        'target_type': "sphere",
+        'goal_oriented' : True,
+        'obs_type' : 4,
+        'reward_type' : 1,
+        'action_type' : 1,
+        'joint_limits' : "large",
+        'action_min': [-1, -1, -1, -1, -1, -1],
+        'action_max': [1, 1, 1, 1, 1, 1],
+        'alpha_reward': 0.1,
+        'reward_coeff': 1,
+        'action_scale': 1,
+        'eps' : 0.1,
+        'sim_rep' : 1,
+        'action_mode':"force"
+        }
+    )
+

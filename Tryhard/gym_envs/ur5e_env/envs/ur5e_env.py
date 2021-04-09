@@ -24,8 +24,8 @@ RESET_VALUES = [
     -0.07158577010132992,
     0]
 # Global Variables to use instead of __init__
-MIN_GOAL_COORDS = np.array([-0.1, -0.1, 0.1])
-MAX_GOAL_COORDS = np.array([0.6, 0.6, 0.4])
+MIN_GOAL_COORDS = np.array([-0.6, -0.6, 0.1])
+MAX_GOAL_COORDS = np.array([0.6, 0.6, 0.6])
 MIN_END_EFF_COORDS = np.array([-0.90, -0.90, 0.10])
 MAX_END_EFF_COORDS = np.array([0.90, 0.90, 0.90])
 MIN_GOAL_ORIENTATION = np.array([-np.pi, -np.pi, -np.pi])
@@ -139,8 +139,11 @@ class Ur5eEnv(gym.Env):
 
         # Define observation space
         if self.joint_limits == "small":
-            self.joint_min = np.array([-3.2, -3.2, -3.2, -3.2, -3.2, -3.2])
-            self.joint_max = np.array([3.2, 3.2, 3.2, 3.2, 3.2, 3.2])
+            # self.joint_min = np.array([-3.2, -3.2, -3.2, -3.2, -3.2, -3.2])
+            # self.joint_max = np.array([3.2, 3.2, 3.2, 3.2, 3.2, 3.2])
+            #Pierres Config
+            self.joint_min = np.array([-3.1, -1.6, -1.6, -1.8, -3.1, 0.0])
+            self.joint_max = np.array([3.1, 1.6, 1.6, 1.8, 3.1, 0.0])
         elif self.joint_limits == "large":
             self.joint_min = 2*np.array([-3.2, -3.2, -3.2, -3.2, -3.2, -3.2])
             self.joint_max = 2*np.array([3.2, 3.2, 3.2, 3.2, 3.2, 3.2])
@@ -613,9 +616,9 @@ class Ur5eEnv(gym.Env):
 
         # Instantaneously reset the joint position (no torque applied)
         #changed by me to set instead of force
-        if self.action_mode = "set"
+        if self.action_mode == "set":
             self._set_joint_positions(self.new_joint_positions)
-        elif self.action_mode = "force"
+        elif self.action_mode == "force":
             self._force_joint_positions(self.new_joint_positions)
 
     def _normalize_scalar(self, var, old_min, old_max, new_min, new_max):

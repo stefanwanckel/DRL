@@ -237,4 +237,25 @@ ur5e_reacher-v16:
   max_episode_length: 1000
   #action_noise: "NormalActionNoise"
 
- 
+ ur5e_reacher-v17:
+  n_timesteps: 500000
+  normalize: true
+  policy: 'MlpPolicy'
+  model_class: 'sac'
+  n_sampled_goal: 4
+  goal_selection_strategy: "future"
+  online_sampling: True
+  max_episode_length: 100
+  #action_noise: "NormalActionNoise"
+
+ ur5e_reacher-v18:
+  n_timesteps: 500000
+  normalize: true
+  policy: 'MlpPolicy'
+  model_class: 'sac'
+  n_sampled_goal: 4
+  goal_selection_strategy: "future"
+  online_sampling: True
+  max_episode_length: 100
+  #action_noise: "NormalActionNoise"
+
