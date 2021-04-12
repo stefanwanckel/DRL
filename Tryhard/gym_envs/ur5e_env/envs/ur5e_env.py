@@ -15,8 +15,14 @@ import time
 
 # Initial joint angles
 RESET_VALUES_CART = [0.1,0.1,0.3]
-RESET_VALUES = [ 4.06453904e-01, -1.08030241e+00,  1.08329535e+00,  5.63995981e-01,-1.39857752e+00,  1]
-
+#RESET_VALUES = [ 4.06453904e-01, -1.08030241e+00,  1.08329535e+00,  5.63995981e-01,-1.39857752e+00,  1]
+RESET_VALUES = [
+    0.015339807878856412,
+    -1.2931458041875956,
+    1.0109710760673565,
+    -1.3537670644267164,
+    -0.07158577010132992,
+    0]
 # Global Variables to use instead of __init__
 MIN_GOAL_COORDS = np.array([-0.1, -0.1, 0.1])
 MAX_GOAL_COORDS = np.array([0.6, 0.6, 0.4])
@@ -62,7 +68,8 @@ class Ur5eEnv(gym.Env):
                 reward_coeff,
                 action_scale,
                 eps,
-                sim_rep
+                sim_rep,
+                action_mode="set"
                 ):
         """
         Initialise the environment
@@ -116,6 +123,7 @@ class Ur5eEnv(gym.Env):
         self.goal_pos = FIXED_GOAL_COORDS_SPHERE
         self.eps = eps
         self.sim_rep = sim_rep
+        self.action_mode= action_mode
 
         # Initialise goal orientation
         # if self.random_orientation:
@@ -605,7 +613,10 @@ class Ur5eEnv(gym.Env):
 
         # Instantaneously reset the joint position (no torque applied)
         #changed by me to set instead of force
-        self._set_joint_positions(self.new_joint_positions)
+        if self.action_mode = "set"
+            self._set_joint_positions(self.new_joint_positions)
+        elif self.action_mode = "force"
+            self._force_joint_positions(self.new_joint_positions)
 
     def _normalize_scalar(self, var, old_min, old_max, new_min, new_max):
         """ Normalize scalar var from one range to another """

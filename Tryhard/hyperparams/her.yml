@@ -201,7 +201,7 @@ ur5e_reacher-v13:
   goal_selection_strategy: "future"
   online_sampling: True
   max_episode_length: 1000
-  action_noise: None
+  #action_noise: None
 
 ur5e_reacher-v14:
   n_timesteps: 500000
@@ -212,7 +212,7 @@ ur5e_reacher-v14:
   goal_selection_strategy: "future"
   online_sampling: True
   max_episode_length: 1000
-  action_noise: "NormalActionNoise"
+  #action_noise: "NormalActionNoise"
 
 ur5e_reacher-v15:
   n_timesteps: 500000
@@ -235,6 +235,6 @@ ur5e_reacher-v16:
   goal_selection_strategy: "final"
   online_sampling: True
   max_episode_length: 1000
-  action_noise: "NormalActionNoise"
+  #action_noise: "NormalActionNoise"
 
  
