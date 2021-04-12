@@ -22,8 +22,8 @@ if __name__ == '__main__':
     best_score = env.reward_range[0]
     score_history = []
     dist_history = []
-    load_trained_model = True
-    improve_model = False
+    load_trained_model = False
+    improve_model = True
     observation = env.reset()
     
     if load_trained_model:

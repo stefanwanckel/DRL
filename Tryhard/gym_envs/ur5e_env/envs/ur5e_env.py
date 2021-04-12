@@ -39,14 +39,14 @@ FIXED_GOAL_ORIENTATION  = np.array([-np.pi/4, 0, -np.pi/2])
 ARROW_OBJECT_ORIENTATION_CORRECTION = np.array([np.pi/2, 0, 0])
 
 ##Marius
-#PYBULLET_ACTION_MIN = [-0.03, -0.03, -0.03, -0.03, -0.03, -0.03]
-#PYBULLET_ACTION_MAX = [0.03, 0.03, 0.03, 0.03, 0.03, 0.03]
+PYBULLET_ACTION_MIN = [-0.03, -0.03, -0.03, -0.03, -0.03, -0.03]
+PYBULLET_ACTION_MAX = [0.03, 0.03, 0.03, 0.03, 0.03, 0.03]
 ##Wir
 # PYBULLET_ACTION_MIN = [-1, -1, -1, -1, -1, -1]
 # PYBULLET_ACTION_MAX = [1, 1, 1, 1, 1, 1]
 #Pierre
-PYBULLET_ACTION_MIN = [-0.05, -0.025, -0.025, -0.025, -0.05, 0]
-PYBULLET_ACTION_MAX = [0.05, 0.025, 0.025, 0.025, 0.05, 0.025]
+# PYBULLET_ACTION_MIN = [-0.05, -0.025, -0.025, -0.025, -0.05, 0]
+# PYBULLET_ACTION_MAX = [0.05, 0.025, 0.025, 0.025, 0.05, 0.025]
 
 class Ur5eEnv(gym.Env):
     """ Ur5e reacher Gym environment """
@@ -613,9 +613,9 @@ class Ur5eEnv(gym.Env):
 
         # Instantaneously reset the joint position (no torque applied)
         #changed by me to set instead of force
-        if self.action_mode = "set"
+        if self.action_mode == "set":
             self._set_joint_positions(self.new_joint_positions)
-        elif self.action_mode = "force"
+        elif self.action_mode == "force":
             self._force_joint_positions(self.new_joint_positions)
 
     def _normalize_scalar(self, var, old_min, old_max, new_min, new_max):

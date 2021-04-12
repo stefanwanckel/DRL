@@ -365,7 +365,31 @@ register(
     )
 
 register(
-    id='ur5e_reacher-v13',
+    id='ur5e_reacher-v17',
+    entry_point='ur5e_env.envs.ur5e_env:Ur5eEnv',
+    max_episode_steps=1000,
+    kwargs={
+        'random_position' : True,
+        'random_orientation': False,
+        'moving_target': False,
+        'target_type': "sphere",
+        'goal_oriented' : False,
+        'obs_type' : 1,
+        'reward_type' : 15,
+        'action_type' : 1,
+        'joint_limits' : "small",
+        'action_min': [-1, -1, -1, -1, -1, -1],
+        'action_max': [1, 1, 1, 1, 1, 1],
+        'alpha_reward': 0.1,
+        'reward_coeff': 1,
+        'action_scale': 1,
+        'eps' : 0.1,
+        'sim_rep' : 10
+        }
+    )
+
+register(
+    id='ur5e_reacher-v18',
     entry_point='ur5e_env.envs.ur5e_env:Ur5eEnv',
     max_episode_steps=1000,
     kwargs={
@@ -389,7 +413,7 @@ register(
     )
 
 register(
-    id='ur5e_reacher-v14',
+    id='ur5e_reacher-v19',
     entry_point='ur5e_env.envs.ur5e_env:Ur5eEnv',
     max_episode_steps=1000,
     kwargs={
@@ -413,31 +437,7 @@ register(
     )
 
 register(
-    id='ur5e_reacher-v15',
-    entry_point='ur5e_env.envs.ur5e_env:Ur5eEnv',
-    max_episode_steps=1000,
-    kwargs={
-        'random_position' : True,
-        'random_orientation': False,
-        'moving_target': False,
-        'target_type': "sphere",
-        'goal_oriented' : True,
-        'obs_type' : 1,
-        'reward_type' : 15,
-        'action_type' : 1,
-        'joint_limits' : "small",
-        'action_min': [-1, -1, -1, -1, -1, -1],
-        'action_max': [1, 1, 1, 1, 1, 1],
-        'alpha_reward': 0.1,
-        'reward_coeff': 1,
-        'action_scale': 1,
-        'eps' : 0.1,
-        'sim_rep' : 10
-        }
-    )
-
-register(
-    id='ur5e_reacher-v16',
+    id='ur5e_reacher-v20',
     entry_point='ur5e_env.envs.ur5e_env:Ur5eEnv',
     max_episode_steps=1000,
     kwargs={
