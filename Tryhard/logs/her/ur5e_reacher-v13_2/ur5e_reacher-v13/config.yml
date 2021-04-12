@@ -1,0 +1,17 @@
+!!python/object/apply:collections.OrderedDict
+- - - goal_selection_strategy
+    - future
+  - - max_episode_length
+    - 1000
+  - - model_class
+    - sac
+  - - n_sampled_goal
+    - 4
+  - - n_timesteps
+    - 500000
+  - - normalize
+    - true
+  - - online_sampling
+    - true
+  - - policy
+    - MlpPolicy

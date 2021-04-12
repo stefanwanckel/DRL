@@ -205,6 +205,26 @@ d = {
         'sim_rep' : 10
         },
 
+    'ur5e_reacher-v13':
+    {
+        'random_position' : True,
+        'random_orientation': False,
+        'moving_target': False,
+        'target_type': "sphere",
+        'goal_oriented' : True,
+        'obs_type' : 1,
+        'reward_type' : 15,
+        'action_type' : 1,
+        'joint_limits' : "small",
+        'action_min': [-1, -1, -1, -1, -1, -1],
+        'action_max': [1, 1, 1, 1, 1, 1],
+        'alpha_reward': 0.1,
+        'reward_coeff': 1,
+        'action_scale': 1,
+        'eps' : 0.1,
+        'sim_rep' : 10
+        }
+
 }
 
 df = pd.DataFrame.from_dict(d, orient='index').reset_index()

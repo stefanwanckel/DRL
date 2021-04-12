@@ -609,8 +609,8 @@ class Ur5eEnv(gym.Env):
 
     def _normalize_scalar(self, var, old_min, old_max, new_min, new_max):
         """ Normalize scalar var from one range to another """
-        return ((new_max - new_min) * (var - old_min) / (old_max - old_min)) + new_min
-
+        return var / (old_max - old_min) * (new_max - new_min)
+    
     def _scale_action_pybullet(self):
         """ Scale action to Pybullet action range """
         for i in range(6):

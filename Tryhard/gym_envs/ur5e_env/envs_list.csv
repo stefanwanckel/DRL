@@ -9,3 +9,4 @@ ur5e_reacher-v7,True,False,False,sphere,True,5,13,1,small,"[-0.1, -0.1, -0.1, -0
 ur5e_reacher-v8,True,False,False,sphere,True,5,13,1,large,"[-0.1, -0.1, -0.1, -0.1, -0.1, -0.1]","[0.1, 0.1, 0.1, 0.1, 0.1, 0.1]",0.1,1,1,0.1,10
 ur5e_reacher-v9,True,False,False,sphere,True,5,13,1,small,"[-0.1, -0.1, -0.1, -0.1, -0.1, -0.1]","[0.1, 0.1, 0.1, 0.1, 0.1, 0.1]",0.1,1,1,0.1,10
 ur5e_reacher-v10,True,False,False,sphere,True,5,13,1,small,"[-0.1, -0.1, -0.1, -0.1, -0.1, -0.1]","[0.1, 0.1, 0.1, 0.1, 0.1, 0.1]",0.1,1,1,0.1,10
+ur5e_reacher-v13,True,False,False,sphere,True,1,15,1,small,"[-1, -1, -1, -1, -1, -1]","[1, 1, 1, 1, 1, 1]",0.1,1,1,0.1,10

@@ -25,7 +25,7 @@ for episode in range(5):
         # action = [0, 0, 0, 0, 0, 4]
 
         obs, reward, done, info = env.step(action)
-
+        time.sleep(1. / 3.)
         print("action: ", action)
         pp.pprint(obs)
         print("reward: ", reward)
