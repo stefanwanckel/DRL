@@ -105,22 +105,23 @@ register(
     entry_point='ur5e_env.envs.ur5e_env:Ur5eEnv',
     max_episode_steps=2000,
     kwargs={
-        'random_position' : True,
+        'random_position' : False,
         'random_orientation': False,
         'moving_target': False,
         'target_type': "sphere",
         'goal_oriented' : True,
-        'obs_type' : 5,
+        'obs_type' : 1,
         'reward_type' : 13,
         'action_type' : 1,
-        'joint_limits' : "large",
+        'joint_limits' : "small",
         'action_min': [-1, -1, -1, -1, -1, -1],
         'action_max': [1, 1, 1, 1, 1, 1],
         'alpha_reward': 0.1,
         'reward_coeff': 1,
         'action_scale': 1,
-        'eps' : 0.01,
-        'sim_rep' : 1
+        'eps' : 0.1,
+        'sim_rep' : 5,
+        'action_mode' : "force"
         }
     )
 
