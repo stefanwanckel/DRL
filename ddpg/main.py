@@ -42,7 +42,7 @@ if __name__ == '__main__':
         evaluate = False
 
     #if not improve_model:
-    env.render()
+    #env.render()
 
     for i in range(n_episodes):
         observation = env.reset()
