@@ -4,7 +4,7 @@ import ur5e_env
 
 from stable_baselines3.common.vec_env import DummyVecEnv, VecEnvWrapper, VecVideoRecorder
 
-from utils.utils import ALGOS, create_test_env, get_latest_run_id, get_saved_hyperparams
+from utils import ALGOS, create_test_env, get_latest_run_id, get_saved_hyperparams
 
 parser = argparse.ArgumentParser()
 parser.add_argument("--env", help="environment ID", type=str, default="CartPole-v1")

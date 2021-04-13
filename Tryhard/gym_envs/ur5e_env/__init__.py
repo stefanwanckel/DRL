@@ -17,14 +17,14 @@ register(
         'obs_type' : 1,
         'reward_type' : 1,
         'action_type' : 1,
-        'joint_limits' : "large",
+        'joint_limits' : "small",
         'action_min': [-1, -1, -1, -1, -1, -1],
         'action_max': [1, 1, 1, 1, 1, 1],
         'alpha_reward': 0.1,
         'reward_coeff': 1,
         'action_scale': 1,
         'eps' : 0.1,
-        'sim_rep' : 1
+        'sim_rep' : 5
         },
     )
 
@@ -41,14 +41,14 @@ register(
         'obs_type' : 5,
         'reward_type' : 1,
         'action_type' : 1,
-        'joint_limits' : "large",
+        'joint_limits' : "small",
         'action_min': [-1, -1, -1, -1, -1, -1],
         'action_max': [1, 1, 1, 1, 1, 1],
         'alpha_reward': 0.1,
         'reward_coeff': 1,
         'action_scale': 1,
         'eps' : 0.1,
-        'sim_rep' : 1
+        'sim_rep' : 5
         }
     )
 
@@ -65,14 +65,14 @@ register(
         'obs_type' : 1,
         'reward_type' : 13,
         'action_type' : 1,
-        'joint_limits' : "large",
+        'joint_limits' : "small",
         'action_min': [-1, -1, -1, -1, -1, -1],
         'action_max': [1, 1, 1, 1, 1, 1],
         'alpha_reward': 0.1,
         'reward_coeff': 1,
         'action_scale': 1,
         'eps' : 0.1,
-        'sim_rep' : 1
+        'sim_rep' : 5
         }
     )
 
@@ -89,14 +89,14 @@ register(
         'obs_type' : 5,
         'reward_type' : 13,
         'action_type' : 1,
-        'joint_limits' : "large",
+        'joint_limits' : "small",
         'action_min': [-1, -1, -1, -1, -1, -1],
         'action_max': [1, 1, 1, 1, 1, 1],
         'alpha_reward': 0.1,
         'reward_coeff': 1,
         'action_scale': 1,
         'eps' : 0.1,
-        'sim_rep' : 1
+        'sim_rep' : 5
         }
     )
 

@@ -24,8 +24,10 @@ RESET_VALUES = [
     -0.07158577010132992,
     0]
 # Global Variables to use instead of __init__
-MIN_GOAL_COORDS = np.array([-0.45, -0.45, 0.45])
-MAX_GOAL_COORDS = np.array([0.45, 0.45, 0.1])
+# MIN_GOAL_COORDS = np.array([-0.45, -0.45, 0.45])
+# MAX_GOAL_COORDS = np.array([0.45, 0.45, 0.1])
+MIN_GOAL_COORDS = np.array([-0.1, -0.1, 0.1])
+MAX_GOAL_COORDS = np.array([0.6, 0.6, 0.4])
 MIN_END_EFF_COORDS = np.array([-0.90, -0.90, 0.10])
 MAX_END_EFF_COORDS = np.array([0.90, 0.90, 0.90])
 MIN_GOAL_ORIENTATION = np.array([-np.pi, -np.pi, -np.pi])
