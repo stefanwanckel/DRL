@@ -237,4 +237,57 @@ ur5e_reacher-v16:
   max_episode_length: 1000
   #action_noise: "NormalActionNoise"
 
+ur5e_reacher-v21:
+  n_timesteps: 500000
+  normalize: true
+  policy: 'MlpPolicy'
+  model_class: 'ddpg'
+  n_sampled_goal: 4
+  goal_selection_strategy: "future"
+  online_sampling: True
+  noise_type: "ornstein-uhlenbeck"
+  noise_std: 0.2
+  learning_starts : 2000
+  policy_kwargs : "dict(net_arch=[400,300])"
+
+
+ur5e_reacher-v22:
+  n_timesteps: 500000
+  normalize: true
+  policy: 'MlpPolicy'
+  model_class: 'ddpg'
+  n_sampled_goal: 4
+  goal_selection_strategy: "future"
+  online_sampling: True
+  noise_type: "ornstein-uhlenbeck"
+  noise_std: 0.2
+  learning_starts : 2000
+  policy_kwargs : "dict(net_arch=[400,300])"
+
+ur5e_reacher-v23:
+  n_timesteps: 500000
+  normalize: true
+  policy: 'MlpPolicy'
+  model_class: 'ddpg'
+  n_sampled_goal: 4
+  goal_selection_strategy: "future"
+  online_sampling: True
+  noise_type: "ornstein-uhlenbeck"
+  noise_std: 0.2
+  learning_starts : 2000
+  policy_kwargs : "dict(net_arch=[400,300])"
+
+ur5e_reacher-v24:
+  n_timesteps: 500000
+  normalize: true
+  policy: 'MlpPolicy'
+  model_class: 'ddpg'
+  n_sampled_goal: 4
+  goal_selection_strategy: "future"
+  online_sampling: True
+  noise_type: "ornstein-uhlenbeck"
+  noise_std: 0.2
+  learning_starts : 2000
+  policy_kwargs : "dict(net_arch=[512,512,512])"
+
  

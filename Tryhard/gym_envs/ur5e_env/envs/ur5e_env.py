@@ -41,8 +41,8 @@ FIXED_GOAL_ORIENTATION  = np.array([-np.pi/4, 0, -np.pi/2])
 ARROW_OBJECT_ORIENTATION_CORRECTION = np.array([np.pi/2, 0, 0])
 
 ##Marius
-PYBULLET_ACTION_MIN = [-0.03, -0.03, -0.03, -0.03, -0.03, -0.03]
-PYBULLET_ACTION_MAX = [0.03, 0.03, 0.03, 0.03, 0.03, 0.03]
+PYBULLET_ACTION_MIN = [-0.05, -0.05, -0.05, -0.05, -0.05, -0.05]
+PYBULLET_ACTION_MAX = [0.05, 0.05, 0.05, 0.05, 0.05, 0.05]
 ##Wir
 # PYBULLET_ACTION_MIN = [-1, -1, -1, -1, -1, -1]
 # PYBULLET_ACTION_MAX = [1, 1, 1, 1, 1, 1]
@@ -274,7 +274,7 @@ class Ur5eEnv(gym.Env):
 
         # Set gravity
         p.setGravity(0, 0, -9.81, physicsClientId=self.physics_client)
-
+        #p.setGravity(0, 0, 0, physicsClientId=self.physics_client)
         #self._force_joint_positions(RESET_VALUES)
 
     def reset(self):
@@ -491,7 +491,7 @@ class Ur5eEnv(gym.Env):
         self.end_goal_pos = self.endeffector_pos - self.goal_pos
         self.end_torso_orient = self.endeffector_orient - self.torso_orient
         self.end_goal_orient = self.endeffector_orient - self.goal_orient
-        self.joint_positions = self._get_joint_positions()
+        self.joint_positions = self.get_joint_positions()
 
     def _get_obs1(self):
         """ Returns observation #1 """
@@ -561,8 +561,8 @@ class Ur5eEnv(gym.Env):
             [self.endeffector_pos, self.joint_positions]).ravel()
 
         return robot_obs
-
-    def _get_joint_positions(self):
+#which range should be used here?
+    def get_joint_positions(self):
         """ Return current joint position """
         return np.array([x[0] for x in p.getJointStates(self.arm, range(1,7))])
 
@@ -860,3 +860,97 @@ class Ur5eEnv(gym.Env):
                 6,
                 computeForwardKinematics=True)
             [0])
+
+
+    def test_arm(self):
+        #print info and state before motion
+        iAndS_old = self._get_joint_list_info_and_state_as_dict()
+        self._print_info_and_state(iAndS_old)
+        #define position, motion type and do a simulation step
+        joint2Move = 2
+        actionSpike = 0.1
+        deltaAction = np.zeros(6) 
+        for i in range(0,deltaAction.shape[0]):
+            if i+1 == joint2Move:
+                deltaAction[i]=actionSpike
+                break
+
+        new_joint_positions = np.array(RESET_VALUES) + deltaAction
+        p.setJointMotorControlArray(
+            self.arm,
+            [1, 2, 3, 4, 5, 6],
+            controlMode=p.POSITION_CONTROL,
+            targetPositions=new_joint_positions,
+            forces=10000*np.ones(6)
+        )
+        for i in range(100):
+            p.stepSimulation()
+            time.sleep(1/40)
+
+        iAndS_new = self._get_joint_list_info_and_state_as_dict()
+        self._print_info_and_state(iAndS_new)
+        for i,_ in enumerate(iAndS_new):
+            currDeltaPos = iAndS_new[i]["jointPosition"]-iAndS_old[i]["jointPosition"]
+            print(i,currDeltaPos)
+
+    def _get_joint_list_info_and_state_as_dict(self):
+
+        jointType = {
+                    0: "JOINT_REVOLUTE",
+                    1: "JOINT_PRISMATIC",
+                    2: "JOINT_SPHERICAL",
+                    3: "JOINT_PLANAR",
+                    4: "JOINT_FIXED"
+                    }
+        #initialize jointList which is a list of dictionaries for every joint
+        lstJointInfoAndState = []
+        #get total number of joints in robot id
+        n_joints = p.getNumJoints(self.arm)
+        print("Total number of joints is ",n_joints)
+        
+        for i in range(0,n_joints):
+            #get current joint
+            currJointInfo = p.getJointInfo(self.arm, i)
+            currJointState = p.getJointState(self.arm,i)
+            #write current joint info to dictionary
+            currJointInfo = {
+                        "jointIndex": currJointInfo[0],
+                        "jointName": currJointInfo[1],
+                        "jointType": jointType[currJointInfo[2]],
+                        "qIndex": currJointInfo[3],
+                        "uIndex": currJointInfo[4],
+                        "jointLowerLimit" : currJointInfo[8],
+                        "jointUpperLimit" : currJointInfo[9],
+                        "jointAxis" : currJointInfo[13],
+                        "parentFramePos" : currJointInfo[14],
+                        "parentIndex" : currJointInfo[15]
+                        }
+
+            currJointState = {
+                        "jointPosition" : currJointState[0],
+                        "jointVelocity" : currJointState[1],
+                        "jointReactionForces" : currJointState[2],
+                        "appliedJointMotorTorque" : currJointState[3]
+                             }
+            currJointInfoAndState = currJointInfo.copy()
+            currJointInfoAndState.update(currJointState)
+            lstJointInfoAndState.append(currJointInfoAndState)
+
+        return lstJointInfoAndState
+
+    def _print_info_and_state(self, infoAndState):
+
+        for i, jointInfoAndState in enumerate(infoAndState):
+            print("***** Info and state to joint ",i, " *****")
+            for key in jointInfoAndState:
+                print(key, jointInfoAndState[key])
+    
+    # def get_link_state(self)
+
+    #     currLinkState = p.getLinkState
+    #     currLinkState = {
+    #                     "LinkWorldPosition" : 
+    #     }
+
+    
+                
