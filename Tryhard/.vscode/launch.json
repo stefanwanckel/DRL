@@ -10,7 +10,7 @@
             "request": "launch",
             "program": "${file}",
             "console": "integratedTerminal",
-            "justMyCode": false,
+            "justMyCode": true,
             "args" : ["--algo", "her", "--env", "ur5e_reacher-v11", "-n", "20000", "--eval-freq", "2000", "--save-freq","2000"]
         }
     ]
