@@ -791,7 +791,7 @@ class Ur5eEnv(gym.GoalEnv):
 
     def compute_reward(self, achieved_goal, goal, info):
         """ Function necessary for goal Env"""
-        return - (np.linalg.norm(achieved_goal - goal)**2)
+        return - (np.linalg.norm(achieved_goal - goal, axis=1)**2) # STEFAN: modified added axis=1
 
     def _set_joint_positions(self, joint_positions):
         """ Position control (not reset) """
@@ -867,7 +867,7 @@ class Ur5eEnv(gym.GoalEnv):
         iAndS_old = self._get_joint_list_info_and_state_as_dict()
         self._print_info_and_state(iAndS_old)
         #define position, motion type and do a simulation step
-        joint2Move = 2
+        joint2Move = 1
         actionSpike = 0.1
         deltaAction = np.zeros(6) 
         for i in range(0,deltaAction.shape[0]):
@@ -885,7 +885,7 @@ class Ur5eEnv(gym.GoalEnv):
         )
         for i in range(100):
             p.stepSimulation()
-            time.sleep(1/40)
+            #time.sleep(1/40)
 
         iAndS_new = self._get_joint_list_info_and_state_as_dict()
         self._print_info_and_state(iAndS_new)
