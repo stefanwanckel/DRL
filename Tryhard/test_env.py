@@ -10,7 +10,7 @@ print(float(1e5))
 print("hello")
 
 env = gym.make('ur5e_reacher-v1')
-
+check_env(env)
 #print("any warnings?", check_env(env))
 time.sleep(1)
 

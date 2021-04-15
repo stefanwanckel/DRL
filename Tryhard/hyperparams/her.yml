@@ -248,6 +248,7 @@ ur5e_reacher-v21:
   noise_type: "ornstein-uhlenbeck"
   noise_std: 0.2
   learning_starts : 2000
+  gradient_steps : 50
   policy_kwargs : "dict(net_arch=[400,300])"
 
 
@@ -262,6 +263,7 @@ ur5e_reacher-v22:
   noise_type: "ornstein-uhlenbeck"
   noise_std: 0.2
   learning_starts : 2000
+  gradient_steps : 50
   policy_kwargs : "dict(net_arch=[400,300])"
 
 ur5e_reacher-v23:

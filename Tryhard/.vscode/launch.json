@@ -11,8 +11,8 @@
             "program": "${file}",
             "console": "integratedTerminal",
             "justMyCode": false,
-            //"args" : ["--algo", "her", "--env", "ur5e_reacher-v21", "-n", "20000", "--eval-freq", "2000", "--save-freq","2000"],
-            "args" : ["--algo", "her", "--env", "ur5e_reacher-v21"]
+            "args" : ["--algo", "her", "--env", "ur5e_reacher-v21", "-n", "20000", "--eval-freq", "2000", "--save-freq","2000"],
+            //"args" : ["--algo", "her", "--env", "ur5e_reacher-v21"]
         }
     ]
 }

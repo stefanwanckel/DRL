@@ -50,7 +50,7 @@ PYBULLET_ACTION_MAX = [0.05, 0.05, 0.05, 0.05, 0.05, 0.05]
 # PYBULLET_ACTION_MIN = [-0.05, -0.025, -0.025, -0.025, -0.05, 0]
 # PYBULLET_ACTION_MAX = [0.05, 0.025, 0.025, 0.025, 0.05, 0.025]
 
-class Ur5eEnv(gym.Env):
+class Ur5eEnv(gym.GoalEnv):
     """ Ur5e reacher Gym environment """
 
 
