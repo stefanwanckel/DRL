@@ -24,7 +24,7 @@ register(
         'reward_coeff': 1,
         'action_scale': 1,
         'eps' : 0.1,
-        'sim_rep' : 5
+        'sim_rep' : 2
         },
     )
 

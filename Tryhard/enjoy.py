@@ -4,12 +4,12 @@ from stable_baselines3 import HER, DDPG, DQN, SAC, TD3
 import time
 import os
 from stable_baselines3.common.vec_env import DummyVecEnv, VecEnvWrapper, VecVideoRecorder
-env = gym.make("ur5e_reacher-v22")
-model = HER.load('./logs/her/ur5e_reacher-v22_2/rl_model_140000_steps', env=env)
+env = gym.make("ur5e_reacher-v1")
+model = HER.load('./logs/her/ur5e_reacher-v1_3/rl_model_70000_steps', env=env)
 # video_length= 2000
 # video_folder = "."
 # env = DummyVecEnv(env)
-# env = VecVideoRecorder(
+# env = VecVideoRecorder(cd
 #     env,
 #     video_folder,
 #     record_video_trigger=lambda x: x == 0,
@@ -22,16 +22,17 @@ env.render()
 for episode in range(10):
     obs=env.reset()
     episodic_reward = 0
-    for timestep in range(2000):
+    for timestep in range(1000):
         #time.sleep(1/90)
         action, _ = model.predict(obs)
         obs, reward, done, info = env.step(action)
         episodic_reward+=reward
-        if reward > 0:
-            print("Within epsilon")
+        #if reward > 0:
+           # print("Within epsilon")
         if timestep%100==0:
             print(" Reward at timestep {} is {}".format(str(timestep),str(reward)))
             print("action as delta-action: ", action)
+            print("endeffector_pos:", info["endeffector_pos"])
         if info["distance"]<0.1:
             print(timestep)
             print("within epsilon: Desired goal is achieved. Displaying info at last step:")

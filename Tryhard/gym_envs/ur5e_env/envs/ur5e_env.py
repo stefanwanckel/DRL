@@ -24,17 +24,17 @@ RESET_VALUES = [
     -0.07158577010132992,
     0]
 # Global Variables to use instead of __init__
-# MIN_GOAL_COORDS = np.array([-0.45, -0.45, 0.45])
-# MAX_GOAL_COORDS = np.array([0.45, 0.45, 0.1])
-MIN_GOAL_COORDS = np.array([-0.1, -0.1, 0.1])
-MAX_GOAL_COORDS = np.array([0.6, 0.6, 0.4])
-MIN_END_EFF_COORDS = np.array([-0.90, -0.90, 0.10])
-MAX_END_EFF_COORDS = np.array([0.90, 0.90, 0.90])
+MIN_GOAL_COORDS = np.array([-0.9, -0.9, 0])
+MAX_GOAL_COORDS = np.array([0.9, 0.9, 0.9])
+#MIN_GOAL_COORDS = np.array([-0.1, -0.1, 0.1])
+#MAX_GOAL_COORDS = np.array([0.6, 0.6, 0.4])
+MIN_END_EFF_COORDS = np.array([-1, -1, 0])
+MAX_END_EFF_COORDS = np.array([1, 1, 1])
 MIN_GOAL_ORIENTATION = np.array([-np.pi, -np.pi, -np.pi])
 MAX_GOAL_ORIENTATION = np.array([np.pi, np.pi, np.pi])
 
 #FIXED_GOAL_COORDS  = np.array([0.1, .4, 0.5])
-FIXED_GOAL_COORDS_SPHERE = np.array([0.1, 0.4, 0.5])
+FIXED_GOAL_COORDS_SPHERE = np.array([0.4, 0.4, 0.8])
 FIXED_GOAL_COORDS_ARROW = np.array([0.1, 0.4, 0.5])
 FIXED_GOAL_COORDS_MOVING = np.array([0.1, 0.4, 0.5])
 FIXED_GOAL_ORIENTATION  = np.array([-np.pi/4, 0, -np.pi/2])
@@ -50,10 +50,11 @@ PYBULLET_ACTION_MAX = [0.05, 0.05, 0.05, 0.05, 0.05, 0.05]
 # PYBULLET_ACTION_MIN = [-0.05, -0.025, -0.025, -0.025, -0.05, 0]
 # PYBULLET_ACTION_MAX = [0.05, 0.025, 0.025, 0.025, 0.05, 0.025]
 
+OBS_MIN = -np.ones(9)
+OBS_MAX = np.ones(9)
+
 class Ur5eEnv(gym.GoalEnv):
     """ Ur5e reacher Gym environment """
-
-
     def __init__(self,
                 random_position,
                 random_orientation,
@@ -224,7 +225,7 @@ class Ur5eEnv(gym.GoalEnv):
         self.create_world()
 
         # reset environment
-        self.reset()
+        #self.reset()
 
 
     def sample_random_position(self):
@@ -332,7 +333,8 @@ class Ur5eEnv(gym.GoalEnv):
         if self.goal_oriented:
             self.obs = self._get_goal_oriented_obs()
 
-        return self.obs
+        #scaled obs returns a copy of self.obs that is scaled to -1 to 1
+        return self._scale_obs()
 
     def step(self, action):
         """
@@ -469,7 +471,8 @@ class Ur5eEnv(gym.GoalEnv):
         # if self.dist < self.eps:
         #     episode_over = True
 
-        return self.obs, self.reward, episode_over, info
+        
+        return self._scale_obs(), self.reward, episode_over, info
 
     def render(self, mode='human'):
         """ Render Pybullet simulation """
@@ -622,7 +625,7 @@ class Ur5eEnv(gym.GoalEnv):
 
     def _normalize_scalar(self, var, old_min, old_max, new_min, new_max):
         """ Normalize scalar var from one range to another """
-        return var / (old_max - old_min) * (new_max - new_min)
+        return ((new_max - new_min) * (var - old_min) / (old_max - old_min)) + new_min
     
     def _scale_action_pybullet(self):
         """ Scale action to Pybullet action range """
@@ -633,6 +636,35 @@ class Ur5eEnv(gym.GoalEnv):
                 self.action_max[i],
                 self.pybullet_action_min[i],
                 self.pybullet_action_max[i])
+    
+    def _scale_obs(self):
+        """Scales the observation to -1 and 1"""
+        #make copy of self.obs
+        scaled_obs = self.obs
+        if self.goal_oriented:
+            for key in self.obs.keys():
+                for index,_ in enumerate(self.obs[key]):
+
+                    
+                    scaled_obs[key][index] = self._normalize_scalar(
+                                            self.obs[key][index],
+                                            self.obs_space_low[index],
+                                            self.obs_space_high[index],
+                                            -1,
+                                            1)
+                
+        else:
+            for index,_ in enumerate(self.obs):
+                    scaled_obs = self._normalize_scalar(
+                                            self.obs[index],
+                                            self.obs_space_low[index],
+                                            self.obs_space_high[index],
+                                            -1,
+                                            1)
+        self.obs_space_low[index] = -1
+        self.obs_space_high[index] = 1
+        
+        return scaled_obs
 
     def _get_reward1(self):
         """ Compute reward function 1 (dense) """
@@ -791,6 +823,7 @@ class Ur5eEnv(gym.GoalEnv):
 
     def compute_reward(self, achieved_goal, goal, info):
         """ Function necessary for goal Env"""
+        
         return - (np.linalg.norm(achieved_goal - goal, axis=1)**2) # STEFAN: modified added axis=1
 
     def _set_joint_positions(self, joint_positions):

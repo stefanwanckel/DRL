@@ -10,7 +10,7 @@ print(float(1e5))
 print("hello")
 
 env = gym.make('ur5e_reacher-v1')
-check_env(env)
+#check_env(env)
 #print("any warnings?", check_env(env))
 time.sleep(1)
 
@@ -25,15 +25,17 @@ for episode in range(5):
         # action = [0, 0, 0, 0, 0, 4]
 
         obs, reward, done, info = env.step(action)
-        time.sleep(1. / 3.)
-        print("action: ", action)
-        pp.pprint(obs)
-        print("reward: ", reward)
-        print("done: ", done)
-        print("info: ", info)
-        print("timestep: ", t)
-        print("end_effector_pos: ",info["endeffector_pos"])
-        print("goal_pos: ",info['goal_pos'])
+        #for key in obs.keys():
+        #    print(key,obs[key])
+        # time.sleep(1. / 3.)
+        # print("action: ", action)
+        # pp.pprint(obs)
+        # print("reward: ", reward)
+        # print("done: ", done)
+        # print("info: ", info)
+        # print("timestep: ", t)
+        # print("end_effector_pos: ",info["endeffector_pos"])
+        # print("goal_pos: ",info['goal_pos'])
 
         rewards.append(reward)
         #time.sleep(1. / 240.)
