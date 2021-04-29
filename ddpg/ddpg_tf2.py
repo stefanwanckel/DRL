@@ -7,7 +7,7 @@ from networks import ActorNetwork, CriticNetwork
 
 class Agent:
     def __init__(self, input_dims, alpha = 0.001, beta = 0.002, env= None,
-            gamma = 0.99, n_actions = 2, max_size = 1000000, tau = 0.005, fc1 = 400, 
+            gamma = 0.99, n_actions = 6, max_size = 1000000, tau = 0.005, fc1 = 400, 
             fc2 = 300, batch_size = 64, noise = 0.1):
 
         self.gamma = gamma

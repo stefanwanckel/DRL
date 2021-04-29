@@ -197,6 +197,9 @@ ur5e_reacher-v13:
   normalize: true
   policy: 'MlpPolicy'
   model_class: 'sac'
+  noise_type: 'ornstein-uhlenbeck'
+  noise_std: 0.2
+  policy_kwargs: "dict(net_arch=[256, 256, 256])"
   n_sampled_goal: 4
   goal_selection_strategy: "future"
   online_sampling: True

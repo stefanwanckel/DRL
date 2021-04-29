@@ -1,7 +1,7 @@
 import os
 import tensorflow as tf
 import tensorflow.keras as keras
-from tensorflow.keras.layers import Dense
+from tensorflow.keras.layers import Dense, BatchNormalization
 
 class CriticNetwork(keras.Model):
     def __init__(self, fc1_dims=512, fc2_dims=512, name= 'critic', chkpt_dir = 'tmp/ddpg'):
@@ -15,7 +15,9 @@ class CriticNetwork(keras.Model):
         self.checkpoint_file = os.path.join(self.checkpoint_dir, self.model_name + '_ddpg.h5')
 
         self.fc1 = Dense(self.fc1_dims, activation= 'relu')
+        BatchNormalization(axis=1)
         self.fc2 = Dense(self.fc2_dims, activation= 'relu')
+        BatchNormalization(axis=1)
         self.q = Dense(1, activation = None)
 
     def call(self, state, action):
@@ -39,7 +41,9 @@ class ActorNetwork(keras.Model):
         self.checkpoint_file = os.path.join(self.checkpoint_dir,self.model_name+'_ddpg.h5')
 
         self.fc1 = Dense(self.fc1_dims, activation = 'relu')
+        BatchNormalization(axis=1)
         self.fc2 = Dense(self.fc2_dims, activation = 'relu')
+        BatchNormalization(axis=1)
         self.mu = Dense(self.n_actions,activation = 'tanh')
 
     def call(self, state):

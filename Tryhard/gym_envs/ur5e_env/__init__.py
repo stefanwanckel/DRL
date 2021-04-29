@@ -13,7 +13,7 @@ register(
         'random_orientation': False,
         'moving_target': False,
         'target_type': "sphere",
-        'goal_oriented' : True,
+        'goal_oriented' : False,
         'obs_type' : 1,
         'reward_type' : 1,
         'action_type' : 1,
@@ -23,8 +23,8 @@ register(
         'alpha_reward': 0.1,
         'reward_coeff': 1,
         'action_scale': 1,
-        'eps' : 0.1,
-        'sim_rep' : 2
+        'eps' : 0.3,
+        'sim_rep' : 1
         },
     )
 
@@ -85,7 +85,7 @@ register(
         'random_orientation': False,
         'moving_target': False,
         'target_type': "sphere",
-        'goal_oriented' : True,
+        'goal_oriented' : False,
         'obs_type' : 1,
         'reward_type' : 13,
         'action_type' : 1,

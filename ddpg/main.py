@@ -7,7 +7,7 @@ import ur5e_env
 from ddpg_tf2 import Agent
 
 if __name__ == '__main__':
-    env = gym.make('ur5e_reacher-v17')
+    env = gym.make('ur5e_reacher-v1')
     agent = Agent(input_dims = env.observation_space.shape,
                   env = env,
                   n_actions = env.action_space.shape[0],

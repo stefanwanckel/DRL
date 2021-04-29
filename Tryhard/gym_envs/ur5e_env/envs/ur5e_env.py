@@ -655,7 +655,7 @@ class Ur5eEnv(gym.GoalEnv):
                 
         else:
             for index,_ in enumerate(self.obs):
-                    scaled_obs = self._normalize_scalar(
+                    scaled_obs[index] = self._normalize_scalar(
                                             self.obs[index],
                                             self.obs_space_low[index],
                                             self.obs_space_high[index],
