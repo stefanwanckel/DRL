@@ -4,8 +4,8 @@ from stable_baselines3 import HER, DDPG, DQN, SAC, TD3
 import time
 import os
 from stable_baselines3.common.vec_env import DummyVecEnv, VecEnvWrapper, VecVideoRecorder
-env = gym.make("ur5e_reacher-v1")
-model = HER.load('./logs/her/ur5e_reacher-v1_3/rl_model_70000_steps', env=env)
+env = gym.make("ur5e_reacher-v5")
+model = HER.load('./logs/her/ur5e_reacher-v5_4/rl_model_4700000_steps', env=env)
 # video_length= 2000
 # video_folder = "."
 # env = DummyVecEnv(env)
