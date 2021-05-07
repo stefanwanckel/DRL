@@ -11,11 +11,6 @@ This is a pytorch implementation of [Hindsight Experience Replay](https://arxiv.
 - pytorch=1.0.0 (**If you use pytorch-0.4.1, you may have data type errors. I will fix it later.**)
 - mpi4py
 
-## TODO List
-- [x] support GPU acceleration - although I have added GPU support, but I still not recommend if you don't have a powerful machine.
-- [x] add multi-env per MPI.
-- [x] add the plot and demo of the **FetchSlide-v1**.
-
 ## Instruction to run the code
 If you want to use GPU, just add the flag `--cuda` **(Not Recommended, Better Use CPU)**.
 1. train the **ur5_reach-v1**:
@@ -32,4 +27,4 @@ python demo.py --env-name=<environment name>
 
 ### Demo:
 ur5_reach-v1
-![](figures/push.gif)
+![](hindsight-experience-replay-ur5/figures/ur5_reach-v1_ddpg-her_2021-05-07.gif)
