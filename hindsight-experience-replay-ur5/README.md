@@ -27,4 +27,4 @@ python demo.py --env-name=<environment name>
 
 ### Demo:
 ur5_reach-v1
-![](hindsight-experience-replay-ur5/figures/ur5_reach-v1_ddpg-her_2021-05-07.gif)
+![alt-text](https://github.com/stefanwanckel/DRL/tree/master/hindsight-experience-replay-ur5/figures/ur5_reach-v1_ddpg-her_2021-05-07.gif)
