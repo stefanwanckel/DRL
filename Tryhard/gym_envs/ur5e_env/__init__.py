@@ -13,7 +13,7 @@ register(
         'random_orientation': False,
         'moving_target': False,
         'target_type': "sphere",
-        'goal_oriented' : False,
+        'goal_oriented' : True,
         'obs_type' : 1,
         'reward_type' : 1,
         'action_type' : 1,
