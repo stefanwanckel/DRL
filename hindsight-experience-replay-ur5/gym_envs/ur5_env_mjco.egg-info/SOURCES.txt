@@ -1,0 +1,8 @@
+README.md
+setup.py
+ur5_env_mjco/__init__.py
+ur5_env_mjco.egg-info/PKG-INFO
+ur5_env_mjco.egg-info/SOURCES.txt
+ur5_env_mjco.egg-info/dependency_links.txt
+ur5_env_mjco.egg-info/requires.txt
+ur5_env_mjco.egg-info/top_level.txt

@@ -1,0 +1,18 @@
+{
+    // Use IntelliSense to learn about possible attributes.
+    // Hover to view descriptions of existing attributes.
+    // For more information, visit: https://go.microsoft.com/fwlink/?linkid=830387
+    "version": "0.2.0",
+    "configurations": [
+        {
+            "name": "Python: Current File",
+            "type": "python",
+            "request": "launch",
+            "program": "${file}",
+            "console": "integratedTerminal",
+            "justMyCode": false,
+            "args" : ["--algo", "her", "--env", "ur5e_reacher-v1", "-n", "20000", "--eval-freq", "2000", "--save-freq","2000"],
+            //"args" : ["--algo", "her", "--env", "ur5e_reacher-v21"]
+        }
+    ]
+}

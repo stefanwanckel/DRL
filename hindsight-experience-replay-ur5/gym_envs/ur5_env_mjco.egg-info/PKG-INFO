@@ -1,0 +1,18 @@
+Metadata-Version: 2.1
+Name: ur5-env-mjco
+Version: 0.0.1
+Summary: Gym environments for RL reaching tasks
+Home-page: https://github.com/pypa/sampleproject
+Author: Stefan
+License: MIT
+Download-URL: https://pypi.org/project/elastictools/
+Description: This environment is adapted from the sample gym environment of the fetch robot.
+        The target robot is the UR5e.
+        The goal is to reproduce DDPG + HER results.
+Keywords: Reinforcement_Learning,OpenAI_Gym
+Platform: UNKNOWN
+Classifier: Programming Language :: Python :: 3
+Classifier: License :: OSI Approved :: MIT License
+Classifier: Operating System :: OS Independent
+Requires-Python: >=3.6
+Description-Content-Type: text/markdown

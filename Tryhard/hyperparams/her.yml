@@ -1,0 +1,298 @@
+ # DDPG hyperparams
+ur5e_reacher-v1:
+ n_timesteps: !!float 1e7
+ policy: 'MlpPolicy'
+ model_class: 'ddpg'
+ n_sampled_goal: 4
+ goal_selection_strategy: 'future'
+ buffer_size: 1000000
+ batch_size: 128
+ gamma: 0.95
+ learning_rate: !!float 1e-3
+ noise_type: 'normal'
+ noise_std: 0.2
+ policy_kwargs: "dict(net_arch=[64, 64, 64])"
+ online_sampling: True
+ #max_episode_length: 100
+
+ur5e_reacher-v2:
+ n_timesteps: !!float 1e7
+ policy: 'MlpPolicy'
+ model_class: 'ddpg'
+ n_sampled_goal: 4
+ goal_selection_strategy: 'future'
+ buffer_size: 1000000
+ batch_size: 128
+ gamma: 0.95
+ learning_rate: !!float 1e-3
+ noise_type: 'normal'
+ noise_std: 0.2
+ policy_kwargs: "dict(net_arch=[512, 512, 512])"
+ online_sampling: True
+ #max_episode_length: 100
+
+ur5e_reacher-v3:
+  n_timesteps: !!float 1e7
+  policy: 'MlpPolicy'
+  model_class: 'ddpg'
+  n_sampled_goal: 4
+  goal_selection_strategy: 'future'
+  buffer_size: 1000000
+  batch_size: 128
+  gamma: 0.95
+  learning_rate: !!float 1e-3
+  noise_type: 'normal'
+  noise_std: 0.2
+  policy_kwargs: "dict(net_arch=[512, 512, 512])"
+  online_sampling: True
+#max_episode_length: 100
+
+ur5e_reacher-v4:
+ n_timesteps: !!float 1e7
+ policy: 'MlpPolicy'
+ model_class: 'ddpg'
+ n_sampled_goal: 4
+ goal_selection_strategy: 'future'
+ buffer_size: 1000000
+ batch_size: 128
+ gamma: 0.95
+ learning_rate: !!float 1e-3
+ noise_type: 'normal'
+ noise_std: 0.2
+ policy_kwargs: "dict(net_arch=[512, 512, 512])"
+ online_sampling: True
+ #max_episode_length: 100
+
+ur5e_reacher-v5:
+ n_timesteps: !!float 1e7
+ policy: 'MlpPolicy'
+ model_class: 'ddpg'
+ n_sampled_goal: 4
+ goal_selection_strategy: 'future'
+ buffer_size: 1000000
+ batch_size: 128
+ gamma: 0.95
+ learning_rate: !!float 1e-3
+ noise_type: 'normal'
+ noise_std: 0.2
+ policy_kwargs: "dict(net_arch=[512, 512, 512])"
+ online_sampling: True
+ #max_episode_length: 100
+
+ur5e_reacher-v6:
+ n_timesteps: !!float 1e7
+ policy: 'MlpPolicy'
+ model_class: 'ddpg'
+ n_sampled_goal: 4
+ goal_selection_strategy: 'future'
+ buffer_size: 1000000
+ batch_size: 128
+ gamma: 0.95
+ learning_rate: !!float 1e-3
+ noise_type: 'normal'
+ noise_std: 0.2
+ policy_kwargs: "dict(net_arch=[512, 512, 512])"
+ online_sampling: True
+ #max_episode_length: 100
+
+ur5e_reacher-v7:
+ n_timesteps: !!float 1e7
+ policy: 'MlpPolicy'
+ model_class: 'ddpg'
+ n_sampled_goal: 4
+ goal_selection_strategy: 'future'
+ buffer_size: 1000000
+ batch_size: 128
+ gamma: 0.95
+ learning_rate: !!float 1e-3
+ noise_type: 'normal'
+ noise_std: 0.2
+ policy_kwargs: "dict(net_arch=[400, 300])"
+ online_sampling: True
+ #max_episode_length: 100
+
+ur5e_reacher-v8:
+ n_timesteps: !!float 1e7
+ policy: 'MlpPolicy'
+ model_class: 'ddpg'
+ n_sampled_goal: 4
+ goal_selection_strategy: 'future'
+ buffer_size: 1000000
+ batch_size: 128
+ gamma: 0.95
+ learning_rate: !!float 1e-3
+ noise_type: 'normal'
+ noise_std: 0.2
+ policy_kwargs: "dict(net_arch=[400, 300])"
+ online_sampling: True
+ #max_episode_length: 100
+
+ur5e_reacher-v9:
+ n_timesteps: !!float 1e7
+ policy: 'MlpPolicy'
+ model_class: 'ddpg'
+ n_sampled_goal: 4
+ goal_selection_strategy: 'future'
+ buffer_size: 1000000
+ batch_size: 128
+ gamma: 0.95
+ learning_rate: !!float 1e-3
+ noise_type: 'normal'
+ noise_std: 0.2
+ policy_kwargs: "dict(net_arch=[400, 300])"
+ online_sampling: True
+ #max_episode_length: 100
+
+ur5e_reacher-v10:
+ n_timesteps: !!float 1e7
+ policy: 'MlpPolicy'
+ model_class: 'ddpg'
+ n_sampled_goal: 4
+ goal_selection_strategy: 'future'
+ buffer_size: 1000000
+ batch_size: 128
+ gamma: 0.95
+ learning_rate: !!float 1e-3
+ noise_type: 'normal'
+ noise_std: 0.2
+ policy_kwargs: "dict(net_arch=[400, 300])"
+ online_sampling: False
+ tau : 0.005
+
+ #max_episode_length: 100
+
+ur5e_reacher-v11:
+ n_timesteps: !!float 1e7
+ policy: 'MlpPolicy'
+ model_class: 'ddpg'
+ n_sampled_goal: 4
+ goal_selection_strategy: 'future'
+ buffer_size: 10000
+ batch_size: 128
+ gamma: 0.99
+ learning_rate: !!float 1e-3
+ noise_type: 'normal'
+ noise_std: 0.2
+ policy_kwargs: "dict(net_arch=[256, 256, 256])"
+ online_sampling: True
+ #max_episode_length: 100
+
+ur5e_reacher-v12:
+ n_timesteps: !!float 1e7
+ policy: 'MlpPolicy'
+ model_class: 'ddpg'
+ n_sampled_goal: 4
+ goal_selection_strategy: 'future'
+ buffer_size: 1000000
+ batch_size: 128
+ gamma: 0.99
+ learning_rate: !!float 1e-3
+ noise_type: 'normal'
+ noise_std: 0.2
+ policy_kwargs: "dict(net_arch=[256, 256, 256])"
+ online_sampling: False
+
+ur5e_reacher-v13:
+  n_timesteps: 500000
+  normalize: true
+  policy: 'MlpPolicy'
+  model_class: 'sac'
+  noise_type: 'ornstein-uhlenbeck'
+  noise_std: 0.2
+  policy_kwargs: "dict(net_arch=[256, 256, 256])"
+  n_sampled_goal: 4
+  goal_selection_strategy: "future"
+  online_sampling: True
+  max_episode_length: 1000
+  #action_noise: None
+
+ur5e_reacher-v14:
+  n_timesteps: 500000
+  normalize: true
+  policy: 'MlpPolicy'
+  model_class: 'sac'
+  n_sampled_goal: 4
+  goal_selection_strategy: "future"
+  online_sampling: True
+  max_episode_length: 1000
+  #action_noise: "NormalActionNoise"
+
+ur5e_reacher-v15:
+  n_timesteps: 500000
+  normalize: true
+  policy: 'MlpPolicy'
+  model_class: 'sac'
+  n_sampled_goal: 4
+  goal_selection_strategy: "future"
+  online_sampling: True
+  max_episode_length: 1000
+  action_noise: "OrnsteinUhlenbeckActionNoise"
+
+
+ur5e_reacher-v16:
+  n_timesteps: 500000
+  normalize: true
+  policy: 'MlpPolicy'
+  model_class: 'sac'
+  n_sampled_goal: 4
+  goal_selection_strategy: "final"
+  online_sampling: True
+  max_episode_length: 1000
+  #action_noise: "NormalActionNoise"
+
+ur5e_reacher-v21:
+  n_timesteps: 500000
+  normalize: true
+  policy: 'MlpPolicy'
+  model_class: 'ddpg'
+  n_sampled_goal: 4
+  goal_selection_strategy: "future"
+  online_sampling: True
+  noise_type: "ornstein-uhlenbeck"
+  noise_std: 0.2
+  learning_starts : 10000
+  gradient_steps : 50
+  policy_kwargs : "dict(net_arch=[64,64,64])"
+
+
+ur5e_reacher-v22:
+  n_timesteps: 500000
+  normalize: true
+  policy: 'MlpPolicy'
+  model_class: 'ddpg'
+  n_sampled_goal: 4
+  goal_selection_strategy: "future"
+  online_sampling: True
+  noise_type: "ornstein-uhlenbeck"
+  noise_std: 0.2
+  learning_starts : 10000
+  gradient_steps : 50
+  policy_kwargs : "dict(net_arch=[64,64,64])"
+
+ur5e_reacher-v23:
+  n_timesteps: 500000
+  normalize: true
+  policy: 'MlpPolicy'
+  model_class: 'ddpg'
+  n_sampled_goal: 4
+  goal_selection_strategy: "future"
+  online_sampling: True
+  noise_type: "ornstein-uhlenbeck"
+  noise_std: 0.2
+  learning_starts : 10000
+  policy_kwargs : "dict(net_arch=[64,64,64])"
+
+ur5e_reacher-v24:
+  n_timesteps: 500000
+  normalize: true
+  policy: 'MlpPolicy'
+  model_class: 'ddpg'
+  n_sampled_goal: 4
+  goal_selection_strategy: "future"
+  online_sampling: True
+  noise_type: "ornstein-uhlenbeck"
+  noise_std: 0.2
+  learning_starts : 10000
+  policy_kwargs : "dict(net_arch=[64,64,64])"
+
+ 

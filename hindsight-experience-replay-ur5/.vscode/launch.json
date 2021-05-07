@@ -1,0 +1,18 @@
+{
+    // Use IntelliSense to learn about possible attributes.
+    // Hover to view descriptions of existing attributes.
+    // For more information, visit: https://go.microsoft.com/fwlink/?linkid=830387
+    "version": "0.2.0",
+    "configurations": [
+        {
+            "name": "Python: Current File",
+            "type": "python",
+            "request": "launch",
+            "program": "${file}",
+            "console": "integratedTerminal",
+            "justMyCode": false,
+            //"args" : ["--env-name=FetchReach-v1", "--n-cycles=10"]
+            //mpirun -np 1 python -u train.py --env-name=FetchReach-v1 --n-cycles=10 2>&1 | tee reach.log
+        }
+    ]
+}
