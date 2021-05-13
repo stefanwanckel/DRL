@@ -31,9 +31,4 @@ tbd
 ### Demo:
 | ur5_reach-v1  | ur5_push-v1 |
 | ------------- | ------------- |
-| ![](https://raw.githubusercontent.com/stefanwanckel/DRL/master/hindsight-experience-replay-ur5/figures/ur5_reach-v1_ddpg-her_2021-05-07.gif)  | ![](https://raw.githubusercontent.com/stefanwanckel/DRL/master/hindsight-experience-replay-ur5/figures/ur5_push-v1_ddpg-her_2021-05-13.gif)  |
-
-ur5_reach-v1
-![](https://raw.githubusercontent.com/stefanwanckel/DRL/master/hindsight-experience-replay-ur5/figures/ur5_reach-v1_ddpg-her_2021-05-07.gif)
-ur5_push-v1
-![](https://raw.githubusercontent.com/stefanwanckel/DRL/master/hindsight-experience-replay-ur5/figures/ur5_push-v1_ddpg-her_2021-05-13.gif)
+| <img src="https://raw.githubusercontent.com/stefanwanckel/DRL/master/hindsight-experience-replay-ur5/figures/ur5_reach-v1_ddpg-her_2021-05-07.gif" width=600> | <img src="https://raw.githubusercontent.com/stefanwanckel/DRL/master/hindsight-experience-replay-ur5/figures/ur5_push-v1_ddpg-her_2021-05-13.gif" width=600> |
