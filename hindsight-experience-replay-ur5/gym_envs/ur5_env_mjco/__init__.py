@@ -10,3 +10,10 @@ register(
     #kwargs=kwargs,
     max_episode_steps=50,
     )
+
+register(
+    id='ur5_push-v1',
+    entry_point='ur5_env_mjco.envs.ur5_tasks.push:Ur5PushEnv',
+    #kwargs=kwargs,
+    max_episode_steps=50,
+    )

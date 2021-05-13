@@ -111,9 +111,9 @@ class ddpg_agent:
                 self._soft_update_target_network(self.actor_target_network, self.actor_network)
                 self._soft_update_target_network(self.critic_target_network, self.critic_network)
             # start to do the evaluation
-            success_rate = self._eval_agent()
+            success_rate, std = self._eval_agent()
             if MPI.COMM_WORLD.Get_rank() == 0:
-                print('[{}] epoch is: {}, eval success rate is: {:.3f}'.format(datetime.now(), epoch, success_rate))
+                print('[{}] epoch is: {}, eval success rate is: {:.3f}, std is: {:.3f}'. format(datetime.now(), epoch, success_rate, std))
                 torch.save([self.o_norm.mean, self.o_norm.std, self.g_norm.mean, self.g_norm.std, self.actor_network.state_dict()], \
                             self.model_path + '/modelur5.pt')
 
@@ -253,5 +253,32 @@ class ddpg_agent:
             total_success_rate.append(per_success_rate)
         total_success_rate = np.array(total_success_rate)
         local_success_rate = np.mean(total_success_rate[:, -1])
-        global_success_rate = MPI.COMM_WORLD.allreduce(local_success_rate, op=MPI.SUM)
-        return global_success_rate / MPI.COMM_WORLD.Get_size()
+
+        local_mean_succes_rate = np.mean(local_success_rate)
+
+        MPI.COMM_WORLD.Barrier()
+        local_mean_succes_rates = MPI.COMM_WORLD.gather(local_mean_succes_rate,root=0)
+
+        if MPI.COMM_WORLD.rank == 0:
+            #print("Asking for lastepisode sucess")
+  
+            #print("before ravel",lastEpisodeSuccess)
+            global_mean_succes_rate  = np.mean(local_mean_succes_rates)
+            global_mean_succes_rate_std = np.std(local_mean_succes_rates)
+
+            ave = global_mean_succes_rate
+            std = global_mean_succes_rate_std
+            #print("The std is: {}".format(std))
+        else:
+            std = None
+            ave = None
+
+        std = MPI.COMM_WORLD.bcast(std,root=0)
+        ave = MPI.COMM_WORLD.bcast(ave,root=0)
+
+
+        #print(str(datetime.now()),MPI.COMM_WORLD.rank)
+        #print(std, MPI.COMM_WORLD.rank)
+
+
+        return float(ave), float(std)

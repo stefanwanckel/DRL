@@ -14,7 +14,7 @@ print(sim.model.joint_names)
 print(state)
 #shoulderPos = sim.get_body_xpos("")
 viewer.cam.distance = 3.5
-viewer.cam.azimuth = -132.
+viewer.cam.azimuth = 132.
 viewer.cam.elevation = -10.
 viewer.render()
 #for _ in range(10000) :
