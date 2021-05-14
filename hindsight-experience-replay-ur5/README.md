@@ -14,7 +14,11 @@ This is a pytorch implementation of [Hindsight Experience Replay](https://arxiv.
 ## Instruction to run the code
 Train the **ur5_reach-v1**:
 ```bash
-mpirun -np 1 python -u train.py --env-name='FetchReach-v1' --n-cycles=10 2>&1 | tee reach.log
+mpirun -np 4 python -u train.py --env-name='ur5_reach-v1' 2>&1 | tee reach.log
+```
+Train the **ur5_reach-v1**:
+```bash
+mpirun -np 8 python -u train.py --env-name='ur5_push-v1' 2>&1 | tee push.log
 ```
 
 ### Play Demo
@@ -25,5 +29,6 @@ python demo.py --env-name=<environment name>
 ## Results
 tbd
 ### Demo:
-ur5_reach-v1
-![](https://raw.githubusercontent.com/stefanwanckel/DRL/master/hindsight-experience-replay-ur5/figures/ur5_reach-v1_ddpg-her_2021-05-07.gif)
+| ur5_reach-v1  | ur5_push-v1 |
+| ------------- | ------------- |
+| <img src="https://raw.githubusercontent.com/stefanwanckel/DRL/master/hindsight-experience-replay-ur5/figures/ur5_reach-v1_ddpg-her_2021-05-07.gif" width=600> | <img src="https://raw.githubusercontent.com/stefanwanckel/DRL/master/hindsight-experience-replay-ur5/figures/ur5_push-v1_ddpg-her_2021-05-13.gif" width=600> |
