@@ -30,9 +30,9 @@ python demo.py --env-name=<environment name>
 Following table contains the success rate during training.
 | ur5_reach-v1 | ur5_push-v1 |
 | :-------------: | :-------------: |
-| insert reach graph| insert push graph |
+| insert reach graph| <img src="https://raw.githubusercontent.com/stefanwanckel/DRL/master/hindsight-experience-replay-ur5/Results/figures/success_rate_ur5push.svg" width=600> |
 | **ur5_pick-v1** | **ur5_slide-v1** |
-|insert pick graph | inser slide graph |
+| <img src="https://raw.githubusercontent.com/stefanwanckel/DRL/master/hindsight-experience-replay-ur5/Results/figures/success_rate_ur5push.svg" width=600> | inser slide graph |
 ### Demo:
 | ur5_reach-v1 | ur5_push-v1 |
 | :-------------: | :-------------: |
