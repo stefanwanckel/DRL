@@ -130,7 +130,7 @@ class Ur5Env(robot_env.RobotEnv):
             self.viewer.cam.lookat[idx] = value
         self.viewer.cam.distance = 1.5
         self.viewer.cam.azimuth = -180.
-        self.viewer.cam.elevation = 0#-25.
+        self.viewer.cam.elevation = -25.
 
     def _render_callback(self):
         # Visualize target.
@@ -160,7 +160,8 @@ class Ur5Env(robot_env.RobotEnv):
             goal = self.initial_gripper_xpos[:3] + self.np_random.uniform(-self.target_range, self.target_range, size=3)
             goal += self.target_offset
             goal[2] = self.height_offset
-            if self.target_in_the_air and self.np_random.uniform() < 0.5:
+            #if self.target_in_the_air and self.np_random.uniform() < 0.5:
+            if self.target_in_the_air:
                 goal[2] += self.np_random.uniform(0.1, 0.2)
         else:
             goal = self.initial_gripper_xpos[:3] + self.np_random.uniform(-self.target_range, self.target_range, size=3)
