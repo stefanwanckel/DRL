@@ -29,6 +29,6 @@ python demo.py --env-name=<environment name>
 ## Results
 tbd
 ### Demo:
-| ur5_reach-v1  | ur5_push-v1 |
-| ------------- | ------------- |
-| <img src="https://raw.githubusercontent.com/stefanwanckel/DRL/master/hindsight-experience-replay-ur5/figures/ur5_reach-v1_ddpg-her_2021-05-07.gif" width=600> | <img src="https://raw.githubusercontent.com/stefanwanckel/DRL/master/hindsight-experience-replay-ur5/figures/ur5_push-v1_ddpg-her_2021-05-13.gif" width=600> |
+| ur5_reach-v1  | ur5_push-v1 | ur5_pick-v1 |
+| ------------- | ------------- | ------------- |
+| <img src="https://raw.githubusercontent.com/stefanwanckel/DRL/master/hindsight-experience-replay-ur5/Results/figures/ur5_reach-v1_ddpg-her_2021-05-07.gif" width=600> | <img src="https://raw.githubusercontent.com/stefanwanckel/DRL/master/hindsight-experience-replay-ur5/Results/figures/ur5_push-v1_ddpg-her_2021-05-13.gif" width=600> | <img src="https://raw.githubusercontent.com/stefanwanckel/DRL/master/hindsight-experience-replay-ur5/Results/figures/ur5_pick-v1_ddpg-her_2021-05-20.gif" width=600> |
