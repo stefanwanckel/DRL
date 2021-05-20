@@ -48,17 +48,17 @@
 										<inertial pos="0 0 0" mass="0.2" diaginertia="0 0 0" />
 										<geom size="0.0375 0.0075" type="cylinder" material="robot0:mat0"/>
 
-										<body childclass="robot0:Gripper" name="robot0:r_gripper_finger_link" pos="0 0.0159 -0.0385" euler ="0 1.570796 0" >
+										<body childclass="robot0:Gripper" name="robot0:r_gripper_finger_link" pos="0 0.0159 -0.03" euler ="0 1.570796 0" >
 											<inertial diaginertia="0.1 0.1 0.1" mass="4" pos="-0.01 0 0"></inertial>
-											<joint axis="0 1 0" name="robot0:r_gripper_finger_joint" range="0 0.05"></joint>
-											<geom pos="0 -0.008 0" size="0.025 0.007 0.0135" type="box" name="robot0:r_gripper_finger_link" material="robot0:mat0" condim="4" friction="1 0.05 0.01"></geom>
+											<joint axis="0 1 0" name="robot0:r_gripper_finger_joint" range="0 0.02"></joint>
+											<geom pos="0 -0.008 0" size="0.025 0.0035 0.0135" type="box" name="robot0:r_gripper_finger_link" material="robot0:mat0" condim="4" friction="1 0.05 0.01"></geom>
 										</body>
-										<body childclass="robot0:Gripper" name="robot0:l_gripper_finger_link" pos="0 -0.0159 -0.0385" euler ="0 1.570796 0">
+										<body childclass="robot0:Gripper" name="robot0:l_gripper_finger_link" pos="0 -0.0159 -0.03" euler ="0 1.570796 0">
 											<inertial diaginertia="0.1 0.1 0.1" mass="4" pos="-0.01 0 0"></inertial>
-											<joint axis="0 -1 0" name="robot0:l_gripper_finger_joint" range="0 0.05"></joint>
-											<geom pos="0 0.008 0" size="0.025 0.007 0.0135" type="box" name="robot0:l_gripper_finger_link" material="robot0:mat0" condim="4" friction="1 0.05 0.01"></geom>
+											<joint axis="0 -1 0" name="robot0:l_gripper_finger_joint" range="0 0.02"></joint>
+											<geom pos="0 0.008 0" size="0.025 0.0035 0.0135" type="box" name="robot0:l_gripper_finger_link" material="robot0:mat0" condim="4" friction="1 0.05 0.01"></geom>
 										</body>
-										<site name="robot0:grip" pos="0. 0. -0.05" rgba="0 0 1 1" size="0.02"></site>
+										<site name="robot0:grip" pos="0. 0. -0.05" rgba="0 0 1 0.3" size="0.01"></site>
 									</body>
 								</body>	
 							</body>

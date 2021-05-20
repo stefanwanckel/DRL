@@ -115,7 +115,7 @@ class ddpg_agent:
             if MPI.COMM_WORLD.Get_rank() == 0:
                 print('[{}] epoch is: {}, eval success rate is: {:.3f}, std is: {:.3f}'. format(datetime.now(), epoch, success_rate, std))
                 torch.save([self.o_norm.mean, self.o_norm.std, self.g_norm.mean, self.g_norm.std, self.actor_network.state_dict()], \
-                            self.model_path + '/modelur5.pt')
+                            self.model_path + '/modelur5_{}.pt'.format(datetime.now()))
 
     # pre_process the inputs
     def _preproc_inputs(self, obs, g):
