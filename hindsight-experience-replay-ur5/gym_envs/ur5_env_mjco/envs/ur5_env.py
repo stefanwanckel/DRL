@@ -160,8 +160,8 @@ class Ur5Env(robot_env.RobotEnv):
             goal = self.initial_gripper_xpos[:3] + self.np_random.uniform(-self.target_range, self.target_range, size=3)
             goal += self.target_offset
             goal[2] = self.height_offset
-            #if self.target_in_the_air and self.np_random.uniform() < 0.5:
-            if self.target_in_the_air:
+            if self.target_in_the_air and self.np_random.uniform() < 0.5:
+            #if self.target_in_the_air:
                 goal[2] += self.np_random.uniform(0.1, 0.2)
         else:
             goal = self.initial_gripper_xpos[:3] + self.np_random.uniform(-self.target_range, self.target_range, size=3)

@@ -5,9 +5,9 @@ import seaborn as sns
 import os
 
 #import log
-logName = "pick_2021-05-20 01:55:46.790161.log"
-saveName = "pick_2021-05-20 01:55:46.790161"
-with open(os.path.join("logs",logName),"r") as plog:
+logName = "reach.log"
+saveName = "reach"
+with open(os.path.join("Results/logs",logName),"r") as plog:
     lines = [line.split() for line in plog]
 #get epochs, success, std from log rows
 epochs = []
@@ -27,12 +27,12 @@ sns.set_theme()
 plt.figure(figsize=(16,12))
 plt.plot(epochs,successes,label="mean success rate")
 plt.fill_between(epochs, successes+stds,successes-stds, label="1 standard deviation",alpha=0.2)
-plt.title("DDPG + HER: {} task success rate in training for UR5 over 5 seeds".format(logName.split(".")[0]))
+plt.title("DDPG + HER: {} task success rate in training for UR5 over 1 seed".format(logName.split(".")[0]))
 plt.xlabel("n epochs")
 plt.ylabel("mean success rate")
 plt.legend()
 #plt.tight_layout()
-title = "success_rate_ur5" + saveName + ".png"
-plt.savefig(os.path.join("figures",title))
-title = "success_rate_ur5" + saveName + ".svg"
-plt.savefig(os.path.join("figures",title))
+title = "Results/figures/" +"success_rate_ur5" + saveName + ".png"
+plt.savefig(os.path.join(title))
+title = "Results/figures/" +"success_rate_ur5" + saveName + ".svg"
+plt.savefig(os.path.join(title))
