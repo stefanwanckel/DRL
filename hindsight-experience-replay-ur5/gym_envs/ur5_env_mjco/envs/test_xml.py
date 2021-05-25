@@ -3,7 +3,7 @@ import os
 import time
 import ur5_env_mjco
 
-MODEL_XML_PATH = os.path.join("assets","ur5", "reach.xml")
+MODEL_XML_PATH = os.path.join("assets","ur5", "slide.xml")
 
 model = mujoco_py.load_model_from_path(MODEL_XML_PATH)
 sim = mujoco_py.MjSim(model)

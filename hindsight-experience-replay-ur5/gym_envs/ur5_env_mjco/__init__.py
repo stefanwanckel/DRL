@@ -24,3 +24,10 @@ register(
     #kwargs=kwargs,
     max_episode_steps=50,
     )
+
+register(
+    id='ur5_slide-v1',
+    entry_point='ur5_env_mjco.envs.ur5_tasks.slide:Ur5SlideEnv',
+    #kwargs=kwargs,
+    max_episode_steps=50,
+    )

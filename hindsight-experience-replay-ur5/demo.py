@@ -18,7 +18,19 @@ def process_inputs(o, g, o_mean, o_std, g_mean, g_std, args):
 if __name__ == '__main__':
     args = get_args()
     # load the model param
-    model_path = args.save_dir + args.env_name + '/modelur5_2021-05-20 01:55:46.790161.pt'
+    print(vars(args))
+    dash = "-"*42
+    for i,arg in enumerate(vars(args)):
+        if i == 0:
+            print("Starting demo with these arguments:")
+            print(dash)
+            print("{:<25s}{:<15s}".format("PARAMS","VALUE"))
+            print(dash)
+        print("|{:<22s} | {:<15}|".format(arg, getattr(args,arg)))
+        if i ==len(vars(args))-1:
+            print(dash)
+
+    model_path = args.save_dir + args.env_name + '/model.pt'
     o_mean, o_std, g_mean, g_std, model = torch.load(model_path, map_location=lambda storage, loc: storage)
     # create the environment
     env = gym.make(args.env_name)
