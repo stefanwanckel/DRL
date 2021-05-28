@@ -30,7 +30,7 @@ if __name__ == '__main__':
         if i ==len(vars(args))-1:
             print(dash)
 
-    model_path = args.save_dir + args.env_name + '/model.pt'
+    model_path = args.save_dir + args.env_name + '/modelur5_199.pt'
     o_mean, o_std, g_mean, g_std, model = torch.load(model_path, map_location=lambda storage, loc: storage)
     # create the environment
     env = gym.make(args.env_name)
