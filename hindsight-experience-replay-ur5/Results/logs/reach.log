@@ -1,4 +1,4 @@
-[2021-05-07 17:18:24.922093] epoch is: 0, eval success rate is: 0.975
+[2021-05-07 17:18:24.922093] epoch is: 0, eval success rate is: 0.000
 [2021-05-07 17:18:41.514727] epoch is: 1, eval success rate is: 0.975
 [2021-05-07 17:18:59.078111] epoch is: 2, eval success rate is: 1.000
 [2021-05-07 17:19:16.217207] epoch is: 3, eval success rate is: 1.000

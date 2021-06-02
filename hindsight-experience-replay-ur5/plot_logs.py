@@ -6,7 +6,7 @@ import os
 
 #import log
 logName = "reach.log"
-saveName = "reach"
+saveName = "reach_adapted"
 with open(os.path.join("Results/logs",logName),"r") as plog:
     lines = [line.split() for line in plog]
 #get epochs, success, std from log rows
@@ -26,8 +26,8 @@ stds = np.array(stds)
 sns.set_theme()
 plt.figure(figsize=(16,12))
 plt.plot(epochs,successes,label="mean success rate")
-plt.fill_between(epochs, successes+stds,successes-stds, label="1 standard deviation",alpha=0.2)
-plt.title("DDPG + HER: {} task success rate in training for UR5 over 1 seed".format(logName.split(".")[0]))
+#plt.fill_between(epochs, successes+stds,successes-stds, label="1 standard deviation",alpha=0.2)
+plt.title("DDPG + HER: {} task success rate in training for UR5 over 1 seed(s)".format(logName.split(".")[0]))
 plt.xlabel("n epochs")
 plt.ylabel("mean success rate")
 plt.legend()
