@@ -13,6 +13,8 @@ from her_modules.her import her_sampler
 ddpg with HER (MPI-version)
 
 """
+
+
 class ddpg_agent:
     def __init__(self, args, env, env_params):
         self.args = args
@@ -28,8 +30,10 @@ class ddpg_agent:
         self.actor_target_network = actor(env_params)
         self.critic_target_network = critic(env_params)
         # load the weights into the target networks
-        self.actor_target_network.load_state_dict(self.actor_network.state_dict())
-        self.critic_target_network.load_state_dict(self.critic_network.state_dict())
+        self.actor_target_network.load_state_dict(
+            self.actor_network.state_dict())
+        self.critic_target_network.load_state_dict(
+            self.critic_network.state_dict())
         # if use gpu
         if self.args.cuda:
             self.actor_network.cuda()
@@ -37,21 +41,28 @@ class ddpg_agent:
             self.actor_target_network.cuda()
             self.critic_target_network.cuda()
         # create the optimizer
-        self.actor_optim = torch.optim.Adam(self.actor_network.parameters(), lr=self.args.lr_actor)
-        self.critic_optim = torch.optim.Adam(self.critic_network.parameters(), lr=self.args.lr_critic)
+        self.actor_optim = torch.optim.Adam(
+            self.actor_network.parameters(), lr=self.args.lr_actor)
+        self.critic_optim = torch.optim.Adam(
+            self.critic_network.parameters(), lr=self.args.lr_critic)
         # her sampler
-        self.her_module = her_sampler(self.args.replay_strategy, self.args.replay_k, self.env.compute_reward)
+        self.her_module = her_sampler(
+            self.args.replay_strategy, self.args.replay_k, self.env.compute_reward)
         # create the replay buffer
-        self.buffer = replay_buffer(self.env_params, self.args.buffer_size, self.her_module.sample_her_transitions)
+        self.buffer = replay_buffer(
+            self.env_params, self.args.buffer_size, self.her_module.sample_her_transitions)
         # create the normalizer
-        self.o_norm = normalizer(size=env_params['obs'], default_clip_range=self.args.clip_range)
-        self.g_norm = normalizer(size=env_params['goal'], default_clip_range=self.args.clip_range)
+        self.o_norm = normalizer(
+            size=env_params['obs'], default_clip_range=self.args.clip_range)
+        self.g_norm = normalizer(
+            size=env_params['goal'], default_clip_range=self.args.clip_range)
         # create the dict for store the model
         if MPI.COMM_WORLD.Get_rank() == 0:
             if not os.path.exists(self.args.save_dir):
                 os.mkdir(self.args.save_dir)
             # path to save the model
-            self.model_path = os.path.join(self.args.save_dir, self.args.env_name)
+            self.model_path = os.path.join(
+                self.args.save_dir, self.args.env_name)
             if not os.path.exists(self.model_path):
                 os.mkdir(self.model_path)
 
@@ -108,14 +119,17 @@ class ddpg_agent:
                     # train the network
                     self._update_network()
                 # soft update
-                self._soft_update_target_network(self.actor_target_network, self.actor_network)
-                self._soft_update_target_network(self.critic_target_network, self.critic_network)
+                self._soft_update_target_network(
+                    self.actor_target_network, self.actor_network)
+                self._soft_update_target_network(
+                    self.critic_target_network, self.critic_network)
             # start to do the evaluation
             success_rate, std = self._eval_agent()
             if MPI.COMM_WORLD.Get_rank() == 0:
-                print('[{}] epoch is: {}, eval success rate is: {:.3f}, std is: {:.3f}'. format(datetime.now(), epoch, success_rate, std))
-                torch.save([self.o_norm.mean, self.o_norm.std, self.g_norm.mean, self.g_norm.std, self.actor_network.state_dict()], \
-                            self.model_path + '/modelur5_{}.pt'.format(epoch))
+                print('[{}] epoch is: {}, eval success rate is: {:.3f}, std is: {:.3f}'. format(
+                    datetime.now(), epoch, success_rate, std))
+                torch.save([self.o_norm.mean, self.o_norm.std, self.g_norm.mean, self.g_norm.std, self.actor_network.state_dict()],
+                           self.model_path + '/Sept_19_1_{}.pt'.format(epoch))
 
     # pre_process the inputs
     def _preproc_inputs(self, obs, g):
@@ -127,18 +141,21 @@ class ddpg_agent:
         if self.args.cuda:
             inputs = inputs.cuda()
         return inputs
-    
+
     # this function will choose action for the agent and do the exploration
     def _select_actions(self, pi):
         action = pi.cpu().numpy().squeeze()
         # add the gaussian
-        action += self.args.noise_eps * self.env_params['action_max'] * np.random.randn(*action.shape)
-        action = np.clip(action, -self.env_params['action_max'], self.env_params['action_max'])
+        action += self.args.noise_eps * \
+            self.env_params['action_max'] * np.random.randn(*action.shape)
+        action = np.clip(
+            action, -self.env_params['action_max'], self.env_params['action_max'])
         # random actions...
-        random_actions = np.random.uniform(low=-self.env_params['action_max'], high=self.env_params['action_max'], \
-                                            size=self.env_params['action'])
+        random_actions = np.random.uniform(low=-self.env_params['action_max'], high=self.env_params['action_max'],
+                                           size=self.env_params['action'])
         # choose if use the random actions
-        action += np.random.binomial(1, self.args.random_eps, 1)[0] * (random_actions - action)
+        action += np.random.binomial(1, self.args.random_eps,
+                                     1)[0] * (random_actions - action)
         return action
 
     # update the normalizer
@@ -149,14 +166,15 @@ class ddpg_agent:
         # get the number of normalization transitions
         num_transitions = mb_actions.shape[1]
         # create the new buffer to store them
-        buffer_temp = {'obs': mb_obs, 
+        buffer_temp = {'obs': mb_obs,
                        'ag': mb_ag,
-                       'g': mb_g, 
-                       'actions': mb_actions, 
+                       'g': mb_g,
+                       'actions': mb_actions,
                        'obs_next': mb_obs_next,
                        'ag_next': mb_ag_next,
                        }
-        transitions = self.her_module.sample_her_transitions(buffer_temp, num_transitions)
+        transitions = self.her_module.sample_her_transitions(
+            buffer_temp, num_transitions)
         obs, g = transitions['obs'], transitions['g']
         # pre process the obs and g
         transitions['obs'], transitions['g'] = self._preproc_og(obs, g)
@@ -175,7 +193,8 @@ class ddpg_agent:
     # soft update
     def _soft_update_target_network(self, target, source):
         for target_param, param in zip(target.parameters(), source.parameters()):
-            target_param.data.copy_((1 - self.args.polyak) * param.data + self.args.polyak * target_param.data)
+            target_param.data.copy_(
+                (1 - self.args.polyak) * param.data + self.args.polyak * target_param.data)
 
     # update the network
     def _update_network(self):
@@ -184,7 +203,8 @@ class ddpg_agent:
         # pre-process the observation and goal
         o, o_next, g = transitions['obs'], transitions['obs_next'], transitions['g']
         transitions['obs'], transitions['g'] = self._preproc_og(o, g)
-        transitions['obs_next'], transitions['g_next'] = self._preproc_og(o_next, g)
+        transitions['obs_next'], transitions['g_next'] = self._preproc_og(
+            o_next, g)
         # start to do the update
         obs_norm = self.o_norm.normalize(transitions['obs'])
         g_norm = self.g_norm.normalize(transitions['g'])
@@ -194,9 +214,11 @@ class ddpg_agent:
         inputs_next_norm = np.concatenate([obs_next_norm, g_next_norm], axis=1)
         # transfer them into the tensor
         inputs_norm_tensor = torch.tensor(inputs_norm, dtype=torch.float32)
-        inputs_next_norm_tensor = torch.tensor(inputs_next_norm, dtype=torch.float32)
-        actions_tensor = torch.tensor(transitions['actions'], dtype=torch.float32)
-        r_tensor = torch.tensor(transitions['r'], dtype=torch.float32) 
+        inputs_next_norm_tensor = torch.tensor(
+            inputs_next_norm, dtype=torch.float32)
+        actions_tensor = torch.tensor(
+            transitions['actions'], dtype=torch.float32)
+        r_tensor = torch.tensor(transitions['r'], dtype=torch.float32)
         if self.args.cuda:
             inputs_norm_tensor = inputs_norm_tensor.cuda()
             inputs_next_norm_tensor = inputs_next_norm_tensor.cuda()
@@ -207,7 +229,8 @@ class ddpg_agent:
             # do the normalization
             # concatenate the stuffs
             actions_next = self.actor_target_network(inputs_next_norm_tensor)
-            q_next_value = self.critic_target_network(inputs_next_norm_tensor, actions_next)
+            q_next_value = self.critic_target_network(
+                inputs_next_norm_tensor, actions_next)
             q_next_value = q_next_value.detach()
             target_q_value = r_tensor + self.args.gamma * q_next_value
             target_q_value = target_q_value.detach()
@@ -219,8 +242,10 @@ class ddpg_agent:
         critic_loss = (target_q_value - real_q_value).pow(2).mean()
         # the actor loss
         actions_real = self.actor_network(inputs_norm_tensor)
-        actor_loss = -self.critic_network(inputs_norm_tensor, actions_real).mean()
-        actor_loss += self.args.action_l2 * (actions_real / self.env_params['action_max']).pow(2).mean()
+        actor_loss = - \
+            self.critic_network(inputs_norm_tensor, actions_real).mean()
+        actor_loss += self.args.action_l2 * \
+            (actions_real / self.env_params['action_max']).pow(2).mean()
         # start to update the network
         self.actor_optim.zero_grad()
         actor_loss.backward()
@@ -257,13 +282,14 @@ class ddpg_agent:
         local_mean_succes_rate = np.mean(local_success_rate)
 
         MPI.COMM_WORLD.Barrier()
-        local_mean_succes_rates = MPI.COMM_WORLD.gather(local_mean_succes_rate,root=0)
+        local_mean_succes_rates = MPI.COMM_WORLD.gather(
+            local_mean_succes_rate, root=0)
 
         if MPI.COMM_WORLD.rank == 0:
             #print("Asking for lastepisode sucess")
-  
+
             #print("before ravel",lastEpisodeSuccess)
-            global_mean_succes_rate  = np.mean(local_mean_succes_rates)
+            global_mean_succes_rate = np.mean(local_mean_succes_rates)
             global_mean_succes_rate_std = np.std(local_mean_succes_rates)
 
             ave = global_mean_succes_rate
@@ -273,12 +299,10 @@ class ddpg_agent:
             std = None
             ave = None
 
-        std = MPI.COMM_WORLD.bcast(std,root=0)
-        ave = MPI.COMM_WORLD.bcast(ave,root=0)
+        std = MPI.COMM_WORLD.bcast(std, root=0)
+        ave = MPI.COMM_WORLD.bcast(ave, root=0)
 
-
-        #print(str(datetime.now()),MPI.COMM_WORLD.rank)
+        # print(str(datetime.now()),MPI.COMM_WORLD.rank)
         #print(std, MPI.COMM_WORLD.rank)
-
 
         return float(ave), float(std)

@@ -10,6 +10,12 @@ register(
     #kwargs=kwargs,
     max_episode_steps=50,
     )
+register(
+    id='ur5_reach_no_gripper-v1',
+    entry_point='ur5_env_mjco.envs.ur5_tasks.reach_no_gripper:Ur5ReachEnv',
+    #kwargs=kwargs,
+    max_episode_steps=50,
+    )
 
 register(
     id='ur5_push-v1',
