@@ -20,9 +20,8 @@ np.set_printoptions(precision=12, suppress=True)
 # imports for robot control
 # imports for sim environment and agent
 # imports for visualization
-
+ON_REAL_ROBOT = True
 # process the inputs
-goal_threshold = 0.05
 
 
 def process_inputs(o, g, o_mean, o_std, g_mean, g_std, args):
@@ -65,8 +64,9 @@ actor_network.eval()
 
 
 # setup conneciton to robot
-rtde_c = rtde_control.RTDEControlInterface("192.168.178.15")
-rtde_r = rtde_receive.RTDEReceiveInterface("192.168.178.15")
+if ON_REAL_ROBOT:
+    rtde_c = rtde_control.RTDEControlInterface("192.168.178.15")
+    rtde_r = rtde_receive.RTDEReceiveInterface("192.168.178.15")
 
 
 joint_q = [-0.7866423765765589,
@@ -77,18 +77,25 @@ joint_q = [-0.7866423765765589,
            -0.0025427977191370132]
 
 # move robot to start configuration
-rtde_c.moveJ(joint_q)
+if ON_REAL_ROBOT:
+    rtde_c.moveJ(joint_q)
 
 # get TCP pose
-TCPpose = rtde_r.getActualTCPPose()
-startPos = TCPpose[0:3]
-orn = TCPpose[3:]
+if ON_REAL_ROBOT:
+    TCPpose = rtde_r.getActualTCPPose()
+    startPos = TCPpose[0:3]
+    orn = TCPpose[3:]
+else:
+    NotImplementedError()
+    TCPpose = 0
+    startPos = 0
+    orn = 0
 print("the starting position is {} \nThe starting orientation is{}".format(startPos, orn))
 currPos = startPos
 # setting parameters for robot motion
 stepSize = 0.015
 SampleRange = 0.20
-
+goal_threshold = 0.05
 # setup figure and limits
 axisLimitExtends = 0.10
 # sns.set_theme()
@@ -147,7 +154,6 @@ for nTests in range(1):
         # add coordinate frame diff (mit marcus)
         obs = obs + obs_diff
         inputs = process_inputs(obs, g, o_mean, o_std, g_mean, g_std, args)
-        #inputs = np.concatenate([obs,g])
         with torch.no_grad():
             pi = actor_network(inputs)
 
@@ -158,11 +164,13 @@ for nTests in range(1):
         # move robot to new position which is old position plus stepsize times the action
         # Orn remains the same throughout
         newPos = currPos + stepSize * action
+        if ON_REAL_ROBOT:
+            rtde_c.moveL(np.hstack((newPos, orn)), 0.2, 0.3)
+            time.sleep(0.05)
+            actual_newPos = rtde_r.getActualTCPPose()[0:3]
+        else:
+            actual_newPos = newPos
 
-        rtde_c.moveL(np.hstack((newPos, orn)), 0.2, 0.3)
-        time.sleep(0.05)
-        actual_newPos = rtde_r.getActualTCPPose()[0:3]
-        #actual_newPos = newPos
         x.append(actual_newPos[0])
         y.append(actual_newPos[1])
         print("length of x: ", len(x))
