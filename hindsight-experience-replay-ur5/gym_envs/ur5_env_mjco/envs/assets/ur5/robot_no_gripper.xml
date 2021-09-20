@@ -1,0 +1,55 @@
+<mujoco>
+	<body mocap="true" name="robot0:mocap" pos="0 0 0">
+		<geom conaffinity="0" contype="0" pos="0 0 0" rgba="0 0.5 0 0.7" size="0.005 0.005 0.005" type="box"></geom>
+		<geom conaffinity="0" contype="0" pos="0 0 0" rgba="0 0.5 0 0.1" size="1 0.005 0.005" type="box"></geom>
+		<geom conaffinity="0" contype="0" pos="0 0 0" rgba="0 0.5 0 0.1" size="0.005 1 0.001" type="box"></geom>
+		<geom conaffinity="0" contype="0" pos="0 0 0" rgba="0 0.5 0 0.1" size="0.005 0.005 1" type="box"></geom>
+	</body>
+
+	<body pos="0. 0. 0.15" name="table1">
+		<geom size="0.125 0.175 0.3" type="box" mass="2000" material="table_mat"></geom>
+		<geom size="0.09 0.09 0.2" pos="0. 0. 0.4" type="cylinder" mass="2000" material="table_mat"></geom>
+
+		<body name="robot0:base_link" pos="0 0 0.5">
+			<inertial pos="0 0 0" quat="0.5 0.5 -0.5 0.5" mass="4" diaginertia="0.0072 0.00443333 0.00443333" />
+			<geom type="mesh"  mesh="robot0:base" material="robot0:mat0"/>
+
+			<body name="robot0:shoulder_link" pos="0 0 0.089159">
+				<inertial pos="0 0 0" mass="3.7" diaginertia="0.0102675 0.0102675 0.00666" />
+				<joint name="robot0:shoulder_joint" class="UR5e" pos="0 0 0" axis="0 0 1" limited="true" range="-3.14159 3.14159" />
+				<geom type="mesh"  mesh="robot0:shoulder" material="robot0:mat0"/>
+
+				<body name="robot0:upperarm_link" pos="0 0.13585 0" quat="0.707107 0 0.707107 0">
+					<inertial pos="0 0 0.28" mass="8.393" diaginertia="0.226891 0.226891 0.0151074" />
+					<joint name="robot0:shoulder_lift_joint" class="UR5e" pos="0 0 0" axis="0 1 0" limited="true" range="-3.14159 3.14159"/> <!--Range= -3.14159 3.14159-->
+					<geom type="mesh"  mesh="robot0:upperarm" material="robot0:mat0"/>
+
+					<body name="robot0:forearm_link" pos="0 -0.1197 0.425">
+						<inertial pos="0 0 0.25" mass="2.275" diaginertia="0.0494433 0.0494433 0.004095" />
+						<joint name="robot0:elbow_joint" class="UR5e" pos="0 0 0" axis="0 1 0" limited="true" range="-3.14159 3.14159" />
+						<geom type="mesh"  mesh="robot0:forearm" material="robot0:mat0"/>
+
+						<body name="robot0:wrist_1_link" pos="0 0 0.39225" quat="0.707107 0 0.707107 0">
+							<inertial pos="0 0 0" quat="0.5 0.5 -0.5 0.5" mass="1.219" diaginertia="0.21942 0.111173 0.111173" />
+							<joint name="robot0:wrist_1_joint" class="UR5e" pos="0 0 0" axis="0 1 0" limited="true" range="-3.14159 3.14159"  />
+							<geom type="mesh"  mesh="robot0:wrist1" material="robot0:mat0"/>
+
+							<body name="robot0:wrist_2_link" pos="0 0.093 0" >
+								<inertial pos="0 0 0" quat="0.5 0.5 -0.5 0.5" mass="1.219" diaginertia="0.21942 0.111173 0.111173" />
+								<joint name="robot0:wrist_2_joint" class="UR5e" pos="0 0 0" axis="0 0 1" limited="true" range="-3.14159 3.14159" />
+								<geom type="mesh"  mesh="robot0:wrist2" material="robot0:mat0"/>
+
+								<body name="robot0:wrist_3_link" pos="0 0 0.09465">
+									<inertial pos="0 0 0" quat="0.5 0.5 -0.5 0.5" mass="0.1879" diaginertia="0.033822 0.0171365 0.0171365" />
+									<joint name="robot0:wrist_3_joint" class="UR5e" pos="0 0 0" axis="0 1 0" limited="true" range="-3.14159 3.14159" />
+									<geom type="mesh"  mesh="robot0:wrist3" material="robot0:mat0"/>
+									
+								</body>	
+							</body>
+						</body>
+					</body>
+				</body>
+			</body>
+		</body>
+	</body>
+</mujoco>
