@@ -17,6 +17,7 @@ import math
 import numpy as np
 import random
 import json
+import os
 np.set_printoptions(precision=12, suppress=True)
 # imports for robot control
 # imports for sim environment and agent
@@ -79,7 +80,9 @@ if ON_REAL_ROBOT:
     startPos = TCPpose[0:3]
     orn = TCPpose[3:]
 else:
-    with open("Reach_TCP_start_pose.json", "r") as f:
+    TCP_pos_path = os.path.join(
+        "Results", "real_robot", "Reach_TCP_start_pose.json")
+    with open(TCP_pos_path, "r") as f:
         TCPpose = json.load(f)
     startPos = TCPpose[0:3]
     orn = TCPpose[3:]
@@ -93,27 +96,43 @@ goal_threshold = 0.05
 # setup figure  limits
 axisLimitExtends = 0.10
 
-
 # Init lists
 x = []
 y = []
+z = []
 info = {}
 
 for nTests in range(2):
+    # reset position
+    currPos = startPos
     # reset x and y
     x = []
     y = []
+    z = []
     # setup figure
-    fig = plt.figure()
+    fig, (ax1, ax2) = plt.subplots(1, 2)
+    fig.tight_layout()
+    fig.suptitle("TCP Planar View")
     ax = fig.gca()
-    plt.axis("equal")
-    plt.xlim(startPos[0]-SampleRange-axisLimitExtends,
-             startPos[0]+SampleRange+axisLimitExtends)
-    plt.ylim(startPos[1]-SampleRange-axisLimitExtends,
-             startPos[1]+SampleRange+axisLimitExtends)
-    plt.title("X-Y TCP")
-    plt.xlabel("X-axis [m]")
-    plt.ylabel("Y-axis [m]")
+
+    ax1.set_xlim(startPos[0]-SampleRange-axisLimitExtends,
+                 startPos[0]+SampleRange+axisLimitExtends)
+    ax1.set_ylim(startPos[1]-SampleRange-axisLimitExtends,
+                 startPos[1]+SampleRange+axisLimitExtends)
+    ax2.set_xlim(startPos[0]-SampleRange-axisLimitExtends,
+                 startPos[0]+SampleRange+axisLimitExtends)
+    ax2.set_ylim(startPos[2]-SampleRange-axisLimitExtends,
+                 startPos[2]+SampleRange+axisLimitExtends)
+    ax1.grid()
+    ax2.grid()
+    ax1.set(adjustable='box', aspect='equal')
+    ax2.set(adjustable='box', aspect='equal')
+    ax1.set_title("X-Y TCP")
+    ax2.set_title("X-Z TCP")
+    ax1.set_xlabel("X-axis [m]")
+    ax2.set_xlabel("X-axis [m]")
+    ax1.set_ylabel("Y-axis [m]")
+    ax2.set_ylabel("Z-axis [m]")
 
     observation = env.reset()
     # observation must be robot pos
@@ -132,14 +151,21 @@ for nTests in range(2):
         g_robotCF = list(np.asarray(startPos) + rndDisp)
 
     # plotting and setting up plot
-    plt.plot(g_robotCF[0], g_robotCF[1], 'o', color="g")
-    graph, = plt.plot([], [], 'o', color="r")
-    sampleSpace = Circle((startPos[0], startPos[1]),
-                         radius=SampleRange, fill=False)
-    successThreshold = Circle(
+    ax1.plot(g_robotCF[0], g_robotCF[1], 'o', color="g")
+    ax2.plot(g_robotCF[0], g_robotCF[2], 'o', color="g")
+    graph, = ax1.plot([], [], 'o', color="r")
+    sampleSpace_xy = Circle((startPos[0], startPos[1]),
+                            radius=SampleRange, fill=False)
+    successThreshold_xy = Circle(
         (g_robotCF[0], g_robotCF[1]), radius=goal_threshold, fill=False, ls="--")
-    ax.add_patch(sampleSpace)
-    ax.add_patch(successThreshold)
+    sampleSpace_xz = Circle((startPos[0], startPos[2]),
+                            radius=SampleRange, fill=False)
+    successThreshold_xz = Circle(
+        (g_robotCF[0], g_robotCF[2]), radius=goal_threshold, fill=False, ls="--")
+    ax1.add_patch(sampleSpace_xy)
+    ax1.add_patch(successThreshold_xy)
+    ax2.add_patch(sampleSpace_xz)
+    ax2.add_patch(successThreshold_xz)
 
     # logging
     info["timestep"] = []
@@ -183,7 +209,7 @@ for nTests in range(2):
 
             x.append(actual_newPos[0])
             y.append(actual_newPos[1])
-            print("length of x: ", len(x))
+            z.append(actual_newPos[2])
 
             # fill info
             info["timestep"].append(t)
@@ -192,21 +218,15 @@ for nTests in range(2):
             info["new_position"].append(newPos)
             info["actual_new_position"].append(actual_newPos)
             info["goal"].append(g)
-            info["distance_to_goal"].append(np.linalg.norm(obs[0:3]-g))
+            info["distance_to_goal"].append(
+                np.linalg.norm(actual_newPos-g_robotCF))
             info["is_success"].append(np.linalg.norm(
-                obs[0:3]-g, ord=2) < goal_threshold)
+                actual_newPos-g_robotCF) < goal_threshold)
             info["displacement"].append(
                 list(np.asarray(actual_newPos) - np.asarray(currPos)))
             info["real_displacement"].append(stepSize * action)
-            # updating position
-            real_disp = stepSize * action
 
-            # checking for success
-            if info["is_success"][-1] == True:
-                print("Success! Norm is {}".format(np.linalg.norm(obs[0:3]-g)))
-                if ON_REAL_ROBOT:
-                    rtde_c.stopScript()
-                break
+            # updating position
             obs[0:3] = actual_newPos
             currPos = newPos  # actual_newPos
 
@@ -217,11 +237,17 @@ for nTests in range(2):
                     print(key, info[key][t])
 
             # plotting and setting up plot
-
-            plt.plot(g_robotCF[0], g_robotCF[1], 'o', color="g")
-            graph, = plt.plot(x, y, 'o', color="r")
+            ax1.plot(x, y, 'o', color="r")
+            ax2.plot(x, z, 'o', color="r")
             plt.pause(0.05)
 
+            # checking for success
+            if info["is_success"][-1] == True:
+                print("Success! Norm is {}".format(
+                    np.linalg.norm(actual_newPos-g_robotCF)))
+                if ON_REAL_ROBOT:
+                    rtde_c.stopScript()
+                break
     # start animation
     plt.show()
     print("DONE")
