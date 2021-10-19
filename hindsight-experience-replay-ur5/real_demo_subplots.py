@@ -90,8 +90,8 @@ else:
 print("the starting position is {} \nThe starting orientation is{}".format(startPos, orn))
 currPos = startPos
 # setting parameters for robot motion
-stepSize = 0.01
-SampleRange = 0.20
+stepSize = 0.025
+SampleRange = 0.40
 goal_threshold = 0.05
 # setup figure  limits
 axisLimitExtends = 0.10
@@ -102,7 +102,7 @@ y = []
 z = []
 info = {}
 
-for nTests in range(2):
+for nTests in range(3):
     # reset position
     currPos = startPos
     # reset x and y
@@ -112,7 +112,8 @@ for nTests in range(2):
     # setup figure
     fig, (ax1, ax2) = plt.subplots(1, 2)
     fig.tight_layout()
-    fig.suptitle("TCP Planar View")
+    fig.suptitle("TCP Planar View - Episode {}".format(nTests))
+    fig.canvas.set_window_title("Episode No. {}".format(nTests))
     ax = fig.gca()
 
     ax1.set_xlim(startPos[0]-SampleRange-axisLimitExtends,
@@ -249,5 +250,5 @@ for nTests in range(2):
                     rtde_c.stopScript()
                 break
     # start animation
-    plt.show()
+    # plt.show()
     print("DONE")
