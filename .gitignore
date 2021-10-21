@@ -6,3 +6,4 @@ _old
 *.zip
 *.stl
 *.dae
+hindsight-experience-replay-ur5/CV/librealsense/*
