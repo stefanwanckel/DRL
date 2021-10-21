@@ -55,10 +55,13 @@ def aruco_pose_estimation(frame, aruco_dict_type, matrix_coefficients, distortio
     corners, ids, rejected_img_points = cv2.aruco.detectMarkers(gray, cv2.aruco_dict, parameters=parameters,
                                                                 cameraMatrix=matrix_coefficients,
                                                                 distCoeff=distortion_coefficients)
-
+    marker_Transformations = {}
+    if len(corners) > 0:
+        for ID in list(ids):
+            marker_Transformations[int(ID)] = []
     # If markers are detected
     if len(corners) > 0:
-        for i in range(0, len(ids)):
+        for i, ID in enumerate(ids):
             # Estimate pose of each marker and return the values rvec and tvec---(different from those of camera coefficients)
             rvec, tvec, markerPoints = cv2.aruco.estimatePoseSingleMarkers(corners[i], 0.1, matrix_coefficients,
                                                                            distortion_coefficients)
@@ -68,5 +71,30 @@ def aruco_pose_estimation(frame, aruco_dict_type, matrix_coefficients, distortio
             # Draw Axis
             cv2.aruco.drawAxis(frame, matrix_coefficients,
                                distortion_coefficients, rvec, tvec, 0.05)
+            marker_Transformations[int(
+                ID)] = calculate_rotation_matrix(rvec, tvec)
+    return frame, marker_Transformations
 
-    return frame
+
+def calculate_rotation_matrix(rvec, tvec):
+    """
+    INPUT
+    tvec:   translation vector. Offset to the marker from the camera position. 
+            Already scaled to same unit used for the marker size.
+    rvec:   rotation vector. 
+            In angle-axis form:
+                -direction of the vector is rotation axis,
+                -magniture of vector is rotation magnitude
+            Will be converted with Rodrigues formula to rotation matrix R.
+            R⁻¹ * Marker_pose = Camera Pose
+    OUTPUT
+    T:      4x4 3D affine matrix containing the rotation and translation
+    """
+    R, _ = cv2.Rodrigues(rvec)
+    R_inv = np.linalg.inv(R)
+
+    T = np.zeros((4, 4))
+    T[:3, :3] = R
+    T[:3, 3] = tvec
+    T[3, 3] = 1
+    return T

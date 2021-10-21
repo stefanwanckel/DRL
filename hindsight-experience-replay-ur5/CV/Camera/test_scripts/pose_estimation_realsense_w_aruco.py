@@ -7,6 +7,8 @@ from utils import *
 
 
 CAMERA_INFO_PATH = "../camera_info/"
+POSE_ESTIMATION_IMAGES_PATH = "./pose_estimation_images/"
+
 # load camera params
 rvecs, tvecs, mtx, dist, ret = read_camera_params()
 # start pipline
@@ -27,10 +29,18 @@ try:
             aligned = align.process(frames)
             c_frames = aligned.get_color_frame()
             img = np.asanyarray(c_frames.get_data())
-            img = aruco_pose_estimation(img, aruco_dict_type=aruco_marker_type,
-                                        matrix_coefficients=mtx, distortion_coefficients=dist)
+            img, marker_Transformations = aruco_pose_estimation(img, aruco_dict_type=aruco_marker_type,
+                                                                matrix_coefficients=mtx, distortion_coefficients=dist)
             cv2.imshow('img', img)
-            cv2.waitKey(0)
-            # cv2.imwrite("calibration_image_{}".format(str(counter-50)))
+            for ID in marker_Transformations:
+                print(ID, marker_Transformations[ID])
+            res = cv2.waitKey(0)
+
+            if res % 256 == 32:
+                filename = POSE_ESTIMATION_IMAGES_PATH + \
+                    'pose_estimation_image.jpg'
+                cv2.imwrite(filename, img)
+                print("[INFO] saving image to " + POSE_ESTIMATION_IMAGES_PATH)
+
 finally:
     pipe.stop()
