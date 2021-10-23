@@ -10,9 +10,13 @@ MODEL_XML_PATH = os.path.join('ur5', 'push.xml')
 class Ur5PushEnv(ur5_env.Ur5Env, utils.EzPickle):
     def __init__(self, reward_type='sparse'):
         initial_qpos = {
-            "robot0:shoulder_lift_joint" : -0.5,
-            "robot0:elbow_joint" : 0.5,
-            'object0:joint': [0.6, 0., 0.4, 1., 0., 0., 0.]
+            "robot0:shoulder_joint": -0.7866423765765589,
+            "robot0:shoulder_lift_joint": -1.8796035252013148,
+            "robot0:elbow_joint": -1.7409639358520508,
+            "robot0:wrist_1_joint": -1.0964625638774415,
+            "robot0:wrist_2_joint": 1.5797905921936035,
+            "robot0:wrist_3_joint": -0.0025427977191370132,
+            'object0:joint': [0, 0, 0.45, 0., 0., 0., 1.]
         }
         ur5_env.Ur5Env.__init__(
             self, MODEL_XML_PATH, has_object=True, block_gripper=True, n_substeps=20,

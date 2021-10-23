@@ -1,53 +1,48 @@
-# general imports
+# Imports
+# visualization
 import seaborn as sns
 from matplotlib.animation import FuncAnimation
 from matplotlib.patches import Circle
 import matplotlib.pyplot as plt
-import ur5_env_mjco
-import gym
-from arguments import get_args
-from rl_modules.models import actor
-from numpy.lib.function_base import _average_dispatcher
-import torch
+# real robot
 import urkin
 import rtde_receive
 import rtde_control
+import ur5_env_mjco
+# simulation
+import gym
+#RL and model
+from rl_modules.models import actor
+import torch
+# MPI
+from numpy.lib.function_base import _average_dispatcher
+# general
 import time
 import math
 import numpy as np
 import random
 import json
-np.set_printoptions(precision=12, suppress=True)
-# imports for robot control
-# imports for sim environment and agent
-# imports for visualization
+import os
+# custom functions
+from utils import *
+from arguments import get_args
+
+np.set_printoptions(precision=2, suppress=True)
+# Bool deciders
 ON_REAL_ROBOT = False
-# process the inputs
 
-
-def process_inputs(o, g, o_mean, o_std, g_mean, g_std, args):
-    o_clip = np.clip(o, -args.clip_obs, args.clip_obs)
-    g_clip = np.clip(g, -args.clip_obs, args.clip_obs)
-    o_norm = np.clip((o_clip - o_mean) / (o_std), -
-                     args.clip_range, args.clip_range)
-    g_norm = np.clip((g_clip - g_mean) / (g_std), -
-                     args.clip_range, args.clip_range)
-    inputs = np.concatenate([o_norm, g_norm])
-    inputs = torch.tensor(inputs, dtype=torch.float32)
-    return inputs
-
-
-# get arguments for demo import model
+# get arguments for demo
 args = get_args()
-# model_path = args.save_dir + args.env_name + '/July30_reach_2_39.pt'
-model_path = args.save_dir + args.env_name + '/reach_8.pt'
+model_path = args.save_dir + args.env_name + '/modelur5.pt'
 
 o_mean, o_std, g_mean, g_std, model = torch.load(
     model_path, map_location=lambda storage, loc: storage)
 # create gym environment and get first observation
 env = gym.make(args.env_name)
 observation = env.reset()
-# get environment parameters
+
+
+# get environment parameters shapes to initialize torch model
 env_params = {'obs': observation['observation'].shape[0],
               'goal': observation['desired_goal'].shape[0],
               'action': env.action_space.shape[0],
@@ -70,50 +65,83 @@ joint_q = [-0.7866423765765589,
            -1.0964625638774415,
            1.5797905921936035,
            -0.0025427977191370132]
+
+# move to joint jointq and get TCP pose
 if ON_REAL_ROBOT:
     rtde_c.moveJ(joint_q)
-
-# get TCP pose
-if ON_REAL_ROBOT:
     TCPpose = rtde_r.getActualTCPPose()
     startPos = TCPpose[0:3]
     orn = TCPpose[3:]
 else:
-    with open("Reach_TCP_start_pose.json", "r") as f:
+    TCP_pos_path = os.path.join(
+        "Results", "real_robot", "Reach_TCP_start_pose.json")
+    with open(TCP_pos_path, "r") as f:
         TCPpose = json.load(f)
     startPos = TCPpose[0:3]
     orn = TCPpose[3:]
 
+"""
+Description of observation needed for the agent
+ORDER OF CONCATENATION grip_pos, object_pos, object_rel_pos, gripper_state, object_rot, object_velp, object_velr, grip_velp, gripper_vel
+
+DESCRIPTION OF PARAMETERS
+grip_pos            Gripper position in robot cartesian coordinate frame        len(3)
+object_pos          object position in cartesian coordinate frame               len(3)
+object_rel_pos      Difference between object position and gripper position     len(3)
+gripper_state       The state of the gripper fingers. 
+                    0 means closed, 1 means open                                len(2)
+object_rot          Object orientation w.r.t. world coordinate frame. 
+                    As Euler angles. Extracted from Transformation matrix
+                    Use rotations.py library                                    len(3)
+object_velp         Object velocity in cartesian coordinate frame.
+                    Needs to be calculated using prior state.                   len(3)
+grip_velp           Gripper velocity in robot cartesian coordinate frame
+                    Can be directly taken from rtde_receive                     len(3)
+object_velr         Rotational velocity around axes.
+                    Will be 0 since no rotation will be expected
+                    due to slow motion velocity                                 len(3)
+gripper_vel         velocity of gripper fingers.
+                    Set to 0 as grippers will be closed during the test         len(2)
+"""
+
+grip_pos = get_xpos_from_robot()
+object_pos = get_object_pos_from_camera()
+object_rel_pos = object_pos - grip_pos
+gripper_state = [0, 0]
+object_rot = NotImplementedError()
+object_velp = NotImplementedError()
+grip_velp = rtde_r.actual_TCP_speed()
+object_velr = [0, 0, 0]
+gripper_vel = [0, 0]
+
+obs = np.concatenate([grip_pos, object_pos, object_rel_pos, gripper_state,
+                     object_rot, object_velp, grip_velp, object_velr, gripper_vel])
+
+
 print("the starting position is {} \nThe starting orientation is{}".format(startPos, orn))
 currPos = startPos
+
 # setting parameters for robot motion
-stepSize = 0.01
-SampleRange = 0.20
+stepSize = 0.025
+SampleRange = 0.40
 goal_threshold = 0.05
+
 # setup figure  limits
 axisLimitExtends = 0.10
 
-
-# Init lists
+# Init lists for visualization and info dict
 x = []
 y = []
+z = []
 info = {}
 
-for nTests in range(2):
+for nTests in range(3):
+    # reset position
+    currPos = startPos
     # reset x and y
     x = []
     y = []
-    # setup figure
-    fig = plt.figure()
-    ax = fig.gca()
-    plt.axis("equal")
-    plt.xlim(startPos[0]-SampleRange-axisLimitExtends,
-             startPos[0]+SampleRange+axisLimitExtends)
-    plt.ylim(startPos[1]-SampleRange-axisLimitExtends,
-             startPos[1]+SampleRange+axisLimitExtends)
-    plt.title("X-Y TCP")
-    plt.xlabel("X-axis [m]")
-    plt.ylabel("Y-axis [m]")
+    z = []
 
     observation = env.reset()
     # observation must be robot pos
@@ -132,14 +160,9 @@ for nTests in range(2):
         g_robotCF = list(np.asarray(startPos) + rndDisp)
 
     # plotting and setting up plot
-    plt.plot(g_robotCF[0], g_robotCF[1], 'o', color="g")
-    graph, = plt.plot([], [], 'o', color="r")
-    sampleSpace = Circle((startPos[0], startPos[1]),
-                         radius=SampleRange, fill=False)
-    successThreshold = Circle(
-        (g_robotCF[0], g_robotCF[1]), radius=goal_threshold, fill=False, ls="--")
-    ax.add_patch(sampleSpace)
-    ax.add_patch(successThreshold)
+    # setup figure
+    fig, (ax1, ax2) = setup_vis(nTests, startPos, SampleRange,
+                                axisLimitExtends, g_robotCF, goal_threshold)
 
     # logging
     info["timestep"] = []
@@ -183,7 +206,7 @@ for nTests in range(2):
 
             x.append(actual_newPos[0])
             y.append(actual_newPos[1])
-            print("length of x: ", len(x))
+            z.append(actual_newPos[2])
 
             # fill info
             info["timestep"].append(t)
@@ -192,21 +215,15 @@ for nTests in range(2):
             info["new_position"].append(newPos)
             info["actual_new_position"].append(actual_newPos)
             info["goal"].append(g)
-            info["distance_to_goal"].append(np.linalg.norm(obs[0:3]-g))
+            info["distance_to_goal"].append(
+                np.linalg.norm(actual_newPos-g_robotCF))
             info["is_success"].append(np.linalg.norm(
-                obs[0:3]-g, ord=2) < goal_threshold)
+                actual_newPos-g_robotCF) < goal_threshold)
             info["displacement"].append(
                 list(np.asarray(actual_newPos) - np.asarray(currPos)))
             info["real_displacement"].append(stepSize * action)
-            # updating position
-            real_disp = stepSize * action
 
-            # checking for success
-            if info["is_success"][-1] == True:
-                print("Success! Norm is {}".format(np.linalg.norm(obs[0:3]-g)))
-                if ON_REAL_ROBOT:
-                    rtde_c.stopScript()
-                break
+            # updating position
             obs[0:3] = actual_newPos
             currPos = newPos  # actual_newPos
 
@@ -217,11 +234,16 @@ for nTests in range(2):
                     print(key, info[key][t])
 
             # plotting and setting up plot
-
-            plt.plot(g_robotCF[0], g_robotCF[1], 'o', color="g")
-            graph, = plt.plot(x, y, 'o', color="r")
+            ax1.plot(x, y, 'o', color="r")
+            ax2.plot(x, z, 'o', color="r")
             plt.pause(0.05)
 
-    # start animation
-    plt.show()
+            # checking for success
+            if info["is_success"][-1] == True:
+                print("Success! Norm is {}".format(
+                    np.linalg.norm(actual_newPos-g_robotCF)))
+                if ON_REAL_ROBOT:
+                    rtde_c.stopScript()
+                break
+
     print("DONE")

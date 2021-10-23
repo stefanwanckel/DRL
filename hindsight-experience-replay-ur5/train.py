@@ -53,13 +53,3 @@ if __name__ == '__main__':
     # get the params
     args = get_args()
     launch(args)
-
-
-num.extract = []
-num.extract(launch(args)).append
-
-
-.os.environ["OMP_NUM_THREADS"]
-
-for item in args.items():
-    print("Showing item {}")

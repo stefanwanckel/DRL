@@ -1,7 +1,7 @@
 import numpy as np
 import os
 import cv2
-
+import matplotlib.pyplot as plt
 ARUCO_DICT = {
     "DICT_4X4_50": cv2.aruco.DICT_4X4_50,
     "DICT_4X4_100": cv2.aruco.DICT_4X4_100,
@@ -59,6 +59,8 @@ def aruco_pose_estimation(frame, aruco_dict_type, matrix_coefficients, distortio
     if len(corners) > 0:
         for ID in list(ids):
             marker_Transformations[int(ID)] = []
+    rvec = None
+    tvec = None
     # If markers are detected
     if len(corners) > 0:
         for i, ID in enumerate(ids):
@@ -66,22 +68,22 @@ def aruco_pose_estimation(frame, aruco_dict_type, matrix_coefficients, distortio
             rvec, tvec, markerPoints = cv2.aruco.estimatePoseSingleMarkers(corners[i], 0.1, matrix_coefficients,
                                                                            distortion_coefficients)
             # Draw a square around the markers
-            cv2.aruco.drawDetectedMarkers(frame, corners)
-
+            cv2.aruco.drawDetectedMarkers(
+                frame, corners, ids=ids, borderColor=(143, 143, 250))
             # Draw Axis
             cv2.aruco.drawAxis(frame, matrix_coefficients,
                                distortion_coefficients, rvec, tvec, 0.05)
             marker_Transformations[int(
                 ID)] = calculate_rotation_matrix(rvec, tvec)
-    return frame, marker_Transformations
+    return frame, marker_Transformations, rvec, tvec
 
 
 def calculate_rotation_matrix(rvec, tvec):
     """
     INPUT
-    tvec:   translation vector. Offset to the marker from the camera position. 
+    tvec:   translation vector. Offset to the marker from the camera position.
             Already scaled to same unit used for the marker size.
-    rvec:   rotation vector. 
+    rvec:   rotation vector.
             In angle-axis form:
                 -direction of the vector is rotation axis,
                 -magniture of vector is rotation magnitude
@@ -98,3 +100,62 @@ def calculate_rotation_matrix(rvec, tvec):
     T[:3, 3] = tvec
     T[3, 3] = 1
     return T
+
+
+def show_robustness(lst_rvec, lst_tvec):
+    assert len(lst_rvec) == len(lst_tvec)
+    rvec_norm = []
+    tvec_norm = []
+    if len(lst_rvec) > 1:
+        for i in range(1, len(lst_rvec)):
+            rvec_norm.append(np.linalg.norm(lst_rvec[i]-lst_rvec[-1]))
+            tvec_norm.append(np.linalg.norm(lst_tvec[i]-lst_tvec[-1]))
+
+        fig, axs = plt.subplots(2)
+        fig.suptitle('robustness of rvec and tvec')
+        axs[0].set_title("rvec")
+        axs[1].set_title("tvec")
+        axs[0].plot(rvec_norm)
+        axs[1].plot(tvec_norm)
+
+        plt.pause(0.01)
+        plt.show()
+
+
+def get_custom_T_matrix(points_cf_1, points_cf_2):
+
+    no_img = len(points_cf_1)
+
+    Points_1 = np.array(points_cf_1)[:, :3]
+    Points_2 = np.array(points_cf_2)[:, :3]
+
+ # construct p
+    b = Points_2.flatten()
+
+  # construct A
+    A = np.zeros((no_img*3, 9))
+    for i in range(0, no_img):
+        A[0+i*3, :3] = Points_1[i, :]
+        A[0+i*3, 6] = 1
+
+        A[1+i*3, 1] = Points_1[i, 0]
+        A[1+i*3, 3] = Points_1[i, 1]
+        A[1+i*3, 4] = Points_1[i, 2]
+        A[1+i*3, 7] = 1
+
+        A[2+i*3, 2] = Points_1[i, 0]
+        A[2+i*3, 4] = Points_1[i, 1]
+        A[2+i*3, 5] = Points_1[i, 2]
+        A[2+i*3, 8] = 1
+
+    x = np.linalg.solve(A, b)
+    T_cf1_cf2 = np.zeros((4, 4))
+    T_cf1_cf2[0, :3] = x[:3]
+    T_cf1_cf2[:3, 3] = x[6:]
+    T_cf1_cf2[3, :] = np.array([0, 0, 0, 1])
+    T_cf1_cf2[1, 0] = x[1]
+    T_cf1_cf2[1, 1:3] = x[3:5]
+    T_cf1_cf2[2, 0] = x[2]
+    T_cf1_cf2[2, 1:3] = x[4:6]
+
+    return T_cf1_cf2

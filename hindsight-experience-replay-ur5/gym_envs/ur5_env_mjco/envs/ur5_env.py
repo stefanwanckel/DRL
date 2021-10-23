@@ -73,8 +73,8 @@ class Ur5Env(robot_env.RobotEnv):
         pos_ctrl, gripper_ctrl = action[:3], action[3]
 
         pos_ctrl *= 0.01  # limit maximum change in position
-        rot_ctrl = [1.,0.,0.,0.,]
-        #rot_ctrl = [1., 0., 1., 0.]  # fixed rotation of the end effector, expressed as a quaternion
+        rot_ctrl = [1., 0., 0., 0., ]
+        # rot_ctrl = [1., 0., 1., 0.]  # fixed rotation of the end effector, expressed as a quaternion
         gripper_ctrl = np.array([gripper_ctrl, gripper_ctrl])
         assert gripper_ctrl.shape == (2,)
         if self.block_gripper:
@@ -96,7 +96,8 @@ class Ur5Env(robot_env.RobotEnv):
         if self.has_object:
             object_pos = self.sim.data.get_site_xpos('object0')
             # rotations
-            object_rot = rotations.mat2euler(self.sim.data.get_site_xmat('object0'))
+            object_rot = rotations.mat2euler(
+                self.sim.data.get_site_xmat('object0'))
             # velocities
             object_velp = self.sim.data.get_site_xvelp('object0') * dt
             object_velr = self.sim.data.get_site_xvelr('object0') * dt
@@ -104,16 +105,19 @@ class Ur5Env(robot_env.RobotEnv):
             object_rel_pos = object_pos - grip_pos
             object_velp -= grip_velp
         else:
-            object_pos = object_rot = object_velp = object_velr = object_rel_pos = np.zeros(0)
+            object_pos = object_rot = object_velp = object_velr = object_rel_pos = np.zeros(
+                0)
         gripper_state = robot_qpos[-2:]
-        gripper_vel = robot_qvel[-2:] * dt  # change to a scalar if the gripper is made symmetric
+        # change to a scalar if the gripper is made symmetric
+        gripper_vel = robot_qvel[-2:] * dt
 
         if not self.has_object:
             achieved_goal = grip_pos.copy()
         else:
             achieved_goal = np.squeeze(object_pos.copy())
         obs = np.concatenate([
-            grip_pos, object_pos.ravel(), object_rel_pos.ravel(), gripper_state, object_rot.ravel(),
+            grip_pos, object_pos.ravel(), object_rel_pos.ravel(
+            ), gripper_state, object_rot.ravel(),
             object_velp.ravel(), object_velr.ravel(), grip_velp, gripper_vel,
         ])
 
@@ -134,7 +138,8 @@ class Ur5Env(robot_env.RobotEnv):
 
     def _render_callback(self):
         # Visualize target.
-        sites_offset = (self.sim.data.site_xpos - self.sim.model.site_pos).copy()
+        sites_offset = (self.sim.data.site_xpos -
+                        self.sim.model.site_pos).copy()
         site_id = self.sim.model.site_name2id('target0')
         self.sim.model.site_pos[site_id] = self.goal - sites_offset[site_id]
         self.sim.forward()
@@ -146,10 +151,14 @@ class Ur5Env(robot_env.RobotEnv):
         if self.has_object:
             object_xpos = self.initial_gripper_xpos[:2]
             while np.linalg.norm(object_xpos - self.initial_gripper_xpos[:2]) < 0.8*self.obj_range:
-                object_xpos = self.initial_gripper_xpos[:2] + self.np_random.uniform(-self.obj_range, self.obj_range, size=2)
+                object_xpos = self.initial_gripper_xpos[:2] + \
+                    self.np_random.uniform(-self.obj_range,
+                                           self.obj_range, size=2)
             object_qpos = self.sim.data.get_joint_qpos('object0:joint')
             assert object_qpos.shape == (7,)
             object_qpos[:2] = object_xpos
+            table_height = 0.4
+            object_qpos[2] = table_height + 0.10
             self.sim.data.set_joint_qpos('object0:joint', object_qpos)
 
         self.sim.forward()
@@ -157,29 +166,34 @@ class Ur5Env(robot_env.RobotEnv):
 
     def _sample_goal(self):
         if self.has_object:
-            goal = self.initial_gripper_xpos[:3] + self.np_random.uniform(-self.target_range, self.target_range, size=3)
+            goal = self.initial_gripper_xpos[:3] + \
+                self.np_random.uniform(-self.target_range,
+                                       self.target_range, size=3)
             goal += self.target_offset
             goal[2] = self.height_offset
             if self.target_in_the_air and self.np_random.uniform() < 0.5:
-            #if self.target_in_the_air:
+                # if self.target_in_the_air:
                 goal[2] += self.np_random.uniform(0.1, 0.2)
         else:
-            goal = self.initial_gripper_xpos[:3] + self.np_random.uniform(-self.target_range, self.target_range, size=3)
+            goal = self.initial_gripper_xpos[:3] + \
+                self.np_random.uniform(-self.target_range,
+                                       self.target_range, size=3)
         return goal.copy()
 
     def _is_success(self, achieved_goal, desired_goal):
         d = goal_distance(achieved_goal, desired_goal)
         return (d < self.distance_threshold).astype(np.float32)
 
-    def _env_setup(self,initial_qpos):
+    def _env_setup(self, initial_qpos):
         for name, value in initial_qpos.items():
             self.sim.data.set_joint_qpos(name, value)
         utils.reset_mocap_welds(self.sim)
         self.sim.forward()
 
         # Move end effector into position.
-        #gripper_target = np.array([0.75,0.,0.4 + self.gripper_extra_height]) #+ self.sim.data.get_site_xpos('robot0:grip')
-        gripper_target = self.sim.data.get_site_xpos('robot0:grip') + [-0.2,-0.15,-0.35 + self.gripper_extra_height]
+        # gripper_target = np.array([0.75,0.,0.4 + self.gripper_extra_height]) #+ self.sim.data.get_site_xpos('robot0:grip')
+        gripper_target = self.sim.data.get_site_xpos(
+            'robot0:grip') + [-0.2, -0.15, -0.35 + self.gripper_extra_height]
         #gripper_rotation = np.array([1., 0., 1., 0.])
         #rot_eul = [math.pi,math.pi/2,0]
         #gripper_rotation = rotations.euler2quat(rot_eul)
@@ -190,7 +204,8 @@ class Ur5Env(robot_env.RobotEnv):
             self.sim.step()
 
         # Extract information for sampling goals.
-        self.initial_gripper_xpos = self.sim.data.get_site_xpos('robot0:grip').copy()
+        self.initial_gripper_xpos = self.sim.data.get_site_xpos(
+            'robot0:grip').copy()
         if self.has_object:
             self.height_offset = self.sim.data.get_site_xpos('object0')[2]
 
