@@ -35,7 +35,7 @@
 							<geom type="mesh"  mesh="robot0:wrist1" material="robot0:mat0"/>
 
 							<body name="robot0:wrist_2_link" pos="0 0.093 0" >
-								<inertial pos="0 0 0" quat="0.5 0.5 -0.5 0.5" mass="1.219" diaginertia="0.21942 0.111173 0.111173" />
+								<inertial pos="0 0 0" quat="0 1 0 1" mass="1.219" diaginertia="0.21942 0.111173 0.111173" />
 								<joint name="robot0:wrist_2_joint" class="UR5e" pos="0 0 0" axis="0 0 1" limited="true" range="-3.14159 3.14159" />
 								<geom type="mesh"  mesh="robot0:wrist2" material="robot0:mat0"/>
 
@@ -43,7 +43,12 @@
 									<inertial pos="0 0 0" quat="0.5 0.5 -0.5 0.5" mass="0.1879" diaginertia="0.033822 0.0171365 0.0171365" />
 									<joint name="robot0:wrist_3_joint" class="UR5e" pos="0 0 0" axis="0 1 0" limited="true" range="-3.14159 3.14159" />
 									<geom type="mesh"  mesh="robot0:wrist3" material="robot0:mat0"/>
-									
+
+									<body name="dummy_gripper" pos="0 0.08 0">
+										<site name="robot0:grip" pos="0. 0. 0." rgba="0 0 1 0.3" size="0.01"></site>
+										<geom pos="0 0 0" size="0.015" type="sphere"></geom>
+
+									</body>
 								</body>	
 							</body>
 						</body>

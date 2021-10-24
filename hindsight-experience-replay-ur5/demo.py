@@ -39,7 +39,6 @@ if __name__ == '__main__':
         model_path = args.save_dir + args.env_name + '/Sept_19_1_39.pt'
     elif args.env_name == "ur5_push-v1":
         model_path = args.save_dir + args.env_name + '/modelur5.pt'
-    #model_path = args.save_dir + args.env_name + '/July29_reach_3'
     o_mean, o_std, g_mean, g_std, model = torch.load(
         model_path, map_location=lambda storage, loc: storage)
     # create the environment

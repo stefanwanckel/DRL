@@ -15,7 +15,7 @@ class Ur5Env(robot_env.RobotEnv):
     def __init__(
         self, model_path, n_substeps, gripper_extra_height, block_gripper,
         has_object, target_in_the_air, target_offset, obj_range, target_range,
-        distance_threshold, initial_qpos, reward_type
+        distance_threshold, initial_qpos, reward_type, table_height=None
     ):
         """Initializes a new Fetch environment.
 
@@ -42,6 +42,7 @@ class Ur5Env(robot_env.RobotEnv):
         self.target_range = target_range
         self.distance_threshold = distance_threshold
         self.reward_type = reward_type
+        self.table_height = table_height
 
         super(Ur5Env, self).__init__(
             model_path=model_path, n_substeps=n_substeps, n_actions=4,
@@ -63,8 +64,13 @@ class Ur5Env(robot_env.RobotEnv):
 
     def _step_callback(self):
         if self.block_gripper:
-            self.sim.data.set_joint_qpos('robot0:l_gripper_finger_joint', 0.)
-            self.sim.data.set_joint_qpos('robot0:r_gripper_finger_joint', 0.)
+            if self.has_object:
+                pass
+            else:
+                self.sim.data.set_joint_qpos(
+                    'robot0:l_gripper_finger_joint', 0.)
+                self.sim.data.set_joint_qpos(
+                    'robot0:r_gripper_finger_joint', 0.)
             self.sim.forward()
 
     def _set_action(self, action):
@@ -73,7 +79,10 @@ class Ur5Env(robot_env.RobotEnv):
         pos_ctrl, gripper_ctrl = action[:3], action[3]
 
         pos_ctrl *= 0.01  # limit maximum change in position
-        rot_ctrl = [1., 0., 0., 0., ]
+        if self.has_object:
+            rot_ctrl = [0., 0., -1., 1.]
+        else:
+            rot_ctrl = [1., 0., 0., 0.]
         # rot_ctrl = [1., 0., 1., 0.]  # fixed rotation of the end effector, expressed as a quaternion
         gripper_ctrl = np.array([gripper_ctrl, gripper_ctrl])
         assert gripper_ctrl.shape == (2,)
@@ -128,7 +137,10 @@ class Ur5Env(robot_env.RobotEnv):
         }
 
     def _viewer_setup(self):
-        body_id = self.sim.model.body_name2id('robot0:gripper_link')
+        if self.has_object:
+            body_id = self.sim.model.body_name2id('robot0:wrist_3_link')
+        else:
+            body_id = self.sim.model.body_name2id('robot0:gripper_link')
         lookat = self.sim.data.body_xpos[body_id]
         for idx, value in enumerate(lookat):
             self.viewer.cam.lookat[idx] = value
@@ -170,7 +182,10 @@ class Ur5Env(robot_env.RobotEnv):
                 self.np_random.uniform(-self.target_range,
                                        self.target_range, size=3)
             goal += self.target_offset
-            goal[2] = self.height_offset
+            if self.table_height is not None:
+                goal[2] = self.table_height
+            else:
+                goal[2] = self.height_offset
             if self.target_in_the_air and self.np_random.uniform() < 0.5:
                 # if self.target_in_the_air:
                 goal[2] += self.np_random.uniform(0.1, 0.2)
@@ -197,7 +212,11 @@ class Ur5Env(robot_env.RobotEnv):
         #gripper_rotation = np.array([1., 0., 1., 0.])
         #rot_eul = [math.pi,math.pi/2,0]
         #gripper_rotation = rotations.euler2quat(rot_eul)
-        gripper_rotation = np.array([1., 0., 0., 0.])
+        if self.has_object:
+            gripper_rotation = np.array([0., 0., -1., 1.])
+        else:
+            gripper_rotation = np.array([1., 0., 0., 0.])
+
         self.sim.data.set_mocap_pos('robot0:mocap', gripper_target)
         self.sim.data.set_mocap_quat('robot0:mocap', gripper_rotation)
         for _ in range(100):

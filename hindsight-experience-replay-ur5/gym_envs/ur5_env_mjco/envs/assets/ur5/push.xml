@@ -5,19 +5,19 @@
 		<flag warmstart="enable"></flag>
 	</option>
 
-	<include file="shared.xml"></include>
+	<include file="shared_no_gripper.xml"></include>
 	
 	<worldbody>
 		<body name="floor0" pos="0. 0. 0.">
 			<geom name="floor0" size="1. 0.75 1" type="plane" condim="3" material="floor_mat"></geom>	
 		</body>
 
-		<include file="robot.xml"></include>
+		<include file="robot_no_gripper.xml"></include>
 
 
 		<body name="object0" pos="0 0 0">
 			<joint name="object0:joint" type="free" damping="0.01"></joint>
-			<geom size="0.05 0.03" pos="0.025 0.025 0.025" type="cylinder" condim="3" name="object0" material="block_mat" mass="0.2"></geom>
+			<geom size="0.04 0.022" pos="0.025 0.025 0.025" type="cylinder" condim="3" name="object0" material="block_mat" mass="0.2"></geom>
 			<site name="object0" pos="0.025 0.025 0.025" size="0.02 0.02 0.02" rgba="1 0 0 1" type="sphere"></site>
 		</body>
 <!--body pos is chosen so that the table is centered with tcp       -->
