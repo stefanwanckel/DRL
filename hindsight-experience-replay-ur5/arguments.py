@@ -10,8 +10,8 @@ def get_args():
     parser = argparse.ArgumentParser()
     # the environment setting
     parser.add_argument('--env-name', type=str,
-                        default='ur5_push-v1', help='the environment name')
-    parser.add_argument('--n-epochs', type=int, default=40,
+                        default='ur5_push_no_gripper-v1', help='the environment name')
+    parser.add_argument('--n-epochs', type=int, default=80,
                         help='the number of epochs to train the agent')
     parser.add_argument('--n-cycles', type=int, default=50,
                         help='the times to collect samples per epoch')

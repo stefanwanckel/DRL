@@ -9,16 +9,19 @@ from gym.utils import seeding
 try:
     import mujoco_py
 except ImportError as e:
-    raise error.DependencyNotInstalled("{}. (HINT: you need to install mujoco_py, and also perform the setup instructions here: https://github.com/openai/mujoco-py/.)".format(e))
+    raise error.DependencyNotInstalled(
+        "{}. (HINT: you need to install mujoco_py, and also perform the setup instructions here: https://github.com/openai/mujoco-py/.)".format(e))
 
 DEFAULT_SIZE = 500
+
 
 class RobotEnv(gym.GoalEnv):
     def __init__(self, model_path, initial_qpos, n_actions, n_substeps):
         if model_path.startswith('/'):
             fullpath = model_path
         else:
-            fullpath = os.path.join(os.path.dirname(__file__), 'assets', model_path)
+            fullpath = os.path.join(os.path.dirname(
+                __file__), 'assets', model_path)
         if not os.path.exists(fullpath):
             raise IOError('File {} does not exist'.format(fullpath))
 
@@ -26,6 +29,7 @@ class RobotEnv(gym.GoalEnv):
         self.sim = mujoco_py.MjSim(model, nsubsteps=n_substeps)
         self.viewer = None
         self._viewers = {}
+        self.model_path = model_path
 
         self.metadata = {
             'render.modes': ['human', 'rgb_array'],
@@ -38,11 +42,15 @@ class RobotEnv(gym.GoalEnv):
 
         self.goal = self._sample_goal()
         obs = self._get_obs()
-        self.action_space = spaces.Box(-1., 1., shape=(n_actions,), dtype='float32')
+        self.action_space = spaces.Box(-1., 1.,
+                                       shape=(n_actions,), dtype='float32')
         self.observation_space = spaces.Dict(dict(
-            desired_goal=spaces.Box(-np.inf, np.inf, shape=obs['achieved_goal'].shape, dtype='float32'),
-            achieved_goal=spaces.Box(-np.inf, np.inf, shape=obs['achieved_goal'].shape, dtype='float32'),
-            observation=spaces.Box(-np.inf, np.inf, shape=obs['observation'].shape, dtype='float32'),
+            desired_goal=spaces.Box(-np.inf, np.inf,
+                                    shape=obs['achieved_goal'].shape, dtype='float32'),
+            achieved_goal=spaces.Box(-np.inf, np.inf,
+                                     shape=obs['achieved_goal'].shape, dtype='float32'),
+            observation=spaces.Box(-np.inf, np.inf,
+                                   shape=obs['observation'].shape, dtype='float32'),
         ))
 
     @property
@@ -78,9 +86,9 @@ class RobotEnv(gym.GoalEnv):
         # configuration.
         super(RobotEnv, self).reset()
         did_reset_sim = False
+        self.goal = self._sample_goal().copy()
         while not did_reset_sim:
             did_reset_sim = self._reset_sim()
-        self.goal = self._sample_goal().copy()
         obs = self._get_obs()
         return obs
 
@@ -90,12 +98,13 @@ class RobotEnv(gym.GoalEnv):
             self.viewer = None
             self._viewers = {}
 
-    def render(self, mode='human', width=DEFAULT_SIZE, height=DEFAULT_SIZE):
+    def render(self, mode='rgb_array', width=DEFAULT_SIZE, height=DEFAULT_SIZE):
         self._render_callback()
         if mode == 'rgb_array':
             self._get_viewer(mode).render(width, height)
             # window size used for old mujoco-py:
-            data = self._get_viewer(mode).read_pixels(width, height, depth=False)
+            data = self._get_viewer(mode).read_pixels(
+                width, height, depth=False)
             # original image is upside-down, so flip it
             return data[::-1, :, :]
         elif mode == 'human':
@@ -107,7 +116,8 @@ class RobotEnv(gym.GoalEnv):
             if mode == 'human':
                 self.viewer = mujoco_py.MjViewer(self.sim)
             elif mode == 'rgb_array':
-                self.viewer = mujoco_py.MjRenderContextOffscreen(self.sim, device_id=-1)
+                self.viewer = mujoco_py.MjRenderContextOffscreen(
+                    self.sim, device_id=-1)
             self._viewer_setup()
             self._viewers[mode] = self.viewer
         return self.viewer

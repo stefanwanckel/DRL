@@ -15,7 +15,7 @@ class Ur5Env(robot_env.RobotEnv):
     def __init__(
         self, model_path, n_substeps, gripper_extra_height, block_gripper,
         has_object, target_in_the_air, target_offset, obj_range, target_range,
-        distance_threshold, initial_qpos, reward_type, table_height=None
+        distance_threshold, initial_qpos, reward_type, table_height=None, max_pos_change=0.05
     ):
         """Initializes a new Fetch environment.
 
@@ -43,6 +43,7 @@ class Ur5Env(robot_env.RobotEnv):
         self.distance_threshold = distance_threshold
         self.reward_type = reward_type
         self.table_height = table_height
+        self.max_pos_change = max_pos_change
 
         super(Ur5Env, self).__init__(
             model_path=model_path, n_substeps=n_substeps, n_actions=4,
@@ -67,10 +68,13 @@ class Ur5Env(robot_env.RobotEnv):
             if self.has_object:
                 pass
             else:
-                self.sim.data.set_joint_qpos(
-                    'robot0:l_gripper_finger_joint', 0.)
-                self.sim.data.set_joint_qpos(
-                    'robot0:r_gripper_finger_joint', 0.)
+                if "no_gripper" in self.model_path:
+                    pass
+                else:
+                    self.sim.data.set_joint_qpos(
+                        'robot0:l_gripper_finger_joint', 0.)
+                    self.sim.data.set_joint_qpos(
+                        'robot0:r_gripper_finger_joint', 0.)
             self.sim.forward()
 
     def _set_action(self, action):
@@ -78,11 +82,17 @@ class Ur5Env(robot_env.RobotEnv):
         action = action.copy()  # ensure that we don't change the action outside of this scope
         pos_ctrl, gripper_ctrl = action[:3], action[3]
 
-        pos_ctrl *= 0.01  # limit maximum change in position
+        pos_ctrl *= self.max_pos_change  # limit maximum change in position
         if self.has_object:
-            rot_ctrl = [0., 0., -1., 1.]
+            if "no_gripper" in self.model_path:
+                rot_ctrl = [0, 0., -1., 1.]
+            else:
+                rot_ctrl = [1., 0., 0., 0.]
         else:
-            rot_ctrl = [1., 0., 0., 0.]
+            if "no_gripper" in self.model_path:
+                rot_ctrl = [0, 0., -1., 1.]
+            else:
+                rot_ctrl = [1., 0., 0., 0.]
         # rot_ctrl = [1., 0., 1., 0.]  # fixed rotation of the end effector, expressed as a quaternion
         gripper_ctrl = np.array([gripper_ctrl, gripper_ctrl])
         assert gripper_ctrl.shape == (2,)
@@ -116,9 +126,14 @@ class Ur5Env(robot_env.RobotEnv):
         else:
             object_pos = object_rot = object_velp = object_velr = object_rel_pos = np.zeros(
                 0)
-        gripper_state = robot_qpos[-2:]
-        # change to a scalar if the gripper is made symmetric
-        gripper_vel = robot_qvel[-2:] * dt
+        if "no_gripper" in self.model_path:
+            gripper_state = np.array([0, 0])
+            gripper_vel = np.array([0, 0])
+            # gripper_state = np.zeros(0)
+            # gripper_vel = np.zeros(0)
+        else:
+            gripper_state = robot_qpos[-2:]
+            gripper_vel = robot_qvel[-2:] * dt
 
         if not self.has_object:
             achieved_goal = grip_pos.copy()
@@ -140,13 +155,19 @@ class Ur5Env(robot_env.RobotEnv):
         if self.has_object:
             body_id = self.sim.model.body_name2id('robot0:wrist_3_link')
         else:
-            body_id = self.sim.model.body_name2id('robot0:gripper_link')
+            if "no_gripper" in self.model_path:
+                body_id = self.sim.model.body_name2id('dummy_gripper')
+            else:
+                body_id = self.sim.model.body_name2id('robot0:gripper_link')
+
         lookat = self.sim.data.body_xpos[body_id]
         for idx, value in enumerate(lookat):
             self.viewer.cam.lookat[idx] = value
         self.viewer.cam.distance = 2.5
         self.viewer.cam.azimuth = -180.
         self.viewer.cam.elevation = -25.
+        self.viewer._video_path = "/home/stefan/Documents/Masterarbeit/DRL/video_%07d.mp4"
+        self.viewer._image_path = "/home/stefan/Documents/Masterarbeit/DRL/frame_%07d.png"
 
     def _render_callback(self):
         # Visualize target.
@@ -161,16 +182,22 @@ class Ur5Env(robot_env.RobotEnv):
 
         # Randomize start position of object.
         if self.has_object:
-            object_xpos = self.initial_gripper_xpos[:2]
-            while np.linalg.norm(object_xpos - self.initial_gripper_xpos[:2]) < 0.8*self.obj_range:
-                object_xpos = self.initial_gripper_xpos[:2] + \
-                    self.np_random.uniform(-self.obj_range,
-                                           self.obj_range, size=2)
+            # object_xpos = self.initial_gripper_xpos[:2]
+            # while np.linalg.norm(object_xpos - self.initial_gripper_xpos[:2]) < 0.8*self.obj_range:
+            #     # [-0.34248927  0.4682842 ]
+            #     object_xpos = self.initial_gripper_xpos[:2] + [-0.5, 0]
+            #     print(object_xpos)
+            #     # object_xpos = object_xpos + \
+            #     #     self.np_random.uniform(-self.obj_range,
+            #     #                            self.obj_range, size=2)
+            #     print(np.linalg.norm(object_xpos -
+            #           self.initial_gripper_xpos[:2]))
+
             object_qpos = self.sim.data.get_joint_qpos('object0:joint')
             assert object_qpos.shape == (7,)
-            object_qpos[:2] = object_xpos
-            table_height = 0.4
-            object_qpos[2] = table_height + 0.10
+            object_qpos[:2] += self.np_random.uniform(-self.obj_range,
+                                                      self.obj_range, size=2)
+            # object_qpos[2] = 0.5  # self.table_height  # + self.height_offset
             self.sim.data.set_joint_qpos('object0:joint', object_qpos)
 
         self.sim.forward()
@@ -178,12 +205,21 @@ class Ur5Env(robot_env.RobotEnv):
 
     def _sample_goal(self):
         if self.has_object:
-            goal = self.initial_gripper_xpos[:3] + \
-                self.np_random.uniform(-self.target_range,
-                                       self.target_range, size=3)
-            goal += self.target_offset
+
+            goal = self.initial_gripper_xpos[:3]
+            goal[:2] += self.np_random.uniform(-self.target_range,
+                                               self.target_range, size=2)
+
+            object_qpos = self.sim.data.get_joint_qpos('object0:joint')
+            assert object_qpos.shape == (7,)
+            object_qpos[:2] = object_qpos[:2] + \
+                self.np_random.uniform(-self.obj_range, self.obj_range, size=2)
+
+            #goal = object_qpos[:3]
+
+            # goal += self.target_offset
             if self.table_height is not None:
-                goal[2] = self.table_height
+                goal[2] = 0.51
             else:
                 goal[2] = self.height_offset
             if self.target_in_the_air and self.np_random.uniform() < 0.5:
@@ -193,6 +229,7 @@ class Ur5Env(robot_env.RobotEnv):
             goal = self.initial_gripper_xpos[:3] + \
                 self.np_random.uniform(-self.target_range,
                                        self.target_range, size=3)
+
         return goal.copy()
 
     def _is_success(self, achieved_goal, desired_goal):
@@ -208,19 +245,25 @@ class Ur5Env(robot_env.RobotEnv):
         # Move end effector into position.
         # gripper_target = np.array([0.75,0.,0.4 + self.gripper_extra_height]) #+ self.sim.data.get_site_xpos('robot0:grip')
         gripper_target = self.sim.data.get_site_xpos(
-            'robot0:grip') + [-0.2, -0.15, -0.35 + self.gripper_extra_height]
+            'robot0:grip')  # + [-0.2, -0.15, -0.35 + self.gripper_extra_height]
         #gripper_rotation = np.array([1., 0., 1., 0.])
         #rot_eul = [math.pi,math.pi/2,0]
         #gripper_rotation = rotations.euler2quat(rot_eul)
         if self.has_object:
-            gripper_rotation = np.array([0., 0., -1., 1.])
+            if "no_gripper" in self.model_path:
+                gripper_rotation = np.array([0., 0., -1., 1.])
+            else:
+                gripper_rotation = np.array([1., 0., 0., 0.])
         else:
-            gripper_rotation = np.array([1., 0., 0., 0.])
+            if "no_gripper" in self.model_path:
+                gripper_rotation = np.array([0., 0., -1., 1.])
+            else:
+                gripper_rotation = np.array([1., 0., 0., 0.])
 
         self.sim.data.set_mocap_pos('robot0:mocap', gripper_target)
         self.sim.data.set_mocap_quat('robot0:mocap', gripper_rotation)
-        for _ in range(100):
-            self.sim.step()
+        # for _ in range(100):
+        self.sim.step()
 
         # Extract information for sampling goals.
         self.initial_gripper_xpos = self.sim.data.get_site_xpos(

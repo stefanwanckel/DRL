@@ -16,11 +16,11 @@ class Ur5PushEnv(ur5_env.Ur5Env, utils.EzPickle):
             "robot0:wrist_1_joint": -1.0964625638774415,
             "robot0:wrist_2_joint": 1.5797905921936035,
             "robot0:wrist_3_joint": -0.0025427977191370132,
-            'object0:joint': [0, 0, 0.45, 1., 0., 0., 1.]
+            # 'object0:joint': [0, 0, 0.4, 1., 0., 0., 1.]
         }
         ur5_env.Ur5Env.__init__(
             self, MODEL_XML_PATH, has_object=True, block_gripper=True, n_substeps=20,
-            gripper_extra_height=0.05, target_in_the_air=False, target_offset=0.0,
-            obj_range=0.15, target_range=0.15, distance_threshold=0.05,
-            initial_qpos=initial_qpos, reward_type=reward_type, table_height=0.4)
+            gripper_extra_height=0.00, target_in_the_air=False, target_offset=0.0,
+            obj_range=0.25, target_range=0.15, distance_threshold=0.07,
+            initial_qpos=initial_qpos, reward_type=reward_type, table_height=0.4, max_pos_change=0.05)
         utils.EzPickle.__init__(self)

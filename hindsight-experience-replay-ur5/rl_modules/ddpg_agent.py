@@ -129,7 +129,7 @@ class ddpg_agent:
                 print('[{}] epoch is: {}, eval success rate is: {:.3f}, std is: {:.3f}'. format(
                     datetime.now(), epoch, success_rate, std))
                 torch.save([self.o_norm.mean, self.o_norm.std, self.g_norm.mean, self.g_norm.std, self.actor_network.state_dict()],
-                           self.model_path + '/Sept_19_1_{}.pt'.format(epoch))
+                           self.model_path + '/' + datetime.now().isoformat() + '_epoch_{}.pt'.format(epoch))
 
     # pre_process the inputs
     def _preproc_inputs(self, obs, g):
@@ -271,6 +271,7 @@ class ddpg_agent:
                     pi = self.actor_network(input_tensor)
                     # convert the actions
                     actions = pi.detach().cpu().numpy().squeeze()
+                    #print("action: ", actions)
                 observation_new, _, _, info = self.env.step(actions)
                 obs = observation_new['observation']
                 g = observation_new['desired_goal']

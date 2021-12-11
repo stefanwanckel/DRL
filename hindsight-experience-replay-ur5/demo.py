@@ -1,12 +1,16 @@
 import torch
 from numpy.lib.function_base import _average_dispatcher
 from rl_modules.models import actor
+from utils import load_last_model
 from arguments import get_args
 import gym
 import numpy as np
 import ur5_env_mjco
-
+import os
+import time
 # process the inputs
+
+np.set_printoptions(2)
 
 
 def process_inputs(o, g, o_mean, o_std, g_mean, g_std, args):
@@ -23,6 +27,7 @@ def process_inputs(o, g, o_mean, o_std, g_mean, g_std, args):
 
 if __name__ == '__main__':
     args = get_args()
+    last_model = True
     # load the model param
     print(vars(args))
     dash = "-"*42
@@ -36,9 +41,37 @@ if __name__ == '__main__':
         if i == len(vars(args))-1:
             print(dash)
     if args.env_name == "ur5_reach-v1":
-        model_path = args.save_dir + args.env_name + '/Sept_19_1_39.pt'
+        model_path = args.save_dir + args.env_name + '/Oct_24_1_2.pt'
     elif args.env_name == "ur5_push-v1":
-        model_path = args.save_dir + args.env_name + '/modelur5.pt'
+        if last_model:
+            model_path = os.path.join(
+                args.save_dir, args.env_name, load_last_model(args.save_dir, args.env_name))
+            print("Last model name: ", load_last_model(
+                args.save_dir, args.env_name))
+            time.sleep(1)
+        else:
+            model_path = args.save_dir + args.env_name + \
+                '/2021-12-10T04:00:18.657028_epoch_79.pt'
+    elif args.env_name == "ur5_reach_no_gripper-v1":
+        if last_model:
+            model_path = os.path.join(
+                args.save_dir, args.env_name, load_last_model(args.save_dir, args.env_name))
+            print("Last model name: ", load_last_model(
+                args.save_dir, args.env_name))
+            time.sleep(1)
+        else:
+            model_path = args.save_dir + args.env_name + \
+                '/2021-12-10T04:00:18.657028_epoch_79.pt'
+    elif args.env_name == "ur5_push_no_gripper-v1":
+        if last_model:
+            model_path = os.path.join(
+                args.save_dir, args.env_name, load_last_model(args.save_dir, args.env_name))
+            print("Last model name: ", load_last_model(
+                args.save_dir, args.env_name))
+            time.sleep(1)
+        else:
+            model_path = args.save_dir + args.env_name + \
+                '/2021-12-10T04:00:18.657028_epoch_79.pt'
     o_mean, o_std, g_mean, g_std, model = torch.load(
         model_path, map_location=lambda storage, loc: storage)
     # create the environment
@@ -54,6 +87,7 @@ if __name__ == '__main__':
     # create the actor network
     actor_network = actor(env_params)
     actor_network.load_state_dict(model)
+    # needed for evaluation part.
     actor_network.eval()
     lstGoals = []
     for i in range(args.demo_length):
@@ -64,15 +98,16 @@ if __name__ == '__main__':
         g = observation['desired_goal']
         lstGoals.append(g)
 
-        for t in range(200):  # env._max_episode_steps):
+        for t in range(env._max_episode_steps):  # env._max_episode_steps):
 
             env.render()
-            obs[3:] = np.zeros(obs[3:].shape)
+            obs
+            #obs[3:] = np.zeros(obs[3:].shape)
             inputs = process_inputs(obs, g, o_mean, o_std, g_mean, g_std, args)
             with torch.no_grad():
                 pi = actor_network(inputs)
             action = pi.detach().numpy().squeeze()
-
+            print("action: ", action)
             # put actions into the environment
             observation_new, reward, _, info = env.step(action)
             obs = observation_new['observation']
