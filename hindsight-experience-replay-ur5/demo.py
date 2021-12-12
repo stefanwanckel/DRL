@@ -27,7 +27,7 @@ def process_inputs(o, g, o_mean, o_std, g_mean, g_std, args):
 
 if __name__ == '__main__':
     args = get_args()
-    last_model = False
+    last_model = True
     # load the model param
     print(vars(args))
     dash = "-"*42
@@ -72,10 +72,10 @@ if __name__ == '__main__':
         else:
             model_path = args.save_dir + args.env_name + \
                 '/2021-12-11T17:18:10.390514_epoch_18.pt'
-    # o_mean, o_std, g_mean, g_std, model, _, _, _ = torch.load(
-    #     model_path, map_location=lambda storage, loc: storage)
-    o_mean, o_std, g_mean, g_std, model = torch.load(
+    o_mean, o_std, g_mean, g_std, model, _, _, _ = torch.load(
         model_path, map_location=lambda storage, loc: storage)
+    # o_mean, o_std, g_mean, g_std, model = torch.load(
+    #     model_path, map_location=lambda storage, loc: storage)
     # create the environment
     env = gym.make(args.env_name)
     # get the env param
@@ -113,11 +113,12 @@ if __name__ == '__main__':
             obs = observation_new['observation']
             if t == 0 and i == 0:
                 print(dash)
-                print("{:<25s}{:<15s}".format("ENV_ARGS", "VALUE"))
-                for key in info["args"]:
-                    print("|{:<22s} | {:<15}|".format(key, info["args"][key]))
+                print("{:<25s}{:<15s}".format("ENV_INIT", "VALUE"))
+                for key in env.inits:
+                    print("|{:<22s} | {:<15}|".format(key, env.inits[key]))
                 print(dash)
-
-        print('the episode is: {}, is success: {}.'.format(
-            i, info['is_success']))
-        print('Episode {} has goal {}'.format(i, lstGoals[i]))
+        if info['is_success'] == 1:
+            success_counter += 1
+        print('Episode-No.: {} \n\t is success: {},\t overall success : {}/{}'.format(
+            i, info['is_success'], success_counter, args.demo_length))
+        #print('Episode {} has goal {}'.format(i, lstGoals[i]))

@@ -12,14 +12,5 @@ env_name="ur5_push_no_gripper-v1"
 log_extension=".log"
 continue_training = false
 log_name = $env_name$now$log_extension
-mpirun -np 4 python -u train.py --env-name=$env_name 2>&1 | tee $log_name
-if [$continue_training -eq false]
-then
-    echo Start training with $env_name environment.
-    echo Log saving location:  $log_name
-    mpirun -np 4 python -u train.py --env-name=$env_name 2>&1 | tee $log_name
-else
-    echo Continue training with $env_name environment.
-    echo Log saving location: $log_name
-    mpirun -np 4 python -u train.py --env-name=$env_name 2>&1 --continue| tee $log_name
-fi
+echo $log_name
+mpirun -np 4 python -u train.py --env-name="ur5_push_no_gripper-v1" 2>&1 | tee ur5_push_no_gripper_1.log

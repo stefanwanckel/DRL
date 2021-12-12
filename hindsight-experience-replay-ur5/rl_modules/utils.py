@@ -6,7 +6,8 @@ def load_saved_state_dicts(save_dir, env_name):
 
     search_dir = os.path.join(save_dir, env_name)
     files = os.listdir(search_dir)
-    files_sorted = sorted(files,
+    files_ext = [file for file in files if file.endswith(".pt")]
+    files_sorted = sorted(files_ext,
                           key=lambda x: os.path.getmtime(
                               os.path.join(search_dir, x))
                           )

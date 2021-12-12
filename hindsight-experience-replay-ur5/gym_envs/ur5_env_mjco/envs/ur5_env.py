@@ -195,7 +195,7 @@ class Ur5Env(robot_env.RobotEnv):
             # IMPORTANT: Apparently, self.set_joint_qpos sets the joints relative to its OWN coordinate frame.
             object_qpos = self.sim.data.get_joint_qpos('object0:joint')
 
-            object_qpos[:3] = np.array([-0.1, -0.1, 0])
+            object_qpos[:3] = np.array([-0.1, -0.1, +0.02])
             #print("object_qpos: ", object_qpos)
             assert object_qpos.shape == (7,)
             # object_qpos[:2] += self.np_random.uniform(-self.obj_range,
@@ -214,18 +214,16 @@ class Ur5Env(robot_env.RobotEnv):
             goal[2] = 0.51
             #print("goal_prior: ", goal)
             object_xpos = self.sim.data.get_site_xpos('object0')
-            new_goal = goal
-            while np.linalg.norm(object_xpos - new_goal) < 0.8*self.target_range:
-                new_goal[:2] = goal[:2]+self.np_random.uniform(-self.target_range,
-                                                               self.target_range, size=2)
-            goal = new_goal
-
-            #print("goal_posterior: ", goal)
+            # new_goal = goal
+            # modulator = 0.8
+            # while np.linalg.norm(object_xpos - new_goal) < modulator*self.target_range:
+            #     new_goal[:2] = goal[:2]+self.np_random.uniform(-self.target_range,
+            #                                                    self.target_range, size=2)
+            # goal = new_goal
+            goal[:2] = goal[:2]+self.np_random.uniform(-self.target_range,
+                                                       self.target_range, size=2)
             object_qpos = self.sim.data.get_joint_qpos('object0:joint')
             assert object_qpos.shape == (7,)
-            #goal = object_qpos[:3]
-
-            # goal += self.target_offset
             if self.table_height is not None:
                 goal[2] = 0.51
             else:

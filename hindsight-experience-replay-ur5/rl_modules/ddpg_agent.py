@@ -46,7 +46,12 @@ class ddpg_agent:
             for key in d_args:
                 print("|{:<22s} | {:<15}|".format(key, d_args[key]))
             print(dash)
-            print("env_params: ")
+            print("env_inits: ")
+            print("{:<25s}{:<15s}".format("ENV_INIT", "VALUE"))
+            for key in env.env.inits:
+                print("|{:<22s} | {:<15}|".format(key, env.env.inits[key]))
+            print(dash)
+            print("env_dimensions: ")
             for key in env_params:
                 print("|{:<22s} | {:<15}|".format(key, env_params[key]))
             print(dash)
@@ -109,6 +114,8 @@ class ddpg_agent:
         train the network
 
         """
+        actor_loss = []
+        critic_loss = []
         # start to collect samples
         for epoch in range(self.args.n_epochs):
             for _ in range(self.args.n_cycles):
@@ -155,7 +162,9 @@ class ddpg_agent:
                 self._update_normalizer([mb_obs, mb_ag, mb_g, mb_actions])
                 for _ in range(self.args.n_batches):
                     # train the network
-                    self._update_network()
+                    current_actor_loss, current_critic_loss = self._update_network()
+                    actor_loss.append(current_actor_loss)
+                    critic_loss.append(current_critic_loss)
                 # soft update
                 self._soft_update_target_network(
                     self.actor_target_network, self.actor_network)
@@ -176,6 +185,9 @@ class ddpg_agent:
                             self.critic_target_network.state_dict()
                             ],
                            self.model_path + '/' + datetime.now().isoformat() + '_epoch_{}.pt'.format(epoch))
+                # preparing and saving losses
+                np.savez(self.model_path + '/' + datetime.now().isoformat() + '_epoch_{}'.format(epoch),
+                         actor_loss=np.array(actor_loss), critic_loss=np.array(critic_loss))
 
     # pre_process the inputs
     def _preproc_inputs(self, obs, g):
@@ -302,6 +314,7 @@ class ddpg_agent:
         critic_loss.backward()
         sync_grads(self.critic_network)
         self.critic_optim.step()
+        return actor_loss.detach().numpy(), critic_loss.detach().numpy()
 
     # do the evaluation
     def _eval_agent(self):
