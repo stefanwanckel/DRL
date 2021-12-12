@@ -101,6 +101,7 @@ class RobotEnv(gym.GoalEnv):
             "distance_threshold":  self.distance_threshold,
             "reward_type":  self.reward_type,
             "max_pos_change":  self.max_pos_change,
+            "reduced_obs": self.reduced
         }
         return obs
 

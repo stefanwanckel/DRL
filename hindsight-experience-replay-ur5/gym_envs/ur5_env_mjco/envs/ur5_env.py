@@ -15,7 +15,7 @@ class Ur5Env(robot_env.RobotEnv):
     def __init__(
         self, model_path, n_substeps, gripper_extra_height, block_gripper,
         has_object, target_in_the_air, target_offset, obj_range, target_range,
-        distance_threshold, initial_qpos, reward_type, table_height=None, max_pos_change=0.05
+        distance_threshold, initial_qpos, reward_type, table_height=None, max_pos_change=0.05, reduced=False
     ):
         """Initializes a new Fetch environment.
 
@@ -44,6 +44,7 @@ class Ur5Env(robot_env.RobotEnv):
         self.reward_type = reward_type
         self.table_height = table_height
         self.max_pos_change = max_pos_change
+        self.reduced = reduced
 
         super(Ur5Env, self).__init__(
             model_path=model_path, n_substeps=n_substeps, n_actions=4,
@@ -113,16 +114,27 @@ class Ur5Env(robot_env.RobotEnv):
         grip_velp = self.sim.data.get_site_xvelp('robot0:grip') * dt
         robot_qpos, robot_qvel = utils.robot_get_obs(self.sim)
         if self.has_object:
-            object_pos = self.sim.data.get_site_xpos('object0')
-            # rotations
-            object_rot = rotations.mat2euler(
-                self.sim.data.get_site_xmat('object0'))
-            # velocities
-            object_velp = self.sim.data.get_site_xvelp('object0') * dt
-            object_velr = self.sim.data.get_site_xvelr('object0') * dt
-            # gripper state
-            object_rel_pos = object_pos - grip_pos
-            object_velp -= grip_velp
+            if self.reduced:
+                object_pos = self.sim.data.get_site_xpos('object0')
+                # rotations
+                object_rot = np.zeros(0)
+                # velocities
+                object_velp = np.zeros(0)
+                object_velr = np.zeros(0)
+                # gripper state
+                object_rel_pos = object_pos - grip_pos
+                object_velp = grip_velp
+            else:
+                object_pos = self.sim.data.get_site_xpos('object0')
+                # rotations
+                object_rot = rotations.mat2euler(
+                    self.sim.data.get_site_xmat('object0'))
+                # velocities
+                object_velp = self.sim.data.get_site_xvelp('object0') * dt
+                object_velr = self.sim.data.get_site_xvelr('object0') * dt
+                # gripper state
+                object_rel_pos = object_pos - grip_pos
+                object_velp -= grip_velp
         else:
             object_pos = object_rot = object_velp = object_velr = object_rel_pos = np.zeros(
                 0)
@@ -182,16 +194,6 @@ class Ur5Env(robot_env.RobotEnv):
 
         # Randomize start position of object.
         if self.has_object:
-            # object_xpos = self.initial_gripper_xpos[:2]
-            # while np.linalg.norm(object_xpos - self.initial_gripper_xpos[:2]) < 0.8*self.obj_range:
-            #     # [-0.34248927  0.4682842 ]
-            #     object_xpos = self.initial_gripper_xpos[:2] + [-0.5, 0]
-            #     print(object_xpos)
-            #     # object_xpos = object_xpos + \
-            #     #     self.np_random.uniform(-self.obj_range,
-            #     #                            self.obj_range, size=2)
-            #     print(np.linalg.norm(object_xpos -
-            #           self.initial_gripper_xpos[:2]))
             # IMPORTANT: Apparently, self.set_joint_qpos sets the joints relative to its OWN coordinate frame.
             object_qpos = self.sim.data.get_joint_qpos('object0:joint')
 
