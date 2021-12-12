@@ -74,6 +74,19 @@ class RobotEnv(gym.GoalEnv):
         done = False
         info = {
             'is_success': self._is_success(obs['achieved_goal'], self.goal),
+            'observation': obs,
+            'action': action,
+            "args": {
+                "gripper_extra_height":  self.gripper_extra_height,
+                "has_object":  self.has_object,
+                "target_in_the_air":  self.target_in_the_air,
+                "target_offset":  self.target_offset,
+                "obj_range":  self.obj_range,
+                "target_range":  self.target_range,
+                "distance_threshold":  self.distance_threshold,
+                "reward_type":  self.reward_type,
+                "max_pos_change":  self.max_pos_change,
+            }
         }
         reward = self.compute_reward(obs['achieved_goal'], self.goal, info)
         return obs, reward, done, info
@@ -86,9 +99,10 @@ class RobotEnv(gym.GoalEnv):
         # configuration.
         super(RobotEnv, self).reset()
         did_reset_sim = False
-        self.goal = self._sample_goal().copy()
+
         while not did_reset_sim:
             did_reset_sim = self._reset_sim()
+        self.goal = self._sample_goal().copy()
         obs = self._get_obs()
         return obs
 

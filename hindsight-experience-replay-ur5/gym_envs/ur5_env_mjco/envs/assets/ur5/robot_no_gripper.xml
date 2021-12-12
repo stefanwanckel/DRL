@@ -45,8 +45,7 @@
 									<geom type="mesh"  mesh="robot0:wrist3" material="robot0:mat0"/>
 
 									<body childclass="cls_dummy_gripper" name="dummy_gripper" pos="0 0.08 0">
-										<inertial diaginertia="0.1 0.1 0.1" mass="4" pos="-0.01 0 0"></inertial>
-										<geom pos="0 0 0" size="0.015" type="sphere" name="dummy_gripper_geom"  condim="4" friction="1 0.05 0.01"></geom>
+										<geom pos="0 0 0" size="0.015" type="sphere" name="dummy_gripper_geom"  condim="4" friction="1 0.05 0.01" ></geom>
 										<site name="robot0:grip" pos="0. 0. 0." rgba="0 0 1 0.3" size="0.01"></site>									
 									</body>
 								</body>	

@@ -192,11 +192,14 @@ class Ur5Env(robot_env.RobotEnv):
             #     #                            self.obj_range, size=2)
             #     print(np.linalg.norm(object_xpos -
             #           self.initial_gripper_xpos[:2]))
-
+            # IMPORTANT: Apparently, self.set_joint_qpos sets the joints relative to its OWN coordinate frame.
             object_qpos = self.sim.data.get_joint_qpos('object0:joint')
+
+            object_qpos[:3] = np.array([-0.1, -0.1, 0])
+            #print("object_qpos: ", object_qpos)
             assert object_qpos.shape == (7,)
-            object_qpos[:2] += self.np_random.uniform(-self.obj_range,
-                                                      self.obj_range, size=2)
+            # object_qpos[:2] += self.np_random.uniform(-self.obj_range,
+            #                                           self.obj_range, size=2)
             # object_qpos[2] = 0.5  # self.table_height  # + self.height_offset
             self.sim.data.set_joint_qpos('object0:joint', object_qpos)
 
@@ -206,15 +209,20 @@ class Ur5Env(robot_env.RobotEnv):
     def _sample_goal(self):
         if self.has_object:
 
-            goal = self.initial_gripper_xpos[:3]
-            goal[:2] += self.np_random.uniform(-self.target_range,
-                                               self.target_range, size=2)
+            #goal = self.initial_gripper_xpos[:3]
+            goal = np.array([-0.33,  0.48,  0.73])
+            goal[2] = 0.51
+            #print("goal_prior: ", goal)
+            object_xpos = self.sim.data.get_site_xpos('object0')
+            new_goal = goal
+            while np.linalg.norm(object_xpos - new_goal) < 0.8*self.target_range:
+                new_goal[:2] = goal[:2]+self.np_random.uniform(-self.target_range,
+                                                               self.target_range, size=2)
+            goal = new_goal
 
+            #print("goal_posterior: ", goal)
             object_qpos = self.sim.data.get_joint_qpos('object0:joint')
             assert object_qpos.shape == (7,)
-            object_qpos[:2] = object_qpos[:2] + \
-                self.np_random.uniform(-self.obj_range, self.obj_range, size=2)
-
             #goal = object_qpos[:3]
 
             # goal += self.target_offset
@@ -245,7 +253,7 @@ class Ur5Env(robot_env.RobotEnv):
         # Move end effector into position.
         # gripper_target = np.array([0.75,0.,0.4 + self.gripper_extra_height]) #+ self.sim.data.get_site_xpos('robot0:grip')
         gripper_target = self.sim.data.get_site_xpos(
-            'robot0:grip')  # + [-0.2, -0.15, -0.35 + self.gripper_extra_height]
+            'robot0:grip') + [0, 0, self.gripper_extra_height]
         #gripper_rotation = np.array([1., 0., 1., 0.])
         #rot_eul = [math.pi,math.pi/2,0]
         #gripper_rotation = rotations.euler2quat(rot_eul)
@@ -268,8 +276,6 @@ class Ur5Env(robot_env.RobotEnv):
         # Extract information for sampling goals.
         self.initial_gripper_xpos = self.sim.data.get_site_xpos(
             'robot0:grip').copy()
-        if self.has_object:
-            self.height_offset = self.sim.data.get_site_xpos('object0')[2]
 
     def render(self, mode='human', width=500, height=500):
         return super(Ur5Env, self).render(mode, width, height)

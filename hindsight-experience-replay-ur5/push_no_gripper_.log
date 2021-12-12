@@ -1,56 +1,56 @@
-[2021-12-10 20:07:06.944678] epoch is: 0, eval success rate is: 0.000, std is: 0.000
-[2021-12-10 20:08:56.350909] epoch is: 1, eval success rate is: 0.000, std is: 0.000
-[2021-12-10 20:10:48.162468] epoch is: 2, eval success rate is: 0.000, std is: 0.000
-[2021-12-10 20:12:39.110591] epoch is: 3, eval success rate is: 0.000, std is: 0.000
-[2021-12-10 20:14:32.202642] epoch is: 4, eval success rate is: 0.000, std is: 0.000
-[2021-12-10 20:16:24.789737] epoch is: 5, eval success rate is: 0.000, std is: 0.000
-[2021-12-10 20:18:12.851742] epoch is: 6, eval success rate is: 0.000, std is: 0.000
-[2021-12-10 20:20:08.341570] epoch is: 7, eval success rate is: 0.000, std is: 0.000
-[2021-12-10 20:22:05.006260] epoch is: 8, eval success rate is: 0.000, std is: 0.000
-[2021-12-10 20:23:59.206052] epoch is: 9, eval success rate is: 0.000, std is: 0.000
-[2021-12-10 20:25:56.540610] epoch is: 10, eval success rate is: 0.000, std is: 0.000
-[2021-12-10 20:27:48.321392] epoch is: 11, eval success rate is: 0.000, std is: 0.000
-[2021-12-10 20:30:40.911966] epoch is: 12, eval success rate is: 0.000, std is: 0.000
-[2021-12-10 20:32:40.183090] epoch is: 13, eval success rate is: 0.000, std is: 0.000
-[2021-12-10 20:34:37.262684] epoch is: 14, eval success rate is: 0.000, std is: 0.000
-[2021-12-10 20:36:33.544750] epoch is: 15, eval success rate is: 0.000, std is: 0.000
-[2021-12-10 20:38:25.511212] epoch is: 16, eval success rate is: 0.000, std is: 0.000
-[2021-12-10 20:40:27.545491] epoch is: 17, eval success rate is: 0.000, std is: 0.000
-[2021-12-10 20:42:27.075814] epoch is: 18, eval success rate is: 0.000, std is: 0.000
-[2021-12-10 20:44:42.914933] epoch is: 19, eval success rate is: 0.000, std is: 0.000
-[2021-12-10 20:46:34.931554] epoch is: 20, eval success rate is: 0.000, std is: 0.000
-[2021-12-10 20:48:24.726916] epoch is: 21, eval success rate is: 0.000, std is: 0.000
-[2021-12-10 20:50:19.809802] epoch is: 22, eval success rate is: 0.000, std is: 0.000
-[2021-12-10 20:52:13.005909] epoch is: 23, eval success rate is: 0.000, std is: 0.000
-[2021-12-10 20:54:06.544379] epoch is: 24, eval success rate is: 0.000, std is: 0.000
-[2021-12-10 20:56:06.016675] epoch is: 25, eval success rate is: 0.000, std is: 0.000
-[2021-12-10 20:58:00.751768] epoch is: 26, eval success rate is: 0.000, std is: 0.000
-[2021-12-10 21:00:00.376744] epoch is: 27, eval success rate is: 0.000, std is: 0.000
-[2021-12-10 21:02:02.354104] epoch is: 28, eval success rate is: 0.000, std is: 0.000
-[2021-12-10 21:03:58.256295] epoch is: 29, eval success rate is: 0.000, std is: 0.000
-[2021-12-10 21:05:57.587777] epoch is: 30, eval success rate is: 0.000, std is: 0.000
-[2021-12-10 21:07:55.759736] epoch is: 31, eval success rate is: 0.000, std is: 0.000
-[2021-12-10 21:09:57.944445] epoch is: 32, eval success rate is: 0.000, std is: 0.000
-[2021-12-10 21:12:02.354611] epoch is: 33, eval success rate is: 0.000, std is: 0.000
-[2021-12-10 21:14:09.984759] epoch is: 34, eval success rate is: 0.000, std is: 0.000
-[2021-12-10 21:16:17.741856] epoch is: 35, eval success rate is: 0.000, std is: 0.000
-[2021-12-10 21:18:30.511848] epoch is: 36, eval success rate is: 0.000, std is: 0.000
-[2021-12-10 21:20:41.437589] epoch is: 37, eval success rate is: 0.000, std is: 0.000
-[2021-12-10 21:23:11.141915] epoch is: 38, eval success rate is: 0.000, std is: 0.000
-[2021-12-10 21:25:20.865450] epoch is: 39, eval success rate is: 0.000, std is: 0.000
-[2021-12-10 21:27:32.765078] epoch is: 40, eval success rate is: 0.000, std is: 0.000
-[2021-12-10 21:29:44.041536] epoch is: 41, eval success rate is: 0.000, std is: 0.000
-[2021-12-10 21:31:58.687146] epoch is: 42, eval success rate is: 0.000, std is: 0.000
-[2021-12-10 21:34:14.662474] epoch is: 43, eval success rate is: 0.000, std is: 0.000
-[2021-12-10 21:36:34.197914] epoch is: 44, eval success rate is: 0.000, std is: 0.000
-[2021-12-10 21:38:50.568277] epoch is: 45, eval success rate is: 0.000, std is: 0.000
-[2021-12-10 21:41:04.947174] epoch is: 46, eval success rate is: 0.000, std is: 0.000
-[2021-12-10 21:43:28.578069] epoch is: 47, eval success rate is: 0.000, std is: 0.000
-[2021-12-10 21:45:43.413929] epoch is: 48, eval success rate is: 0.000, std is: 0.000
-[2021-12-10 21:48:13.239184] epoch is: 49, eval success rate is: 0.000, std is: 0.000
-[2021-12-10 21:50:33.443350] epoch is: 50, eval success rate is: 0.000, std is: 0.000
-[2021-12-10 21:52:53.984280] epoch is: 51, eval success rate is: 0.000, std is: 0.000
-[2021-12-10 21:55:21.145179] epoch is: 52, eval success rate is: 0.000, std is: 0.000
-[2021-12-10 21:57:38.997653] epoch is: 53, eval success rate is: 0.000, std is: 0.000
-[2021-12-10 21:59:53.107511] epoch is: 54, eval success rate is: 0.000, std is: 0.000
-[2021-12-10 22:02:06.373685] epoch is: 55, eval success rate is: 0.000, std is: 0.000
+env.spec.id:  ur5_push_no_gripper-v1
+args:  env.spec.id:  ur5_push_no_gripper-v1
+args:  Namespace(action_l2=1, batch_size=256, buffer_size=1000000, clip_obs=200, clip_range=5, clip_return=50, cuda=False, demo_length=20, env_name='ur5_push_no_gripper-v1', gamma=0.98, lr_actor=0.001, lr_critic=0.001, n_batches=40, n_cycles=50, n_epochs=80, n_test_rollouts=10, noise_eps=0.2, num_rollouts_per_mpi=2, num_workers=1, polyak=0.95, random_eps=0.3, replay_k=4, replay_strategy='future', save_dir='saved_models/', save_interval=5, seed=123)
+env_params Namespace(action_l2=1, batch_size=256, buffer_size=1000000, clip_obs=200, clip_range=5, clip_return=50, cuda=False, demo_length=20, env_name='ur5_push_no_gripper-v1', gamma=0.98, lr_actor=0.001, lr_critic=0.001, n_batches=40, n_cycles=50, n_epochs=80, n_test_rollouts=10, noise_eps=0.2, num_rollouts_per_mpi=2, num_workers=1, polyak=0.95, random_eps=0.3, replay_k=4, replay_strategy='future', save_dir='saved_models/', save_interval=5, seed=123)
+env_params {'obs': 25, 'goal': 3, 'action': 4, 'action_max': 1.0, 'max_timesteps': 100}
+CONTINUE TRAINING...
+{'obs': 25, 'goal': 3, 'action': 4, 'action_max': 1.0, 'max_timesteps': 100}
+CONTINUE TRAINING...
+Traceback (most recent call last):
+  File "train.py", line 55, in <module>
+Traceback (most recent call last):
+  File "train.py", line 55, in <module>
+    launch(args)
+  File "train.py", line 44, in launch
+    launch(args)
+  File "train.py", line 44, in launch
+    ddpg_trainer = ddpg_agent(args, env, env_params)
+  File "/home/stefan/Documents/Masterarbeit/DRL/hindsight-experience-replay-ur5/rl_modules/ddpg_agent.py", line 42, in __init__
+    ddpg_trainer = ddpg_agent(args, env, env_params)
+  File "/home/stefan/Documents/Masterarbeit/DRL/hindsight-experience-replay-ur5/rl_modules/ddpg_agent.py", line 42, in __init__
+    saved_dicts = load_saved_state_dicts(args.save_dir, env_name)
+      File "/home/stefan/Documents/Masterarbeit/DRL/hindsight-experience-replay-ur5/rl_modules/utils.py", line 16, in load_saved_state_dicts
+saved_dicts = load_saved_state_dicts(args.save_dir, env_name)
+  File "/home/stefan/Documents/Masterarbeit/DRL/hindsight-experience-replay-ur5/rl_modules/utils.py", line 16, in load_saved_state_dicts
+    model_path, map_location=lambda storage, loc: storage),    model_path, map_location=lambda storage, loc: storage),
+ValueError: not enough values to unpack (expected 8, got 1)
+
+ValueError: not enough values to unpack (expected 8, got 1)
+env.spec.id:  ur5_push_no_gripper-v1
+args:  env.spec.id:  ur5_push_no_gripper-v1
+args:  Namespace(action_l2=1, batch_size=256, buffer_size=1000000, clip_obs=200, clip_range=5, clip_return=50, cuda=False, demo_length=20, env_name='ur5_push_no_gripper-v1', gamma=0.98, lr_actor=0.001, lr_critic=0.001, n_batches=40, n_cycles=50, n_epochs=80, n_test_rollouts=10, noise_eps=0.2, num_rollouts_per_mpi=2, num_workers=1, polyak=0.95, random_eps=0.3, replay_k=4, replay_strategy='future', save_dir='saved_models/', save_interval=5, seed=123)
+env_params {'obs': 25, 'goal': 3, 'action': 4, 'action_max': 1.0, 'max_timesteps': 100}Namespace(action_l2=1, batch_size=256, buffer_size=1000000, clip_obs=200, clip_range=5, clip_return=50, cuda=False, demo_length=20, env_name='ur5_push_no_gripper-v1', gamma=0.98, lr_actor=0.001, lr_critic=0.001, n_batches=40, n_cycles=50, n_epochs=80, n_test_rollouts=10, noise_eps=0.2, num_rollouts_per_mpi=2, num_workers=1, polyak=0.95, random_eps=0.3, replay_k=4, replay_strategy='future', save_dir='saved_models/', save_interval=5, seed=123)
+env_params 
+CONTINUE TRAINING...
+{'obs': 25, 'goal': 3, 'action': 4, 'action_max': 1.0, 'max_timesteps': 100}
+CONTINUE TRAINING...
+Traceback (most recent call last):
+  File "train.py", line 55, in <module>
+    launch(args)
+  File "train.py", line 44, in launch
+    ddpg_trainer = ddpg_agent(args, env, env_params)
+  File "/home/stefan/Documents/Masterarbeit/DRL/hindsight-experience-replay-ur5/rl_modules/ddpg_agent.py", line 42, in __init__
+    saved_dicts = load_saved_state_dicts(args.save_dir, env_name)
+  File "/home/stefan/Documents/Masterarbeit/DRL/hindsight-experience-replay-ur5/rl_modules/utils.py", line 16, in load_saved_state_dicts
+    model_path, map_location=lambda storage, loc: storage),
+ValueError: not enough values to unpack (expected 8, got 1)
+Traceback (most recent call last):
+  File "train.py", line 55, in <module>
+    launch(args)
+  File "train.py", line 44, in launch
+    ddpg_trainer = ddpg_agent(args, env, env_params)
+  File "/home/stefan/Documents/Masterarbeit/DRL/hindsight-experience-replay-ur5/rl_modules/ddpg_agent.py", line 42, in __init__
+    saved_dicts = load_saved_state_dicts(args.save_dir, env_name)
+  File "/home/stefan/Documents/Masterarbeit/DRL/hindsight-experience-replay-ur5/rl_modules/utils.py", line 16, in load_saved_state_dicts
+    model_path, map_location=lambda storage, loc: storage),
+ValueError: not enough values to unpack (expected 8, got 1)

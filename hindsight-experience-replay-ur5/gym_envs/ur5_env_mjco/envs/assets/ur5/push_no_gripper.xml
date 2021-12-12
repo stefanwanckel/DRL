@@ -15,14 +15,14 @@
 		<include file="robot_no_gripper.xml"></include>
 
 		<body name="object0" pos="0 0 0" euler="0 0 -0.6">
-			<joint name="object0:joint" type="free" damping="0.5"></joint>
-			<geom size="0.04 0.022" pos="-0.5270866 0.33075274 0.51" type="cylinder" condim="3" name="object0" material="block_mat" mass="2"></geom>
+			<joint name="object0:joint" type="free" damping="50"></joint>
+			<geom size="0.04 0.022" pos="-0.5270866 0.33075274 0.51" type="cylinder" condim="3" name="object0" material="block_mat" mass="0.2"  solimp="0.99 0.999 0.01" solref="0.01 1"></geom>
 			<site name="object0" pos="-0.5270866 0.33075274 0.51" size="0.02 0.02 0.02" rgba="1 1 0 1" type="sphere"></site>
 		</body>
 
 		<!--body pos is chosen so that the table is centered with tcp       -->
 		<body pos="-0.3270866  0.48075274 0.25" euler="0 0 -0.6" name="table0">
-			<geom size="0.25 0.35 0.25" type="box" mass="2000" material="table_mat"></geom>
+			<geom size="0.25 0.35 0.25" type="box" mass="2000" material="table_mat"   solimp="0.99 0.999 0.01" solref="0.01 1"></geom>
 			<site name="target0" pos="-0.44 0.34 0.5" size="0.02 0.02 0.02" rgba="1 0 0 1" type="sphere"></site>
 		</body>
 

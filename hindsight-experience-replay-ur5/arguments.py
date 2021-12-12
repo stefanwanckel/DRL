@@ -59,6 +59,8 @@ def get_args():
                         help='if use gpu do the acceleration')
     parser.add_argument('--num-rollouts-per-mpi', type=int,
                         default=2, help='the rollouts per mpi')
+    parser.add_argument("--continue-training", action="store_true",
+                        help="continue training from last model")
 
     args = parser.parse_args()
 

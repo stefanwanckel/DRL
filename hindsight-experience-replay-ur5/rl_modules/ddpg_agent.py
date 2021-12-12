@@ -8,6 +8,7 @@ from rl_modules.replay_buffer import replay_buffer
 from rl_modules.models import actor, critic
 from mpi_utils.normalizer import normalizer
 from her_modules.her import her_sampler
+from rl_modules.utils import load_saved_state_dicts
 
 """
 ddpg with HER (MPI-version)
@@ -20,20 +21,57 @@ class ddpg_agent:
         self.args = args
         self.env = env
         self.env_params = env_params
+        # check whether to continue training or start new
+        if args.continue_training is None:
+            self.continueTraining = False
+        else:
+            self.continueTraining = args.continue_training
         # create the network
         self.actor_network = actor(env_params)
         self.critic_network = critic(env_params)
         # sync the networks across the cpus
         sync_networks(self.actor_network)
         sync_networks(self.critic_network)
-        # build up the target network
+
         self.actor_target_network = actor(env_params)
         self.critic_target_network = critic(env_params)
-        # load the weights into the target networks
-        self.actor_target_network.load_state_dict(
-            self.actor_network.state_dict())
-        self.critic_target_network.load_state_dict(
-            self.critic_network.state_dict())
+        # build up the target network
+        dash = "-"*42
+        if MPI.COMM_WORLD.Get_rank() == 0:
+            print("env.spec.id: ", env.spec.id)
+            print("args: ")
+            d_args = vars(args)
+            print(dash)
+            print("{:<25s}{:<15s}".format("ARGS", "VALUE"))
+            for key in d_args:
+                print("|{:<22s} | {:<15}|".format(key, d_args[key]))
+            print(dash)
+            print("env_params: ")
+            for key in env_params:
+                print("|{:<22s} | {:<15}|".format(key, env_params[key]))
+            print(dash)
+
+            #print("env_params", env_params)
+        if self.continueTraining:
+            if MPI.COMM_WORLD.Get_rank() == 0:
+                print("CONTINUE TRAINING...")
+            env_name = env.spec.id
+            saved_dicts = load_saved_state_dicts(args.save_dir, env_name)
+            self.actor_network.load_state_dict(saved_dicts['actor'])
+            self.critic_network.load_state_dict(saved_dicts['critic'])
+
+            self.critic_target_network.load_state_dict(
+                saved_dicts['critic_target'])
+            self.actor_target_network.load_state_dict(
+                saved_dicts['actor_target'])
+        else:
+
+            # load the weights into the target networks
+            self.actor_target_network.load_state_dict(
+                self.actor_network.state_dict())
+            self.critic_target_network.load_state_dict(
+                self.critic_network.state_dict())
+
         # if use gpu
         if self.args.cuda:
             self.actor_network.cuda()
@@ -128,7 +166,15 @@ class ddpg_agent:
             if MPI.COMM_WORLD.Get_rank() == 0:
                 print('[{}] epoch is: {}, eval success rate is: {:.3f}, std is: {:.3f}'. format(
                     datetime.now(), epoch, success_rate, std))
-                torch.save([self.o_norm.mean, self.o_norm.std, self.g_norm.mean, self.g_norm.std, self.actor_network.state_dict()],
+                torch.save([self.o_norm.mean,
+                            self.o_norm.std,
+                            self.g_norm.mean,
+                            self.g_norm.std,
+                            self.actor_network.state_dict(),
+                            self.critic_network.state_dict(),
+                            self.actor_target_network.state_dict(),
+                            self.critic_target_network.state_dict()
+                            ],
                            self.model_path + '/' + datetime.now().isoformat() + '_epoch_{}.pt'.format(epoch))
 
     # pre_process the inputs

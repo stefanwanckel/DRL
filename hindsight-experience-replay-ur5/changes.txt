@@ -1,0 +1,2 @@
+puck beneath tcp. set_qjoint makes pos change relative to own coordinate system
+make starting position of robot a bit closer to puck by lowering z.

@@ -27,7 +27,7 @@ def process_inputs(o, g, o_mean, o_std, g_mean, g_std, args):
 
 if __name__ == '__main__':
     args = get_args()
-    last_model = True
+    last_model = False
     # load the model param
     print(vars(args))
     dash = "-"*42
@@ -71,7 +71,9 @@ if __name__ == '__main__':
             time.sleep(1)
         else:
             model_path = args.save_dir + args.env_name + \
-                '/2021-12-10T04:00:18.657028_epoch_79.pt'
+                '/2021-12-11T17:18:10.390514_epoch_18.pt'
+    # o_mean, o_std, g_mean, g_std, model, _, _, _ = torch.load(
+    #     model_path, map_location=lambda storage, loc: storage)
     o_mean, o_std, g_mean, g_std, model = torch.load(
         model_path, map_location=lambda storage, loc: storage)
     # create the environment
@@ -90,6 +92,7 @@ if __name__ == '__main__':
     # needed for evaluation part.
     actor_network.eval()
     lstGoals = []
+    success_counter = 0
     for i in range(args.demo_length):
         observation = env.reset()
 
@@ -101,16 +104,19 @@ if __name__ == '__main__':
         for t in range(env._max_episode_steps):  # env._max_episode_steps):
 
             env.render()
-            obs
-            #obs[3:] = np.zeros(obs[3:].shape)
             inputs = process_inputs(obs, g, o_mean, o_std, g_mean, g_std, args)
             with torch.no_grad():
                 pi = actor_network(inputs)
             action = pi.detach().numpy().squeeze()
-            print("action: ", action)
             # put actions into the environment
             observation_new, reward, _, info = env.step(action)
             obs = observation_new['observation']
+            if t == 0 and i == 0:
+                print(dash)
+                print("{:<25s}{:<15s}".format("ENV_ARGS", "VALUE"))
+                for key in info["args"]:
+                    print("|{:<22s} | {:<15}|".format(key, info["args"][key]))
+                print(dash)
 
         print('the episode is: {}, is success: {}.'.format(
             i, info['is_success']))
