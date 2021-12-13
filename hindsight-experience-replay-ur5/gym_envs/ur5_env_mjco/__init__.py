@@ -32,7 +32,7 @@ register(
 )
 
 register(
-    id='ur5_PickAndPlace-v1',
+    id='ur5_pick_and_place-v1',
     entry_point='ur5_env_mjco.envs.ur5_tasks.pick_and_place:Ur5PickAndPlaceEnv',
     # kwargs=kwargs,
     max_episode_steps=100,

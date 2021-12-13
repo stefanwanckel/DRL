@@ -156,7 +156,6 @@ class Ur5Env(robot_env.RobotEnv):
             ), gripper_state, object_rot.ravel(),
             object_velp.ravel(), object_velr.ravel(), grip_velp, gripper_vel,
         ])
-
         return {
             'observation': obs.copy(),
             'achieved_goal': achieved_goal.copy(),
@@ -230,9 +229,9 @@ class Ur5Env(robot_env.RobotEnv):
                 goal[2] = 0.51
             else:
                 goal[2] = self.height_offset
-            if self.target_in_the_air and self.np_random.uniform() < 0.5:
+            if self.target_in_the_air and self.np_random.uniform() < 0.8:
                 # if self.target_in_the_air:
-                goal[2] += self.np_random.uniform(0.1, 0.2)
+                goal[2] += self.np_random.uniform(0.05, self.target_range)
         else:
             goal = self.initial_gripper_xpos[:3] + \
                 self.np_random.uniform(-self.target_range,

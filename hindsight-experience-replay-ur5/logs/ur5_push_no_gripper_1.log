@@ -1,0 +1,52 @@
+env.spec.id:  ur5_push_no_gripper-v1
+args: 
+------------------------------------------
+ARGS                     VALUE          
+|env_name               | ur5_push_no_gripper-v1|
+|n_epochs               | 80             |
+|n_cycles               | 50             |
+|n_batches              | 40             |
+|save_interval          | 5              |
+|seed                   | 123            |
+|num_workers            | 1              |
+|replay_strategy        | future         |
+|clip_return            | 50             |
+|save_dir               | saved_models/  |
+|noise_eps              | 0.2            |
+|random_eps             | 0.3            |
+|buffer_size            | 1000000        |
+|replay_k               | 4              |
+|clip_obs               | 200            |
+|batch_size             | 256            |
+|gamma                  | 0.98           |
+|action_l2              | 1              |
+|lr_actor               | 0.001          |
+|lr_critic              | 0.001          |
+|polyak                 | 0.95           |
+|n_test_rollouts        | 10             |
+|clip_range             | 5              |
+|demo_length            | 20             |
+|cuda                   | 0              |
+|num_rollouts_per_mpi   | 2              |
+|continue_training      | 0              |
+------------------------------------------
+env_inits: 
+ENV_INIT                 VALUE          
+|gripper_extra_height   | -0.2           |
+|has_object             | 1              |
+|target_in_the_air      | 0              |
+|target_offset          | 0.0            |
+|obj_range              | 0.15           |
+|target_range           | 0.2            |
+|distance_threshold     | 0.025          |
+|reward_type            | sparse         |
+|max_pos_change         | 0.025          |
+|reduced_obs            | 1              |
+------------------------------------------
+env_dimensions: 
+|obs                    | 19             |
+|goal                   | 3              |
+|action                 | 4              |
+|action_max             | 1.0            |
+|max_timesteps          | 100            |
+------------------------------------------

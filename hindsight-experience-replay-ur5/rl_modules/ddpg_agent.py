@@ -44,7 +44,8 @@ class ddpg_agent:
             print(dash)
             print("{:<25s}{:<15s}".format("ARGS", "VALUE"))
             for key in d_args:
-                print("|{:<22s} | {:<15}|".format(key, d_args[key]))
+                if d_args[key] is not None:
+                    print("|{:<22s} | {:<15}|".format(key, d_args[key]))
             print(dash)
             print("env_inits: ")
             print("{:<25s}{:<15s}".format("ENV_INIT", "VALUE"))
@@ -61,7 +62,8 @@ class ddpg_agent:
             if MPI.COMM_WORLD.Get_rank() == 0:
                 print("CONTINUE TRAINING...")
             env_name = env.spec.id
-            saved_dicts = load_saved_state_dicts(args.save_dir, env_name)
+            saved_dicts = load_saved_state_dicts(
+                args.save_dir, env_name, MPI.COMM_WORLD.Get_rank())
             self.actor_network.load_state_dict(saved_dicts['actor'])
             self.critic_network.load_state_dict(saved_dicts['critic'])
 

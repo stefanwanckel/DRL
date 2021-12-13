@@ -1,0 +1,72 @@
+env.spec.id:  ur5_push_no_gripper-v1
+args: 
+------------------------------------------
+ARGS                     VALUE          
+|env_name               | ur5_push_no_gripper-v1|
+|n_epochs               | 80             |
+|n_cycles               | 50             |
+|n_batches              | 40             |
+|save_interval          | 5              |
+|seed                   | 123            |
+|num_workers            | 1              |
+|replay_strategy        | future         |
+|clip_return            | 50             |
+|save_dir               | saved_models/  |
+|noise_eps              | 0.2            |
+|random_eps             | 0.3            |
+|buffer_size            | 1000000        |
+|replay_k               | 4              |
+|clip_obs               | 200            |
+|batch_size             | 256            |
+|gamma                  | 0.98           |
+|action_l2              | 1              |
+|lr_actor               | 0.001          |
+|lr_critic              | 0.001          |
+|polyak                 | 0.95           |
+|n_test_rollouts        | 10             |
+|clip_range             | 5              |
+|demo_length            | 20             |
+|cuda                   | 0              |
+|num_rollouts_per_mpi   | 2              |
+|continue_training      | 0              |
+------------------------------------------
+env_inits: 
+ENV_INIT                 VALUE          
+|gripper_extra_height   | -0.2           |
+|has_object             | 1              |
+|target_in_the_air      | 0              |
+|target_offset          | 0.0            |
+|obj_range              | 0.15           |
+|target_range           | 0.15           |
+|distance_threshold     | 0.05           |
+|reward_type            | sparse         |
+|max_pos_change         | 0.025          |
+|reduced_obs            | 1              |
+------------------------------------------
+env_dimensions: 
+|obs                    | 19             |
+|goal                   | 3              |
+|action                 | 4              |
+|action_max             | 1.0            |
+|max_timesteps          | 100            |
+------------------------------------------
+[2021-12-12 19:39:13.358297] epoch is: 0, eval success rate is: 0.075, std is: 0.083
+[2021-12-12 19:41:20.108956] epoch is: 1, eval success rate is: 0.050, std is: 0.050
+[2021-12-12 19:43:26.787517] epoch is: 2, eval success rate is: 0.125, std is: 0.083
+[2021-12-12 19:45:40.687612] epoch is: 3, eval success rate is: 0.100, std is: 0.100
+[2021-12-12 19:47:54.721582] epoch is: 4, eval success rate is: 0.075, std is: 0.083
+[2021-12-12 19:50:05.200973] epoch is: 5, eval success rate is: 0.325, std is: 0.083
+[2021-12-12 19:52:23.083471] epoch is: 6, eval success rate is: 0.400, std is: 0.071
+[2021-12-12 19:54:27.590689] epoch is: 7, eval success rate is: 0.550, std is: 0.206
+[2021-12-12 19:56:36.455214] epoch is: 8, eval success rate is: 0.625, std is: 0.192
+[2021-12-12 19:58:43.974404] epoch is: 9, eval success rate is: 0.700, std is: 0.122
+[2021-12-12 20:00:59.082877] epoch is: 10, eval success rate is: 0.725, std is: 0.083
+[2021-12-12 20:03:30.721045] epoch is: 11, eval success rate is: 0.675, std is: 0.130
+[2021-12-12 20:05:36.852981] epoch is: 12, eval success rate is: 0.675, std is: 0.109
+[2021-12-12 20:07:46.927351] epoch is: 13, eval success rate is: 0.800, std is: 0.158
+[2021-12-12 20:10:07.393775] epoch is: 14, eval success rate is: 0.950, std is: 0.087
+[2021-12-12 20:12:24.664856] epoch is: 15, eval success rate is: 0.975, std is: 0.043
+[2021-12-12 20:14:37.067205] epoch is: 16, eval success rate is: 0.975, std is: 0.043
+[2021-12-12 20:17:06.962694] epoch is: 17, eval success rate is: 1.000, std is: 0.000
+[2021-12-12 20:19:28.639345] epoch is: 18, eval success rate is: 1.000, std is: 0.000
+[2021-12-12 20:22:04.220350] epoch is: 19, eval success rate is: 0.950, std is: 0.050

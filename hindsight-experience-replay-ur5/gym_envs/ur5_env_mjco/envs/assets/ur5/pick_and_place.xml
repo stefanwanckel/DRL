@@ -14,16 +14,20 @@
 
 		<include file="robot.xml"></include>
 
-		<body pos="0.6 0 0.1" name="table0">
-			<geom size="0.25 0.35 0.2" type="box" mass="2000" material="table_mat"></geom>
-			<site name="target0" pos="0 0 0.3" size="0.02 0.02 0.02" rgba="1 0 0 1" type="sphere"></site>
+		<body name="object0" pos="0 0 0" euler="0 0 -0.6">
+			<joint name="object0:joint" type="free" damping="50"></joint>
+			<geom size="0.025 0.025 0.025" pos="-0.5270866 0.33075274 0.51" type="box" condim="3" name="object0" material="block_mat" mass="0.2"  solimp="0.99 0.999 0.01" solref="0.01 1"></geom>
+			<site name="object0" pos="-0.5270866 0.33075274 0.51" size="0.02 0.02 0.02" rgba="1 1 0 1" type="sphere"></site>
 		</body>
-		
-		<body name="object0" pos="0.0 0.0 0.0">
+		<!-- for picknplace use the object parameters from fetch environment -->
+		<!-- <body name="object0" pos="0.025 0.025 0.025">
 			<joint name="object0:joint" type="free" damping="0.01"></joint>
-			<geom size="0.02 0.02 0.02" pos="0 0 0" type="box" condim="3" name="object0" material="block_mat" mass="1"></geom>
-			<site name="object0" pos="0.0 0 0.0" size="0.01 0.01 0.01" rgba="1 0 0 1" type="sphere"></site>
-
+			<geom size="0.025 0.025 0.025" type="box" condim="3" name="object0" material="block_mat" mass="2"></geom>
+			<site name="object0" pos="0 0 0" size="0.02 0.02 0.02" rgba="1 0 0 1" type="sphere"></site>
+		</body> -->
+		<body pos="-0.3270866  0.48075274 0.25" euler="0 0 -0.6" name="table0">
+			<geom size="0.25 0.35 0.25" type="box" mass="2000" material="table_mat"   solimp="0.99 0.999 0.01" solref="0.01 1"></geom>
+			<site name="target0" pos="-0.44 0.34 0.5" size="0.02 0.02 0.02" rgba="1 0 0 1" type="sphere"></site>
 		</body>
 
 		<light directional="true" ambient="0.2 0.2 0.2" diffuse="0.8 0.8 0.8" specular="0.3 0.3 0.3" castshadow="false" pos="0 0 4" dir="0 0 -1" name="light0"></light>

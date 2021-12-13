@@ -28,6 +28,8 @@ def get_args():
                         default=50, help='if clip the returns')
     parser.add_argument('--save-dir', type=str,
                         default='saved_models/', help='the path to save the models')
+    parser.add_argument('--project-dir', type=str,
+                        help='project folder name inside env_name in saved_models')
     parser.add_argument('--noise-eps', type=float,
                         default=0.2, help='noise eps')
     parser.add_argument('--random-eps', type=float,
