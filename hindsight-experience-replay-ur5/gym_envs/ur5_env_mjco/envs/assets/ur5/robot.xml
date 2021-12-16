@@ -44,7 +44,7 @@
 									<joint name="robot0:wrist_3_joint" class="UR5e" pos="0 0 0" axis="0 1 0" limited="true" range="-3.14159 3.14159" />
 									<geom type="mesh"  mesh="robot0:wrist3" material="robot0:mat0"/>
 									
-									<body name="robot0:gripper_link" pos="0 0.0823 0" euler="1.570796 0 0">
+									<body name="robot0:gripper_link" pos="0 0.0823 0" euler="1.570796 0 -0.6">
 										<inertial pos="0 0 0" mass="0.2" diaginertia="0 0 0" />
 										<geom size="0.0375 0.0075" type="cylinder" material="robot0:mat0"/>
 

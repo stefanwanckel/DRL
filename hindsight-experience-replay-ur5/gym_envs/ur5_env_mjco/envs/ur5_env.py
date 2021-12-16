@@ -88,7 +88,10 @@ class Ur5Env(robot_env.RobotEnv):
             if "no_gripper" in self.model_path:
                 rot_ctrl = [0, 0., -1., 1.]
             else:
-                rot_ctrl = [1., 0., 0., 0.]
+                if self.target_in_the_air:
+                    rot_ctrl = [0.95533649, 0., 0., -0.29552021]
+                else:
+                    rot_ctrl = [1., 0., 0., 0.]
         else:
             if "no_gripper" in self.model_path:
                 rot_ctrl = [0, 0., -1., 1.]
@@ -215,23 +218,25 @@ class Ur5Env(robot_env.RobotEnv):
             goal[2] = 0.51
             #print("goal_prior: ", goal)
             object_xpos = self.sim.data.get_site_xpos('object0')
-            # new_goal = goal
-            # modulator = 0.8
-            # while np.linalg.norm(object_xpos - new_goal) < modulator*self.target_range:
-            #     new_goal[:2] = goal[:2]+self.np_random.uniform(-self.target_range,
-            #                                                    self.target_range, size=2)
-            # goal = new_goal
-            goal[:2] = goal[:2]+self.np_random.uniform(-self.target_range,
-                                                       self.target_range, size=2)
+            new_goal = goal
+            modulator = 0.8
+            while np.linalg.norm(object_xpos - new_goal) < modulator*self.target_range:
+                new_goal[:2] = goal[:2]+self.np_random.uniform(-self.target_range,
+                                                               self.target_range, size=2)
+            goal = new_goal
+            # goal[:2] = goal[:2]+self.np_random.uniform(-self.target_range,
+            #                                            self.target_range, size=2)
             object_qpos = self.sim.data.get_joint_qpos('object0:joint')
             assert object_qpos.shape == (7,)
             if self.table_height is not None:
                 goal[2] = 0.51
             else:
                 goal[2] = self.height_offset
-            if self.target_in_the_air and self.np_random.uniform() < 0.8:
+            # if self.target_in_the_air and self.np_random.uniform() < 0.8:
+            if self.target_in_the_air:
                 # if self.target_in_the_air:
-                goal[2] += self.np_random.uniform(0.05, self.target_range)
+                goal[2] += self.np_random.uniform(
+                    self.target_range, 2*self.target_range)
         else:
             goal = self.initial_gripper_xpos[:3] + \
                 self.np_random.uniform(-self.target_range,

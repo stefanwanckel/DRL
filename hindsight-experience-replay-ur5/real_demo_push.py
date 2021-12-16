@@ -18,6 +18,7 @@ import torch
 from numpy.lib.function_base import _average_dispatcher
 # CV
 
+
 # general
 import time
 import math
@@ -35,7 +36,7 @@ ON_REAL_ROBOT = False
 
 # get arguments for demo
 args = get_args()
-model_path = args.save_dir + args.env_name + '/modelur5.pt'
+model_path = os.path.join(args.save_dir + args.env_name, args.project_dir)
 
 o_mean, o_std, g_mean, g_std, model = torch.load(
     model_path, map_location=lambda storage, loc: storage)
@@ -85,11 +86,11 @@ else:
 """
 Description of observation needed for the agent
 ORDER OF CONCATENATION grip_pos, object_pos, object_rel_pos, gripper_state, object_rot, object_velp, object_velr, grip_velp, gripper_vel
-
+Only starred params are included in the reduced version of environments
 DESCRIPTION OF PARAMETERS
-grip_pos            Gripper position in robot cartesian coordinate frame        len(3)
-object_pos          object position in cartesian coordinate frame               len(3)
-object_rel_pos      Difference between object position and gripper position     len(3)
+grip_pos*            Gripper position in robot cartesian coordinate frame        len(3)
+object_pos*          object position in cartesian coordinate frame               len(3)
+object_rel_pos*      Difference between object position and gripper position     len(3)
 gripper_state       The state of the gripper fingers. 
                     0 means closed, 1 means open                                len(2)
 object_rot          Object orientation w.r.t. world coordinate frame. 

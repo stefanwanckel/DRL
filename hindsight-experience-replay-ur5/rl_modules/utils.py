@@ -17,20 +17,20 @@ def load_saved_state_dicts(save_dir, env_name, rank):
         model_path = os.path.join(save_dir, env_name, latest_model)
     else:
         dash = "-"*42
-        model_name = "2021-12-12T20:22:04.220598_epoch_19.pt"
-        project_path = "12-12-2021_1_reduced_obs"
-        log_name = "ur5_push_no_gripper_1.log"
+        model_name = "2021-12-13T18:46:09.042413_epoch_36.pt"
+        project_dir = "13-12-2021_2_sharpen"
+        log_name = "ur5_pick_and_place_1.log"
         if rank == 0:
             print("Continuing from {} ".format(model_name))
             print("log file from last prior training:")
             print("")
-            with open(os.path.join(save_dir, env_name, project_path, log_name), "r") as log:
+            with open(os.path.join(save_dir, env_name, project_dir, log_name), "r") as log:
                 lines = log.readlines()
                 for line in lines:
                     print(line)
             print(dash)
         model_path = os.path.join(
-            save_dir, env_name, project_path, model_name)
+            save_dir, env_name, project_dir, model_name)
 
     _, _,  _, _, actor_model, critic_model, actor_target_model, critic_target_model = torch.load(
         model_path, map_location=lambda storage, loc: storage)
