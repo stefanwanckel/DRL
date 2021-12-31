@@ -14,6 +14,7 @@ import gym
 #RL and model
 from rl_modules.models import actor
 import torch
+from rl_modules.utils import load_saved_state_dicts
 # MPI
 from numpy.lib.function_base import _average_dispatcher
 # CV
@@ -36,9 +37,9 @@ ON_REAL_ROBOT = False
 
 # get arguments for demo
 args = get_args()
-model_path = os.path.join(args.save_dir + args.env_name, args.project_dir)
+model_path = os.path.join(args.save_dir + args.env_name, args.project_dir,)
 
-o_mean, o_std, g_mean, g_std, model = torch.load(
+o_mean, o_std, g_mean, g_std, model, _, _, _ = torch.load(
     model_path, map_location=lambda storage, loc: storage)
 # create gym environment and get first observation
 env = gym.make(args.env_name)
@@ -111,11 +112,11 @@ grip_pos = get_xpos_from_robot()
 object_pos = get_object_pos_from_camera()
 object_rel_pos = object_pos - grip_pos
 gripper_state = [0, 0]
-object_rot = NotImplementedError()
-object_velp = NotImplementedError()
+object_rot = np.zeros(0)
+object_velp = np.zeros(0)
 grip_velp = rtde_r.actual_TCP_speed()
-object_velr = [0, 0, 0]
-gripper_vel = [0, 0]
+object_velr = [0, 0, 0]  # np.zeros(0)
+gripper_vel = [0, 0]  # np.zeros(0)
 
 obs = np.concatenate([grip_pos, object_pos, object_rel_pos, gripper_state,
                      object_rot, object_velp, grip_velp, object_velr, gripper_vel])

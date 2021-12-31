@@ -4,9 +4,9 @@ import rtde_receive
 import urkin
 import json
 import time
-# setup conneciton to robot
-rtde_c = rtde_control.RTDEControlInterface("192.168.178.15")
-rtde_r = rtde_receive.RTDEReceiveInterface("192.168.178.15")
+# setup connechiton to robot
+rtde_c = rtde_control.RTDEControlInterface("192.168.178.232")
+rtde_r = rtde_receive.RTDEReceiveInterface("192.168.178.232")
 
 joint_q = [-0.7866423765765589,
            -1.8796035252013148,

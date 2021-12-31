@@ -4,6 +4,8 @@ from matplotlib.patches import Circle
 import matplotlib.pyplot as plt
 import os
 import time
+import numpy as np
+import torch
 
 
 def setup_vis(nTests, startPos, SampleRange, axisLimitExtends, g_robotCF, goal_threshold):
@@ -37,11 +39,11 @@ def setup_vis(nTests, startPos, SampleRange, axisLimitExtends, g_robotCF, goal_t
     ax2.plot(g_robotCF[0], g_robotCF[2], 'o', color="g")
     graph, = ax1.plot([], [], 'o', color="r")
     sampleSpace_xy = Circle((startPos[0], startPos[1]),
-                            radius=SampleRange, fill=False)
+                            radius=SampleRange+0.05, fill=False)
     successThreshold_xy = Circle(
         (g_robotCF[0], g_robotCF[1]), radius=goal_threshold, fill=False, ls="--")
     sampleSpace_xz = Circle((startPos[0], startPos[2]),
-                            radius=SampleRange, fill=False)
+                            radius=SampleRange+0.05, fill=False)
     successThreshold_xz = Circle(
         (g_robotCF[0], g_robotCF[2]), radius=goal_threshold, fill=False, ls="--")
     ax1.add_patch(sampleSpace_xy)
