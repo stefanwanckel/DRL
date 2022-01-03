@@ -3,7 +3,6 @@ import argparse
 import time
 import cv2
 import sys
-
 from utils import ARUCO_DICT, aruco_display
 import pyrealsense2 as rs
 # set up realsense pipeline

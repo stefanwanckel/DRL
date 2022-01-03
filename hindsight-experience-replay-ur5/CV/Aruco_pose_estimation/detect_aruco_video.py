@@ -21,7 +21,7 @@ ap.add_argument("-t", "--type", type=str,
 args = vars(ap.parse_args())
 
 if args["camera"].lower() == "true":
-    video = cv2.VideoCapture(0)
+    video = cv2.VideoCapture(1)
     time.sleep(2.0)
 
 else:

@@ -15,7 +15,7 @@ class Ur5Env(robot_env.RobotEnv):
     def __init__(
         self, model_path, n_substeps, gripper_extra_height, block_gripper,
         has_object, target_in_the_air, target_offset, obj_range, target_range,
-        distance_threshold, initial_qpos, reward_type, table_height=None, max_pos_change=0.05, reduced=False
+        distance_threshold, initial_qpos, reward_type, table_height=None, max_pos_change=0.05, reduced=True
     ):
         """Initializes a new Fetch environment.
 
@@ -126,7 +126,10 @@ class Ur5Env(robot_env.RobotEnv):
                 object_velr = np.zeros(0)
                 # gripper state
                 object_rel_pos = object_pos - grip_pos
+                # object_velp should be = 0
                 object_velp = grip_velp
+                print(len(object_velp))
+
             else:
                 object_pos = self.sim.data.get_site_xpos('object0')
                 # rotations
@@ -159,6 +162,7 @@ class Ur5Env(robot_env.RobotEnv):
             ), gripper_state, object_rot.ravel(),
             object_velp.ravel(), object_velr.ravel(), grip_velp, gripper_vel,
         ])
+        print(obs.shape)
         return {
             'observation': obs.copy(),
             'achieved_goal': achieved_goal.copy(),
@@ -200,7 +204,7 @@ class Ur5Env(robot_env.RobotEnv):
             object_qpos = self.sim.data.get_joint_qpos('object0:joint')
 
             object_qpos[:3] = np.array([-0.1, -0.1, +0.02])
-            #print("object_qpos: ", object_qpos)
+            # print("object_qpos: ", object_qpos)
             assert object_qpos.shape == (7,)
             # object_qpos[:2] += self.np_random.uniform(-self.obj_range,
             #                                           self.obj_range, size=2)
@@ -213,10 +217,10 @@ class Ur5Env(robot_env.RobotEnv):
     def _sample_goal(self):
         if self.has_object:
 
-            #goal = self.initial_gripper_xpos[:3]
+            # goal = self.initial_gripper_xpos[:3]
             goal = np.array([-0.33,  0.48,  0.73])
             goal[2] = 0.51
-            #print("goal_prior: ", goal)
+            # print("goal_prior: ", goal)
             object_xpos = self.sim.data.get_site_xpos('object0')
             new_goal = goal
             modulator = 0.8
@@ -258,9 +262,9 @@ class Ur5Env(robot_env.RobotEnv):
         # gripper_target = np.array([0.75,0.,0.4 + self.gripper_extra_height]) #+ self.sim.data.get_site_xpos('robot0:grip')
         gripper_target = self.sim.data.get_site_xpos(
             'robot0:grip') + [0, 0, self.gripper_extra_height]
-        #gripper_rotation = np.array([1., 0., 1., 0.])
-        #rot_eul = [math.pi,math.pi/2,0]
-        #gripper_rotation = rotations.euler2quat(rot_eul)
+        # gripper_rotation = np.array([1., 0., 1., 0.])
+        # rot_eul = [math.pi,math.pi/2,0]
+        # gripper_rotation = rotations.euler2quat(rot_eul)
         if self.has_object:
             if "no_gripper" in self.model_path:
                 gripper_rotation = np.array([0., 0., -1., 1.])

@@ -9,9 +9,6 @@ try:
     while True:
         # Create a pipeline object. This object configures the streaming camera and owns it's handle
         frames = pipeline.wait_for_frames()
-        depth = frames.get_depth_frame()
-        if not depth:
-            continue
 
         # Print a simple text-based representation of the image, by breaking it into 10x20 pixel regions and approximating the coverage of pixels within one meter
         coverage = [0]*64
