@@ -1,12 +1,10 @@
 # general imports
 import datetime
-import math
 import os
 import pickle
 import random
 import time
 from collections import OrderedDict
-
 import gym
 import matplotlib.pyplot as plt
 import numpy as np
@@ -14,14 +12,11 @@ import rtde_control
 import rtde_receive
 import torch
 import ur5_env_mjco
-import urkin
-from matplotlib.animation import FuncAnimation
-from matplotlib.patches import Circle
-from numpy.lib.function_base import _average_dispatcher
-
 from arguments import get_args
 from rl_modules.models import actor
-from utils import *
+from utils.real_demo_CV import get_goal_position, get_object_position
+from utils.model_loader import *
+from utils.real_demo_visualization import setup_vis_push
 
 np.set_printoptions(precision=3, suppress=True)
 # imports for robot control
@@ -140,13 +135,6 @@ for nTests in range(nEvaluations):
     obs_diff[0:3] = obs_sim[0:3]-obs[0:3]
     obs_diff[3:6] = obs_sim[0:3]-obs[0:3]
     obs += obs_diff
-    # sampling goal
-    # rndDisp = -SampleRange + 2*SampleRange*np.random.random(3)
-    # g = list(np.asarray(startPos + obs_diff[:3]) + rndDisp)
-    # g_robotCF = list(np.asarray(startPos) + rndDisp)
-    # while np.linalg.norm(np.array(g_robotCF)-g) < 1*SampleRange:
-    #     g = list(np.asarray(startPos + obs_diff[:3]) + rndDisp)
-    #     g_robotCF = list(np.asarray(startPos) + rndDisp)
     goal_marker_ID = 2
     goal = get_goal_position(goal_marker_ID)[:3]
     # in real life we just place the goal somewhere and no sample is required
@@ -236,6 +224,7 @@ for nTests in range(nEvaluations):
             obs = np.hstack((grip_pos, object_pos, object_rel_pos,
                             gripper_state, object_velp, grip_velp, gripper_vel))
             obs += obs_diff
+            # printing some episode-specific information
             if t % 1 == 0:
                 print("*"*20)
                 for key in info:

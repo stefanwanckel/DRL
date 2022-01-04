@@ -1,25 +1,21 @@
 # general imports
-from matplotlib.animation import FuncAnimation
-from matplotlib.patches import Circle
 import matplotlib.pyplot as plt
 import ur5_env_mjco
 import gym
 from arguments import get_args
 from rl_modules.models import actor
-from numpy.lib.function_base import _average_dispatcher
 import torch
-import urkin
 import rtde_receive
 import rtde_control
 import time
-import math
 import numpy as np
 import random
 from collections import OrderedDict
 import os
-from utils import *
+from utils.real_demo_CV import setup_vis_push
 import pickle
 import datetime
+
 np.set_printoptions(precision=3, suppress=True)
 # imports for robot control
 # imports for sim environment and agent
