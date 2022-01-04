@@ -283,8 +283,8 @@ def get_object_position(goal_marker_ID=1):
             img, marker_Transformations, rvec, tvec = aruco_pose_estimation(img, aruco_dict_type=aruco_marker_type,
                                                                             matrix_coefficients=mtx, distortion_coefficients=dist, actual_size=0.05)
 
-            cv2.imshow("test", img)
-            cv2.waitKey(0)
+            # cv2.imshow("test", img)
+            # cv2.waitKey(0)
             if marker_Transformations[int(goal_marker_ID)] is not None:
                 pipe.stop()
                 marker_pos_robot_frame = map_c_2_r(

@@ -1,25 +1,28 @@
 # general imports
+import datetime
+import math
+import os
+import pickle
+import random
+import time
+from collections import OrderedDict
+
+import gym
+import matplotlib.pyplot as plt
+import numpy as np
+import rtde_control
+import rtde_receive
+import torch
+import ur5_env_mjco
+import urkin
 from matplotlib.animation import FuncAnimation
 from matplotlib.patches import Circle
-import matplotlib.pyplot as plt
-import ur5_env_mjco
-import gym
+from numpy.lib.function_base import _average_dispatcher
+
 from arguments import get_args
 from rl_modules.models import actor
-from numpy.lib.function_base import _average_dispatcher
-import torch
-import urkin
-import rtde_receive
-import rtde_control
-import time
-import math
-import numpy as np
-import random
-from collections import OrderedDict
-import os
 from utils import *
-import pickle
-import datetime
+
 np.set_printoptions(precision=3, suppress=True)
 # imports for robot control
 # imports for sim environment and agent
@@ -61,8 +64,12 @@ joint_q = [-0.7866423765765589,
            -1.0964625638774415,
            1.5797905921936035,
            -0.0025427977191370132]
+push_joint_q_start = np.deg2rad(
+    np.array([-45.0, -137.3, -112.5, -20.25, 90.38, -0.12]))
+push_joint_q = np.deg2rad(
+    np.array([-42.3, -154.9, -109.6, -5.68, 90.38, 2.5]))
 if ON_REAL_ROBOT:
-    rtde_c.moveJ(joint_q)
+    rtde_c.moveJ(push_joint_q_start)
     TCPpose = rtde_r.getActualTCPPose()
     startPos = TCPpose[0:3]
     orn = TCPpose[3:]
@@ -76,7 +83,7 @@ else:
 
 currPos = startPos
 # setting parameters for robot motion
-stepSize = 0.025
+stepSize = 0.05
 SampleRange = 0.20
 goal_threshold = 0.07
 # setup figure  limits
@@ -93,7 +100,7 @@ for nTests in range(nEvaluations):
 
     # Move to start and get TCP pose
     if ON_REAL_ROBOT:
-        rtde_c.moveJ(joint_q)
+        rtde_c.moveJ(push_joint_q)
         TCPpose = rtde_r.getActualTCPPose()
 
         startPos = TCPpose[0:3]
@@ -111,7 +118,9 @@ for nTests in range(nEvaluations):
     x = []
     y = []
     z = []
-    hist_object_pos = []
+    x_o = []
+    y_o = []
+    z_o = []
 
     observation = env.reset()
     obs_sim = observation['observation']
@@ -139,9 +148,10 @@ for nTests in range(nEvaluations):
     #     g = list(np.asarray(startPos + obs_diff[:3]) + rndDisp)
     #     g_robotCF = list(np.asarray(startPos) + rndDisp)
     goal_marker_ID = 2
-    goal = get_goal_position(goal_marker_ID)
+    goal = get_goal_position(goal_marker_ID)[:3]
     # in real life we just place the goal somewhere and no sample is required
     g_robotCF = goal
+    g = goal + obs_diff[:3]
     # plotting and setting up plot
     # setup figure
     fig, (ax1, ax2) = setup_vis_push(nTests, startPos, SampleRange,
@@ -169,7 +179,6 @@ for nTests in range(nEvaluations):
             if info["is_success"][-1]:
                 break
         # add coordinate frame diff (mit marcus)
-        g = goal + obs_diff[:3]
         inputs = process_inputs(obs, g, o_mean, o_std, g_mean, g_std, args)
         with torch.no_grad():
             pi = actor_network(inputs)
@@ -193,7 +202,9 @@ for nTests in range(nEvaluations):
             x.append(actual_newPos[0])
             y.append(actual_newPos[1])
             z.append(actual_newPos[2])
-            hist_object_pos.append(object_pos)
+            x_o.append(object_pos[0])
+            y_o.append(object_pos[1])
+            z_o.append(object_pos[2])
 
             # fill info
             g_robotCF_np = np.array(g_robotCF)
@@ -213,10 +224,10 @@ for nTests in range(nEvaluations):
             info["object_pos"].append(object_pos)
 
             # updating observation
-            object_marker_ID = 2
+            object_marker_ID = 1
             currPos = actual_newPos  # new_Pos
             grip_pos = actual_newPos
-            object_pos = get_object_pos(object_marker_ID)
+            object_pos = get_object_position(object_marker_ID)[:3]
             object_rel_pos = object_pos - actual_newPos
             object_velp = np.zeros(3)
             grip_velp = np.zeros(3)
@@ -233,9 +244,9 @@ for nTests in range(nEvaluations):
 
             # plotting and setting up plot
             ax1.plot(x, y, 'o', color="r")
-            ax1.plot(hist_object_pos[:][0], hist_object_pos[:][0], color="g")
+            ax1.plot(x_o, y_o, 'o', color="blue")
             ax2.plot(x, z, 'o', color="r")
-            ax1.plot(hist_object_pos[:][0], hist_object_pos[:][2], color="g")
+            ax2.plot(x_o, z_o, 'o', color="blue")
             plt.pause(0.05)
 
             # checking for success
