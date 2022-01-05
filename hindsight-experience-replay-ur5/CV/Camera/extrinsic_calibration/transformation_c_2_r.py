@@ -1,14 +1,15 @@
 
 
+
 import pickle
 import numpy as np
 import os
 import sys
 sys.path.append(os.path.abspath('../test_scripts/'))
 from utils import *
-r_pos_1 = 0.001*np.array([214.01, -672.9, -277.9])
-r_pos_2 = 0.001*np.array([418.5, -456.4, -277.9])
-r_pos_4 = 0.001*np.array([14.5, -467.8, -280.1])
+r_pos_1 = 0.001*np.array([182.1, -663.9, -277.3])
+r_pos_2 = 0.001*np.array([391.9, -446.3, -277.6])
+r_pos_4 = 0.001*np.array([-13.7, -454.5, -280.2])
 #r_pos_5 = 0.001*np.array([209.7, -259.4, -675.1])
 lst_r_pos = np.array([r_pos_1, r_pos_2, r_pos_4])
 
@@ -32,6 +33,6 @@ example_point_affine = np.concatenate((example_point, [1]))
 r_pos_1_prime = np.dot(T_c_2_r.T, example_point_affine)
 
 np.save("Camera_to_robot_transformation", T_c_2_r)
-print(T_c_2_r)
-print(r_pos_1_prime)
+print("Camera_to_robot_transformation\n", T_c_2_r)
+print("Sample POint:\n", r_pos_1_prime)
 print("Done")

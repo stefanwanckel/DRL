@@ -16,7 +16,7 @@ joint_q = [-0.7866423765765589,
            1.5797905921936035,
            -0.0025427977191370132]
 push_joint_q = np.deg2rad(
-    np.array([-45.0, -146.3, -112.5, -11.44, 90.38, -0.12]))
+    np.array([93.7, -43.7, 117.3, -171.8, 270.4, -46.5]))
 # move robot to start configuration
 rtde_c.moveJ(joint_q)
 time.sleep(1)

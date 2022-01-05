@@ -1,8 +1,7 @@
 import torch
 from numpy.lib.function_base import _average_dispatcher
 from rl_modules.models import actor
-from utils import load_last_model
-from utils import get_demo_model_path
+from utils.model_loader import load_last_model, get_demo_model_path
 from arguments import get_args
 import gym
 import numpy as np

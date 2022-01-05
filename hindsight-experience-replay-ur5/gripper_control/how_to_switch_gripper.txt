@@ -1,0 +1,3 @@
+saved name of gripper profile: stefa_gripper
+notice: before detecting the gripper, the robot must be on idle mode (breaks off)
+

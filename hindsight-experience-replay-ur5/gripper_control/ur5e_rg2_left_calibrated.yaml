@@ -1,0 +1,41 @@
+actuated_joints:
+  - shoulder_pan_joint
+  - shoulder_lift_joint
+  - elbow_joint
+  - wrist_1_joint
+  - wrist_2_joint
+  - wrist_3_joint
+
+gripper_joints:
+  - l_moment_arm_joint
+  - l_finger_2_joint
+  - l_finger_passive_joint
+  - r_finger_1_joint
+  - r_finger_2_joint
+  - r_finger_passive_joint
+
+max_joint_velocity: 3
+max_joint_acceleration: 0.2
+
+gripper_max_width: 110
+gripper_max_force: 40
+gripper_open: [ 0.7 ]
+gripper_closed: [ -0.45 ]
+gripper_joint_coupling: [ 1, -1,  1, -1,  1, -1]
+gripper_closing_time: 0.5
+has_gripper: false
+
+finger_links:
+  - r_finger_link
+  - l_finger_link
+attach_link: gripper_base_link
+gripping_force_thresh: 10
+
+ignore_collisions:
+  gripper: [r_truss_arm_link, r_finger_link, r_moment_arm_link, l_truss_arm_link, l_finger_link, l_moment_arm_link, hand_link]
+  ignore_base_vs_upper_arm: [base_link, upper_arm_link]
+  ignore_forearm_vs_wrist_2: [forearm_link, wrist_2_link]
+  ignore_wrist_1_vs_wrist_2: [wrist_1_link, wrist_3_link]
+  ignore_wrist_vs_ee: [wrist_2_link, wrist_3_link, ee_link]
+  ignore_camera_flange_vs_flange_and_gripper: [ flange, camera_wrist_mount, gripper_base_link, wrist_3_link, hand_link ]
+

@@ -5,16 +5,16 @@ import gym
 from arguments import get_args
 from rl_modules.models import actor
 import torch
-import rtde_receive
-import rtde_control
 import time
 import numpy as np
 import random
 from collections import OrderedDict
 import os
-from utils.real_demo_CV import setup_vis_push
+from utils.model_loader import *
+from utils.real_demo_visualization import setup_vis_reach
 import pickle
 import datetime
+from gripper_control.ur5e_robot import Ur5eRobot
 
 np.set_printoptions(precision=3, suppress=True)
 # imports for robot control
@@ -24,7 +24,7 @@ ON_REAL_ROBOT = True
 # get arguments for demo import model
 args = get_args()
 env_name = "ur5_reach_no_gripper-v1"
-model_name = '/2021-12-31T10:45:23.477367_epoch_7.pt'
+model_name = "/2021-12-31T10:45:23.477367_epoch_7.pt"
 # model_path = args.save_dir + args.env_name + '/July30_reach_2_39.pt'
 model_path = args.save_dir + env_name + "/ur5_reach_raw" + model_name
 
@@ -46,20 +46,26 @@ actor_network.eval()
 
 # setup conneciton to robot
 if ON_REAL_ROBOT:
-    rtde_c = rtde_control.RTDEControlInterface("192.168.178.232")
-    rtde_r = rtde_receive.RTDEReceiveInterface("192.168.178.232")
+    #rtde_c = rtde_control.RTDEControlInterface("192.168.178.232")
+    #rtde_r = rtde_receive.RTDEReceiveInterface("192.168.178.232")
+    robot_ip = "192.168.178.232"
+    config_file_path = os.path.join(
+        "gripper_control", "ur5e_rg2_left_calibrated.yaml")
+    ur5e_robot = Ur5eRobot("ur5e", robot_ip, 50003, config_file_path, 0)
 
-# move robot to start configuration
-joint_q = [-0.7866423765765589,
-           -1.8796035252013148,
-           -1.7409639358520508,
-           -1.0964625638774415,
-           1.5797905921936035,
-           -0.0025427977191370132]
+    # move robot to start configuration
+old_joint_q = [-0.7866423765765589,
+               -1.8796035252013148,
+               -1.7409639358520508,
+               -1.0964625638774415,
+               1.5797905921936035,
+               -0.0025427977191370132]
+reach_joint_q = np.deg2rad(
+    np.array([93.7, -43.7, 117.3, -171.8, 270.4, -46.5]))
 # start motion was here
 if ON_REAL_ROBOT:
-    rtde_c.moveJ(joint_q)
-    TCPpose = rtde_r.getActualTCPPose()
+    ur5e_robot.servo_joint_position(reach_joint_q)
+    TCPpose = ur5e_robot.receiver.getActualTCPPose()
     startPos = TCPpose[0:3]
     orn = TCPpose[3:]
 else:
@@ -83,14 +89,14 @@ x = []
 y = []
 z = []
 info = {}
-nEvaluations = 1
+nEvaluations = 3
 INFO = OrderedDict()
 for nTests in range(nEvaluations):
 
     # Move to start and get TCP pose
     if ON_REAL_ROBOT:
-        rtde_c.moveJ(joint_q)
-        TCPpose = rtde_r.getActualTCPPose()
+        ur5e_robot.servo_joint_position(joint_q)
+        TCPpose = ur5e_robot.receiver.getActualTCPPose()
         startPos = TCPpose[0:3]
         orn = TCPpose[3:]
     else:
@@ -164,9 +170,11 @@ for nTests in range(nEvaluations):
         for substeps in range(n_substeps):
             newPos = currPos + stepSize * action
             if ON_REAL_ROBOT:
-                rtde_c.moveL(np.hstack((newPos, orn)), 0.2, 0.3)
+                ur5e_robot.moveL_offset(
+                    np.hstack((stepSize * action, [0, 0, 0])))
                 time.sleep(0.05)
-                actual_newPos = np.array(rtde_r.getActualTCPPose()[0:3])
+                actual_newPos = np.array(
+                    ur5e_robot.receiver.getActualTCPPose()[0:3])
             else:
                 actual_newPos = newPos
 
@@ -215,7 +223,7 @@ for nTests in range(nEvaluations):
                     fig_path, "plane_view_episode_"+str(nTests)+".svg"))
                 INFO[nTests] = info
                 if ON_REAL_ROBOT and nTests == range(nEvaluations)[-1]:
-                    rtde_c.stopScript()
+                    ur5e_robot.controller.stopScript()
                 break
     info_path = os.path.join("Results", "reach")
     with open(os.path.join(info_path, 'INFO.pkl'), 'wb') as f:

@@ -1,16 +1,14 @@
 #!/usr/bin/env python
-
 import os
 import time
 from enum import IntEnum, unique
-
 import numpy as np
-import rospy
+#import rospy
 import yaml
 from rtde_control import RTDEControlInterface as RTDEControl
 from rtde_io import RTDEIOInterface as RTDEIO
 from rtde_receive import RTDEReceiveInterface as RTDEReceive
-from sensor_msgs.msg import JointState
+#from sensor_msgs.msg import JointState
 
 
 @unique
@@ -38,6 +36,9 @@ class InputDoubleRegisters(IntEnum):
     RG2_INPUT_TARGET_WIDTH = 18
     RG2_INPUT_TARGET_FORCE = 19
 
+# add ur5erobot class to real_demo_pick_n_place
+# add yaml file (jason)
+
 
 class Ur5eRobot:
     def __init__(self, robot_namespace, robot_ip, robot_port, file, base_pose, control_mode="local"):
@@ -46,12 +47,17 @@ class Ur5eRobot:
         self.robot_ip = robot_ip
         self.robot_port = int(robot_port)
         self.log = getattr(self, 'log_default')
+        self.max_joint_velocity = 3
+        self.max_joint_acceleration = 0.2
 
         # connect to the controller on the UR, use External UR CAP
         # necessary to use the functions of external UR CAPs, such as grippers
         # also allows control, manipulation from the teach pendant
         if control_mode == "local":
-            self.controller = RTDEControl(self.robot_ip, RTDEControl.FLAG_USE_EXT_UR_CAP, self.robot_port)
+            # self.controller = RTDEControl(
+            #     self.robot_ip, RTDEControl.FLAG_USE_EXT_UR_CAP, self.robot_port)
+            self.controller = RTDEControl(
+                self.robot_ip, RTDEControl.FLAG_USE_EXT_UR_CAP)
         elif control_mode == "remote":
             self.controller = RTDEControl(self.robot_ip, self.robot_port)
         else:
@@ -61,7 +67,7 @@ class Ur5eRobot:
         self.io_controller = RTDEIO(self.robot_ip)
         # read config
         self.config = {}
-        with open(os.path.join('/models/config', '{}.yaml'.format(file.split('.')[0])), 'r') as stream:
+        with open(os.path.join('{}.yaml'.format(file.split('.')[0])), 'r') as stream:
             try:
                 self.config = yaml.safe_load(stream)
             except yaml.YAMLError as exc:
@@ -72,12 +78,14 @@ class Ur5eRobot:
             self.gripper = RG2(self, self.config)
             # init by opening the gripper
             self.open_gripper()
-        else: self.gripper = None
+        else:
+            self.gripper = None
 
         # we are using the RG2 gripper currently
         # self.gripper = RG2(self)
 
-        self.publisher = rospy.Publisher(f'{self.robot_ns}/joint_states/', JointState, queue_size=10)
+        # self.publisher = rospy.Publisher(
+        #     f'{self.robot_ns}/joint_states/', JointState, queue_size=10)
 
         # TODO currently we have no idle state. Therefore, when robot is standing still, watchdog is not kicked. \
         #  but we can only use it when it is kicked with min freq...
@@ -85,8 +93,9 @@ class Ur5eRobot:
         # self.controller.setWatchdog(min_frequency=10.0)
 
         # get config
-        self.max_joint_velocity = rospy.get_param('max_joint_velocity', 3)
-        self.max_joint_acceleration = rospy.get_param('max_joint_acceleration', 0.2)
+        #self.max_joint_velocity = rospy.get_param('max_joint_velocity', 3)
+        # self.max_joint_acceleration = rospy.get_param(
+        #    'max_joint_acceleration', 0.2)
 
         self.joint_names = self.config['actuated_joints']
 
@@ -188,7 +197,8 @@ class Ur5eRobot:
         :param joint_position: joint position of thr robot
         :return:
         """
-        self.controller.moveJ(joint_position, self.max_joint_velocity, self.max_joint_acceleration, False)
+        self.controller.moveJ(
+            joint_position, self.max_joint_velocity, self.max_joint_acceleration, False)
         while not self.controller.isSteady():
             self._control_loop()
 
@@ -224,7 +234,8 @@ class Ur5eRobot:
         t_start = time.time()
         self.controller.forceModeSetDamping(0.0025)
         self.log(f'Entering Force Mode for {duration}s')
-        result = self.controller.forceMode(task_frame, compliance, ft, 2, limits)
+        result = self.controller.forceMode(
+            task_frame, compliance, ft, 2, limits)
 
         # block for that duration
         while duration > time.time() - t_start and \
@@ -295,7 +306,8 @@ class Ur5eRobot:
     def set_payload(self, mass, center_pos):
 
         self.controller.setPayload(mass, center_pos)
-        self.log(f'New payload was set. \n Mass: {mass}kg \n Center: {center_pos}')
+        self.log(
+            f'New payload was set. \n Mass: {mass}kg \n Center: {center_pos}')
 
 
 # ---- END EFFECTORS ----- #
@@ -305,6 +317,7 @@ class BaseGripper:
     """
     Template class for any gripper, need to implement corresponding methods for binary or non-binary gripper
     """
+
     def __init__(self, robot, is_binary):
         self.robot = robot
         self.log = self.robot.log
@@ -379,11 +392,13 @@ class RG2(BaseGripper):
         taregt_force = self.max_force * force
 
         self.log('Starting Grip with:')
-        self.log(f'{width=}. {force=},{blocking=},{use_depth_compensation=}')
+        # self.log(f'{width=}. {force=},{blocking=},{use_depth_compensation=}')
 
         # set values for grip
-        self.io_controller.setInputDoubleRegister(InputDoubleRegisters.RG2_INPUT_TARGET_WIDTH, target_width)
-        self.io_controller.setInputDoubleRegister(InputDoubleRegisters.RG2_INPUT_TARGET_FORCE, taregt_force)
+        self.io_controller.setInputDoubleRegister(
+            InputDoubleRegisters.RG2_INPUT_TARGET_WIDTH, target_width)
+        self.io_controller.setInputDoubleRegister(
+            InputDoubleRegisters.RG2_INPUT_TARGET_FORCE, taregt_force)
 
         command = RG2.RG2InputGripCommands.NO_COMMAND
         # inform rg2 to do grip
@@ -397,7 +412,8 @@ class RG2(BaseGripper):
             command = RG2.RG2InputGripCommands.NO_BLOCK_DEPTH_COMPENSATION_GRIP
 
         # send command
-        self.io_controller.setInputIntRegister(InputIntRegisters.RG2_INPUT_STATE_COMMAND, command)
+        self.io_controller.setInputIntRegister(
+            InputIntRegisters.RG2_INPUT_STATE_COMMAND, command)
 
         # wait until received feedback. if not blocking, should be immediate, otherwise until grip is done
         while self.receiver.getOutputIntRegister(OutputIntRegisters.RG2_OUTPUT_STATE_COMMAND) != \
@@ -412,7 +428,8 @@ class RG2(BaseGripper):
         return self.receiver.getOutputDoubleRegister(OutputDoubleRegisters.RG2_OUTPUT_ACTUAL_WIDTH)
 
     def grip_detected(self):
-        message = self.receiver.getOutputIntRegister(OutputIntRegisters.RG2_GRIP_DETECTED)
+        message = self.receiver.getOutputIntRegister(
+            OutputIntRegisters.RG2_GRIP_DETECTED)
         if message == 0:
             return False
         else:
@@ -450,6 +467,7 @@ class SchunkCoactGripper(BaseGripper):
     """
     The Schunk Coact UREK Gripper is controlled with digital IOs.
     """
+
     def __init__(self, robot):
         super().__init__(robot, is_binary=False)
         self.robot = robot

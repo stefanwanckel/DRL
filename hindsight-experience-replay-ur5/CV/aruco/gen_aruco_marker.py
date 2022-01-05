@@ -7,7 +7,7 @@ import matplotlib.pyplot as plt
 
 # construct the argument parser and parse the arguments
 ap = argparse.ArgumentParser()
-ap.add_argument("-o", "--output", required=True, default="sample",
+ap.add_argument("-o", "--output", default="generated_markers",
                 help="path to output image containing ArUCo tag")
 ap.add_argument("-i", "--id", type=int, required=True,
                 help="ID of ArUCo tag to generate")
@@ -58,9 +58,11 @@ tag = np.zeros((300, 300, 1), dtype="uint8")
 cv2.aruco.drawMarker(arucoDict, args["id"], 300, tag, 1)
 # write the generated ArUCo tag to disk and then display it to our
 # screen
-cv2.imwrite(args["output"]+".png", tag)
+print(type(args["id"]))
+cv2.imwrite(os.path.join(args["output"],
+            "ID_{}.png".format(str(args["id"]))), tag)
 #cv2.imwrite(os.path.join("generated_markers", args["output"]), tag)
 print(tag[:, :, 0].shape)
-plt.imshow(tag, cmap="gray")
-plt.show()
-cv2.waitKey(0)
+# plt.imshow(tag, cmap="gray")
+# plt.show()
+# cv2.waitKey(0)

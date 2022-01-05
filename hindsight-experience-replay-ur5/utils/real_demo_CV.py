@@ -1,10 +1,10 @@
 import pyrealsense2 as rs
-from utils import *
 import numpy as np
 import time
 import cv2
 import sys
 import matplotlib.pyplot as plt
+import os
 
 ARUCO_DICT = {
     "DICT_4X4_50": cv2.aruco.DICT_4X4_50,
@@ -73,7 +73,7 @@ def map_c_2_r(marker_pos_camera_frame):
     return marker_pos_robot_frame
 
 
-def get_object_position(goal_marker_ID=1):
+def get_object_position(object_marker_ID):
 
     # load camera params
     rvecs, tvecs, mtx, dist, ret = read_camera_params()
@@ -86,7 +86,7 @@ def get_object_position(goal_marker_ID=1):
     dict_type = "DICT_5X5_100"
     aruco_marker_type = ARUCO_DICT[dict_type]
     warmup_counter = 0
-    object_aruco_center_offset = np.array([0, 0, -0.025, 0])
+    object_center_aruco_f = np.array([0, 0, -0.025, 1])
     while True:
         warmup_counter += 1
         frames = pipe.wait_for_frames()
@@ -96,16 +96,20 @@ def get_object_position(goal_marker_ID=1):
             c_frames = aligned.get_color_frame()
             img = np.asanyarray(c_frames.get_data())
             img, marker_Transformations, rvec, tvec = aruco_pose_estimation(img, aruco_dict_type=aruco_marker_type,
-                                                                            matrix_coefficients=mtx, distortion_coefficients=dist, actual_size=0.05)
+                                                                            matrix_coefficients=mtx, distortion_coefficients=dist, actual_size=0.04)
 
             # cv2.imshow("test", img)
             # cv2.waitKey(0)
-            if marker_Transformations[int(goal_marker_ID)] is not None:
+            if marker_Transformations[int(object_marker_ID)] is not None:
                 pipe.stop()
                 marker_pos_robot_frame = map_c_2_r(
-                    marker_Transformations[int(goal_marker_ID)][:, 3])
-                return marker_pos_robot_frame+object_aruco_center_offset
-                break
+                    marker_Transformations[int(object_marker_ID)][:, 3])  # aruco [0,0,0]
+                object_center_r_f = np.zeros(4)
+
+                object_center_r_f[:3] = map_c_2_r(np.dot(
+                    marker_Transformations[int(object_marker_ID)], object_center_aruco_f))[:3]
+
+                return object_center_r_f
             else:
                 print("ERROR: object marker not detected. Aborting")
                 sys.exit()
