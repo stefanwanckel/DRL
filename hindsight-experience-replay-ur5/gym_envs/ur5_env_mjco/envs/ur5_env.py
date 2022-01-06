@@ -79,7 +79,7 @@ class Ur5Env(robot_env.RobotEnv):
             self.sim.forward()
 
     def _set_action(self, action):
-        assert action.shape == (4,)
+        assert action.shape == (4,), 'Action does not have shape 4x1'
         action = action.copy()  # ensure that we don't change the action outside of this scope
         pos_ctrl, gripper_ctrl = action[:3], action[3]
 
@@ -128,8 +128,6 @@ class Ur5Env(robot_env.RobotEnv):
                 object_rel_pos = object_pos - grip_pos
                 # object_velp should be = 0
                 object_velp = grip_velp
-                print(len(object_velp))
-
             else:
                 object_pos = self.sim.data.get_site_xpos('object0')
                 # rotations
@@ -162,7 +160,6 @@ class Ur5Env(robot_env.RobotEnv):
             ), gripper_state, object_rot.ravel(),
             object_velp.ravel(), object_velr.ravel(), grip_velp, gripper_vel,
         ])
-        print(obs.shape)
         return {
             'observation': obs.copy(),
             'achieved_goal': achieved_goal.copy(),

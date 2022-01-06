@@ -75,7 +75,7 @@ if __name__ == '__main__':
         obs = observation['observation']
         g = observation['desired_goal']
         lstGoals.append(g)
-
+        t_success = -1
         for t in range(env._max_episode_steps):  # env._max_episode_steps):
 
             env.render()
@@ -92,8 +92,10 @@ if __name__ == '__main__':
                 for key in env.inits:
                     print("|{:<22s} | {:<15}|".format(key, env.inits[key]))
                 print(dash)
+            if t_success == -1 and info['is_success'] == 1:
+                t_success = t
         if info['is_success'] == 1:
             success_counter += 1
-        print('Episode-No.: {} \n\t is success: {},\t overall success : {}/{}'.format(
-            i, info['is_success'], success_counter, args.demo_length))
+        print('Episode-No.: {} \n\t is success: {},\t overall success: {}/{} after {}/{} steps'.format(
+            i, info['is_success'], success_counter, args.demo_length, t_success+1, env._max_episode_steps))
         #print('Episode {} has goal {}'.format(i, lstGoals[i]))

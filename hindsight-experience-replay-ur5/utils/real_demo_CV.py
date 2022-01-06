@@ -31,38 +31,26 @@ ARUCO_DICT = {
 }
 
 
-def get_goal_position(goal_marker_ID=2):
-
-    # load camera params
-    rvecs, tvecs, mtx, dist, ret = read_camera_params()
-    # start pipline
-    pipe = rs.pipeline()
-    config = rs.config()
-    config.enable_stream(rs.stream.color, 1280, 720, rs.format.bgr8, 30)
-    profile = pipe.start(config)
+def get_goal_position(CameraWrapper, goal_marker_ID=2):
     # set aruco dict type
     dict_type = "DICT_5X5_100"
     aruco_marker_type = ARUCO_DICT[dict_type]
-    warmup_counter = 0
-    while True:
-        warmup_counter += 1
-        frames = pipe.wait_for_frames()
-        if warmup_counter > 50:
-            align = rs.align(rs.stream.color)
-            aligned = align.process(frames)
-            c_frames = aligned.get_color_frame()
-            img = np.asanyarray(c_frames.get_data())
-            _, marker_Transformations, rvec, tvec = aruco_pose_estimation(img, aruco_dict_type=aruco_marker_type,
-                                                                          matrix_coefficients=mtx, distortion_coefficients=dist)
-            if marker_Transformations[int(goal_marker_ID)] is not None:
-                pipe.stop()
-                marker_pos_robot_frame = map_c_2_r(
-                    marker_Transformations[int(goal_marker_ID)][:, 3])
-                return marker_pos_robot_frame
-                break
-            else:
-                print("ERROR: goal marker not detected. Aborting")
-                sys.exit()
+
+    counter = 0
+    marker_Transformations = {}
+    while int(goal_marker_ID) not in marker_Transformations.keys() and counter < 50:
+        img = CameraWrapper.get_latest_img()
+        _, marker_Transformations, rvec, tvec = aruco_pose_estimation(img, aruco_dict_type=aruco_marker_type,
+                                                                      matrix_coefficients=CameraWrapper.mtx, distortion_coefficients=CameraWrapper.dist, actual_size=0.1)
+        counter += 1
+
+    assert marker_Transformations[int(
+        goal_marker_ID)] is not None, 'OCCLUSION: no goal marker found'
+
+    marker_pos_robot_frame = map_c_2_r(
+        marker_Transformations[int(goal_marker_ID)][:, 3])
+
+    return marker_pos_robot_frame
 
 
 def map_c_2_r(marker_pos_camera_frame):
@@ -73,46 +61,31 @@ def map_c_2_r(marker_pos_camera_frame):
     return marker_pos_robot_frame
 
 
-def get_object_position(object_marker_ID):
-
-    # load camera params
-    rvecs, tvecs, mtx, dist, ret = read_camera_params()
-    # start pipline
-    pipe = rs.pipeline()
-    config = rs.config()
-    config.enable_stream(rs.stream.color, 1280, 720, rs.format.bgr8, 30)
-    profile = pipe.start(config)
+def get_object_position(CameraWrapper, object_marker_ID):
     # set aruco dict type
     dict_type = "DICT_5X5_100"
     aruco_marker_type = ARUCO_DICT[dict_type]
-    warmup_counter = 0
+
     object_center_aruco_f = np.array([0, 0, -0.025, 1])
-    while True:
-        warmup_counter += 1
-        frames = pipe.wait_for_frames()
-        if warmup_counter > 50:
-            align = rs.align(rs.stream.color)
-            aligned = align.process(frames)
-            c_frames = aligned.get_color_frame()
-            img = np.asanyarray(c_frames.get_data())
-            img, marker_Transformations, rvec, tvec = aruco_pose_estimation(img, aruco_dict_type=aruco_marker_type,
-                                                                            matrix_coefficients=mtx, distortion_coefficients=dist, actual_size=0.04)
 
-            # cv2.imshow("test", img)
-            # cv2.waitKey(0)
-            if marker_Transformations[int(object_marker_ID)] is not None:
-                pipe.stop()
-                marker_pos_robot_frame = map_c_2_r(
-                    marker_Transformations[int(object_marker_ID)][:, 3])  # aruco [0,0,0]
-                object_center_r_f = np.zeros(4)
+    counter = 0
+    marker_Transformations = {}
+    while int(object_marker_ID) not in marker_Transformations.keys() and counter < 50:
+        img = CameraWrapper.get_latest_img()
+        img, marker_Transformations, rvec, tvec = aruco_pose_estimation(img, aruco_dict_type=aruco_marker_type,
+                                                                        matrix_coefficients=CameraWrapper.mtx, distortion_coefficients=CameraWrapper.dist, actual_size=0.04)
+        counter += 1
 
-                object_center_r_f[:3] = map_c_2_r(np.dot(
-                    marker_Transformations[int(object_marker_ID)], object_center_aruco_f))[:3]
+    assert marker_Transformations[int(
+        object_marker_ID)] is not None, 'OCCLUSION: no object marker found'
 
-                return object_center_r_f
-            else:
-                print("ERROR: object marker not detected. Aborting")
-                sys.exit()
+    marker_pos_robot_frame = map_c_2_r(marker_Transformations[int(object_marker_ID)][:, 3])  # aruco [0,0,0]
+
+    object_center_r_f = np.zeros(4)
+    object_center_r_f[:3] = map_c_2_r(np.dot(
+        marker_Transformations[int(object_marker_ID)], object_center_aruco_f))[:3]
+    object_position = object_center_r_f
+    return object_position, img
 
 
 def read_camera_params():

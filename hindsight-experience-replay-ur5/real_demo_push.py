@@ -14,15 +14,17 @@ from arguments import get_args
 from rl_modules.models import actor
 from utils.real_demo_CV import get_goal_position, get_object_position
 from utils.model_loader import *
-from utils.real_demo_visualization import setup_vis_push
+from utils.real_demo_visualization import setup_vis_push_w_image
 from utils.safety_measures import check_table_collision
 from gripper_control.ur5e_robot import Ur5eRobot
-
+from CV.Camera.CameraWrapper import CameraWrapper
+import cv2
 np.set_printoptions(precision=3, suppress=True)
 # imports for robot control
 # imports for sim environment and agent
 # imports for visualization
 ON_REAL_ROBOT = True
+fig_path = os.path.join("Results", "push", "plane_view")
 # get arguments for demo import model
 args = get_args()
 env_name = "ur5_push_no_gripper-v1"
@@ -55,6 +57,10 @@ if ON_REAL_ROBOT:
     config_file_path = os.path.join(
         "gripper_control", "ur5e_rg2_left_calibrated.yaml")
     ur5e_robot = Ur5eRobot("ur5e", robot_ip, 50003, config_file_path, 0)
+    # set up camera
+    myCam = CameraWrapper()
+    myCam.warmup_cam()
+
 # move robot to start configuration
 joint_q = [-0.7866423765765589,
            -1.8796035252013148,
@@ -63,11 +69,11 @@ joint_q = [-0.7866423765765589,
            1.5797905921936035,
            -0.0025427977191370132]
 push_joint_q_start = np.deg2rad(
-    np.array([93.7, -43.7, 117.3, -171.8, 270.4, -46.5]))
+    np.array([102.2, -42.2, 113.0, -161.5, 270.4, 1.6]))
 push_joint_q = np.deg2rad(
-    np.array([90.3, -27.6, 112.5, -175.1, 270.4, -49.9]))
+    np.array([90.7,-42.9,112.1,-159.6,270.4,-9.9]))
 if ON_REAL_ROBOT:
-    ur5e_robot.servo_joint_position(push_joint_q_start)
+    #ur5e_robot.servo_joint_position(push_joint_q_start)
     TCPpose = ur5e_robot.receiver.getActualTCPPose()
     startPos = TCPpose[0:3]
     orn = TCPpose[3:]
@@ -82,20 +88,21 @@ else:
 currPos = startPos
 # setting parameters for robot motion
 stepSize = 0.05
-SampleRange = 0.20
+SampleRange = 0.30
 goal_threshold = 0.07
 # setup figure  limits
-axisLimitExtends = 0.10
+axisLimitExtends = 0.20
+goal_marker_ID_lst = [5]
 
 # Init lists
 x = []
 y = []
 z = []
 info = {}
-nEvaluations = 1
+nEvaluations = len(goal_marker_ID_lst)
 INFO = OrderedDict()
 for nTests in range(nEvaluations):
-
+    goal_marker_ID = goal_marker_ID_lst[nTests]
     # Move to start and get TCP pose
     if ON_REAL_ROBOT:
         ur5e_robot.servo_joint_position(push_joint_q)
@@ -124,7 +131,8 @@ for nTests in range(nEvaluations):
     obs_sim[9:] = np.zeros(10)
     # observation must be robot pos,
     object_marker_ID = 6
-    object_pos = get_object_position(object_marker_ID)[:3]
+    object_pos, img = get_object_position(myCam, object_marker_ID)
+    object_pos = object_pos[:3]+[0,0,0.03]
     object_rel_pos = object_pos - startPos
     object_velp = np.zeros(3)
     grip_velp = np.zeros(3)
@@ -137,15 +145,15 @@ for nTests in range(nEvaluations):
     obs_diff[0:3] = obs_sim[0:3]-obs[0:3]
     obs_diff[3:6] = obs_sim[0:3]-obs[0:3]
     obs += obs_diff
-    goal_marker_ID = 2
-    goal = get_goal_position(goal_marker_ID)[:3]
+    
+    goal = get_goal_position(myCam, goal_marker_ID)[:3]
     # in real life we just place the goal somewhere and no sample is required
     g_robotCF = goal
     g = goal + obs_diff[:3]
     # plotting and setting up plot
     # setup figure
-    fig, (ax1, ax2) = setup_vis_push(nTests, startPos, SampleRange,
-                                     axisLimitExtends, g_robotCF, goal_threshold)
+    fig, axs, ax1, ax2, ax_img = setup_vis_push_w_image(nTests, startPos, SampleRange,
+                                                          axisLimitExtends, g_robotCF, goal_threshold)
 
     # logging
     info["timestep"] = []
@@ -161,6 +169,7 @@ for nTests in range(nEvaluations):
     info["object_pos"] = []
 
     # for t in range(env._max_episode_steps):
+    fig_list= []
     n_timesteps = 50
     for t in range(n_timesteps):
         # exit this for loop. THis is necessary due to the
@@ -223,7 +232,8 @@ for nTests in range(nEvaluations):
             object_marker_ID = 6
             currPos = actual_newPos  # new_Pos
             grip_pos = actual_newPos
-            object_pos = get_object_position(object_marker_ID)[:3]
+            object_pos, img = get_object_position(myCam, object_marker_ID)
+            object_pos = object_pos[:3]+[0,0,0.03]
             object_rel_pos = object_pos - actual_newPos
             object_velp = np.zeros(3)
             grip_velp = np.zeros(3)
@@ -244,13 +254,15 @@ for nTests in range(nEvaluations):
             ax1.plot(x_o, y_o, 'o', color="blue")
             ax2.plot(x, z, 'o', color="r")
             ax2.plot(x_o, z_o, 'o', color="blue")
+            ax_img.imshow(img)
+            
             plt.pause(0.05)
+            
+            plt.savefig(os.path.join(fig_path, "plane_view_episode_"+str(nTests)+ '_timestep_' + str(t) + ".svg"))
 
-            if info["is_success"][-1] == True or t == n_timesteps-1:
-                fig_path = os.path.join("Results", "push", "plane_view")
-                plt.savefig(os.path.join(
-                    fig_path, "plane_view_episode_"+str(nTests)+".svg"))
-
+            #if info["is_success"][-1] == True or t == n_timesteps-1:
+                #curr_plt.savefig(os.path.join(fig_path, "plane_view_episode_"+str(nTests)+ '_timestep_' + str(i) + ".svg"))
+            
             # checking for success
             if info["is_success"][-1] == True:
                 print("Success! Norm is {}".format(
@@ -259,8 +271,10 @@ for nTests in range(nEvaluations):
 
                 INFO[nTests] = info
                 if ON_REAL_ROBOT and nTests == range(nEvaluations)[-1]:
-                    ur5e_robot.controller.stopScript()
-                break
+                    #ur5e_robot.controller.stopScript()
+                    myCam.stop_cam()
+                    plt.close()
+                    
     info_path = os.path.join("Results", "push")
     with open(os.path.join(info_path, 'INFO.pkl'), 'wb') as f:
         pickle.dump(INFO, f)
@@ -287,3 +301,5 @@ with open(os.path.join(info_path, 'settings.txt'), 'w') as f:
     for key, val in settings.items():
         f.write(f"{key} : {val}\n")
     print("DONE")
+
+

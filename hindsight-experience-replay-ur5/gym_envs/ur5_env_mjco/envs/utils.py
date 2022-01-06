@@ -4,7 +4,8 @@ from gym import error
 try:
     import mujoco_py
 except ImportError as e:
-    raise error.DependencyNotInstalled("{}. (HINT: you need to install mujoco_py, and also perform the setup instructions here: https://github.com/openai/mujoco-py/.)".format(e))
+    raise error.DependencyNotInstalled(
+        "{}. (HINT: you need to install mujoco_py, and also perform the setup instructions here: https://github.com/openai/mujoco-py/.)".format(e))
 
 
 def robot_get_obs(sim):
@@ -52,8 +53,11 @@ def mocap_set_action(sim, action):
         quat_delta = action[:, 3:]
 
         reset_mocap2body_xpos(sim)
+        #sim.data.mocap_pos[:] = pos_delta
         sim.data.mocap_pos[:] = sim.data.mocap_pos + pos_delta
-        sim.data.mocap_quat[:] = sim.data.mocap_quat + quat_delta
+        #sim.data.mocap_quat[:] = sim.data.get_body_xquat("dummy_gripper")
+        sim.data.mocap_quat[:] = [0, 0., -1., 1.]
+        #sim.data.mocap_quat[:] = sim.data.mocap_quat + quat_delta
 
 
 def reset_mocap_welds(sim):
@@ -74,7 +78,7 @@ def reset_mocap2body_xpos(sim):
 
     if (sim.model.eq_type is None or
         sim.model.eq_obj1id is None or
-        sim.model.eq_obj2id is None):
+            sim.model.eq_obj2id is None):
         return
     for eq_type, obj1_id, obj2_id in zip(sim.model.eq_type,
                                          sim.model.eq_obj1id,

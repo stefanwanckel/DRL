@@ -1,16 +1,17 @@
 <mujoco>
-	<body mocap="true" name="robot0:mocap" pos="0 0 0">
+	<body mocap="true" name="robot0:mocap" pos="0 0 0" quat="0 0 0 0">
 		<geom conaffinity="0" contype="0" pos="0 0 0" rgba="0 0.5 0 0.7" size="0.005 0.005 0.005" type="box"></geom>
 		<geom conaffinity="0" contype="0" pos="0 0 0" rgba="0 0.5 0 0.1" size="1 0.005 0.005" type="box"></geom>
 		<geom conaffinity="0" contype="0" pos="0 0 0" rgba="0 0.5 0 0.1" size="0.005 1 0.001" type="box"></geom>
 		<geom conaffinity="0" contype="0" pos="0 0 0" rgba="0 0.5 0 0.1" size="0.005 0.005 1" type="box"></geom>
 	</body>
 
-	<body pos="0. 0. 0" name="table1" >
+	<body pos="0. 0. 0.3" name="table1" >
 		<geom size="0.125  0.3" type="cylinder" mass="2000" material="table_mat"></geom>
 		<geom size="0.09 0.09 0.25" pos="0. 0. 0.4" type="cylinder" mass="2000" material="table_mat"></geom>
-
-		<body name="robot0:base_link" pos="0 0 0.5">
+		<!-- <geom size="0.125  0.3" pos="0. 0. 0.3" type="cylinder" mass="2000" material="table_mat"></geom>
+		<geom size="0.09 0.09 0.05" pos="0. 0. 0.70" type="cylinder" mass="2000" material="table_mat"></geom> -->
+		<body name="robot0:base_link" pos="0 0 0.50">
 			<inertial pos="0 0 0" quat="0.5 0.5 -0.5 0.5" mass="4" diaginertia="0.0072 0.00443333 0.00443333" />
 			<geom type="mesh"  mesh="robot0:base" material="robot0:mat0"/>
 
@@ -45,8 +46,8 @@
 									<geom type="mesh"  mesh="robot0:wrist3" material="robot0:mat0"/>
 
 									<body childclass="cls_dummy_gripper" name="dummy_gripper" pos="0 0.08 0">
-										<geom pos="0 0 0" size="0.015" type="sphere" name="dummy_gripper_geom"  condim="4" friction="1 0.05 0.01" ></geom>
-										<site name="robot0:grip" pos="0. 0. 0." rgba="0 0 1 0.3" size="0.01"></site>									
+										<geom pos="0 0 0" size="0.015" type="sphere" name="dummy_gripper_geom" condim="4" friction="1 0.05 0.01" ></geom>
+										<site name="robot0:grip" pos="0 0 0" rgba="0 0 1 0.3" size="0.01"></site>									
 									</body>
 								</body>	
 							</body>

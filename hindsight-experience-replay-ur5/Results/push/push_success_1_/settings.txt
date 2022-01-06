@@ -1,4 +1,4 @@
-date_n_time : 06/01/2022 00:54:35
+date_n_time : 06/01/2022 00:51:58
 env_name : ur5_push_no_gripper-v1
 model_name : /2021-12-13T02:05:24.715131_epoch_73.pt
 model_path : saved_models/ur5_push_no_gripper-v1/12-12-2021_2_sharpen/2021-12-13T02:05:24.715131_epoch_73.pt
