@@ -17,9 +17,9 @@ def load_saved_state_dicts(save_dir, env_name, rank):
         model_path = os.path.join(save_dir, env_name, latest_model)
     else:
         dash = "-"*42
-        model_name = "2021-12-13T18:46:09.042413_epoch_36.pt"
-        project_dir = "13-12-2021_2_sharpen"
-        log_name = "ur5_pick_and_place_1.log"
+        model_name = "2022-01-06T17:26:32.261117_epoch_31.pt"
+        project_dir = "06-01-2022_1_SR20_cylinder"
+        log_name = "ur5_push_no_gripper-v1.log"
         if rank == 0:
             print("Continuing from {} ".format(model_name))
             print("log file from last prior training:")

@@ -21,7 +21,7 @@ class Ur5PushEnv(ur5_env.Ur5Env, utils.EzPickle):
         # push_joint_q = np.deg2rad(
         #     np.array([90.3, -27.6, 150.5, -175.1, 299.4, -49.9]))
         push_joint_q = np.deg2rad(
-            np.array([102.2, -42.2, 113.0, -161.5, 270.4, 1.6]))
+            np.array([90.7,-42.9,112.1,-159.6,270.4,-9.9]))
         initial_qpos = {
             "robot0:shoulder_joint": push_joint_q[0],
             "robot0:shoulder_lift_joint": push_joint_q[1],
@@ -33,7 +33,7 @@ class Ur5PushEnv(ur5_env.Ur5Env, utils.EzPickle):
         }
         ur5_env.Ur5Env.__init__(
             self, MODEL_XML_PATH, has_object=True, block_gripper=True, n_substeps=10,
-            gripper_extra_height=0, target_in_the_air=False, target_offset=0.0,
-            obj_range=0.15, target_range=0.2, distance_threshold=0.025,
-            initial_qpos=initial_qpos, reward_type=reward_type, table_height=0.4, max_pos_change=0.05, reduced=True)
+            gripper_extra_height=-0.8   , target_in_the_air=False, target_offset=0.0,
+            obj_range=0.20, target_range=0.20, distance_threshold=0.05,
+            initial_qpos=old_initial_qpos, reward_type=reward_type, table_height=0.4, max_pos_change=0.05, reduced=True)
         utils.EzPickle.__init__(self)

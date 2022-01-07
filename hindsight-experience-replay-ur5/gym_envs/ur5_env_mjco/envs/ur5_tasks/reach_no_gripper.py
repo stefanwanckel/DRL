@@ -21,7 +21,7 @@ class Ur5ReachEnv(ur5_env.Ur5Env, utils.EzPickle):
         }
         # target_range - gripper_extra_height = 0.15
         ur5_env.Ur5Env.__init__(
-            self, MODEL_XML_PATH, has_object=False, block_gripper=True, n_substeps=1,
+            self, MODEL_XML_PATH, has_object=False, block_gripper=True, n_substeps=5,
             gripper_extra_height=0.0, target_in_the_air=True, target_offset=0.0,
             obj_range=0.15, target_range=0.20, distance_threshold=0.05,
             initial_qpos=initial_qpos, reward_type=reward_type)

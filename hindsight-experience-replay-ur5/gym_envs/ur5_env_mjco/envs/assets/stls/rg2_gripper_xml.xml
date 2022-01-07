@@ -1,0 +1,317 @@
+
+  
+  <joint name="l_moment_arm_joint" type="revolute">
+    <child link="l_moment_arm_link"/>
+  </joint>
+
+  -----------
+  <transmission name="l_moment_arm_joint_tran">
+    <type>
+      transmission_interface/SimpleTransmission
+    </type>
+    <joint name="l_moment_arm_joint">
+      <hardwareInterface>
+        hardware_interface/EffortJointInterface
+      </hardwareInterface>
+    </joint>
+    <actuator name="l_moment_arm_joint_motor">
+      <hardwareInterface>
+        hardware_interface/EffortJointInterface
+      </hardwareInterface>
+      <mechanicalReduction>
+        1
+      </mechanicalReduction>
+    </actuator>
+  </transmission>
+  <link name="l_moment_arm_link">
+    <collision>
+      <origin rpy="0.00 0.00 0.00" xyz="0.00 0.00 0.00"/>
+      <geometry>
+        <mesh filename="../meshes/gripper_onrobot_rg2/collision/RG2_LeftMomentArm_col.STL"/>
+      </geometry>
+    </collision>
+    <visual>
+      <origin rpy="0.00 0.00 0.00" xyz="0.00 0.00 0.00"/>
+      <geometry>
+        <mesh filename="../meshes/gripper_onrobot_rg2/visual/RG2_LeftMomentArm_vis.STL"/>
+      </geometry>
+    </visual>
+    <inertial>
+      <origin rpy="0.00 0.00 0.00" xyz="0.017004 0.006397 -0.010300"/>
+      <mass value="0.160209"/>
+      <inertia ixx="0.000023" ixy="0.000019" ixz="0.000000" iyy="0.000072" iyz="0.000000" izz="0.000083"/>
+    </inertial>
+  </link>
+  <joint name="l_finger_2_joint" type="revolute">
+    <parent link="l_moment_arm_link"/>
+    <child link="l_finger_link"/>
+    <origin rpy="0 0 0" xyz="0.049 0.026 0.000"/>
+    <axis xyz="0 0 1"/>
+    <limit effort="10.6" lower="-1.570796327" upper="1.570796327" velocity="3.14"/>
+    <dynamics damping="0.1" friction="0.0"/>
+    <implicitSpringDamper>
+      True
+    </implicitSpringDamper>
+  </joint>
+  <transmission name="l_finger_2_joint_tran">
+    <type>
+      transmission_interface/SimpleTransmission
+    </type>
+    <joint name="l_finger_2_joint">
+      <hardwareInterface>
+        hardware_interface/EffortJointInterface
+      </hardwareInterface>
+    </joint>
+    <actuator name="l_finger_2_joint_motor">
+      <hardwareInterface>
+        hardware_interface/EffortJointInterface
+      </hardwareInterface>
+      <mechanicalReduction>
+        1
+      </mechanicalReduction>
+    </actuator>
+  </transmission>
+  <link name="l_finger_link">
+    <collision>
+      <origin rpy="0.00 0.00 0.00" xyz="0.00 0.00 0.00"/>
+      <geometry>
+        <mesh filename="../meshes/gripper_onrobot_rg2/collision/RG2_LeftFinger_col.STL"/>
+      </geometry>
+      <collision_margin value="0.001"/>
+    </collision>
+    <visual>
+      <origin rpy="0.00 0.00 0.00" xyz="0.00 0.00 0.00"/>
+      <geometry>
+        <mesh filename="../meshes/gripper_onrobot_rg2/visual/RG2_LeftFinger_vis.STL"/>
+      </geometry>
+    </visual>
+    <inertial>
+      <origin rpy="0.00 0.00 0.00" xyz="0.024695 -0.010178 -0.010001"/>
+      <mass value="0.081638"/>
+      <inertia ixx="0.000006" ixy="-0.000005" ixz="0.000000" iyy="0.000025" iyz="0.000000" izz="0.000026"/>
+    </inertial>
+  </link>
+  <joint name="l_finger_passive_joint" type="revolute">
+    <parent link="l_finger_link"/>
+    <child link="l_truss_arm_link"/>
+    <origin rpy="0 0 0" xyz="0.0165 -0.0093 0.0"/>
+    <axis xyz="0 0 1"/>
+    <limit effort="10.6" lower="-1.570796327" upper="1.570796327" velocity="3.14"/>
+    <dynamics damping="0.1" friction="0.0"/>
+    <implicitSpringDamper>
+      True
+    </implicitSpringDamper>
+  </joint>
+  <transmission name="l_finger_passive_joint_tran">
+    <type>
+      transmission_interface/SimpleTransmission
+    </type>
+    <joint name="l_finger_passive_joint">
+      <hardwareInterface>
+        hardware_interface/EffortJointInterface
+      </hardwareInterface>
+    </joint>
+    <actuator name="l_finger_passive_joint_motor">
+      <hardwareInterface>
+        hardware_interface/EffortJointInterface
+      </hardwareInterface>
+      <mechanicalReduction>
+        1
+      </mechanicalReduction>
+    </actuator>
+  </transmission>
+  <link name="l_truss_arm_link">
+    <collision>
+      <origin rpy="0.00 0.00 0.00" xyz="-0.0487 -0.0258 0.00"/>
+      <geometry>
+        <mesh filename="../meshes/gripper_onrobot_rg2/collision/RG2_LeftTrussArm_col.STL"/>
+      </geometry>
+    </collision>
+    <visual>
+      <origin rpy="0.00 0.00 0.00" xyz="-0.0487 -0.0258 0.00"/>
+      <geometry>
+        <mesh filename="../meshes/gripper_onrobot_rg2/visual/RG2_LeftTrussArm_vis.STL"/>
+      </geometry>
+    </visual>
+    <inertial>
+      <origin rpy="0.00 0.00 0.00" xyz="0.023075 0.012136 -0.010000"/>
+      <mass value="0.065927"/>
+      <inertia ixx="0.000010" ixy="0.000010" ixz="0.000000" iyy="0.000024" iyz="0.000000" izz="0.000025"/>
+    </inertial>
+  </link>
+  <joint name="r_finger_1_joint" type="revolute">
+    <parent link="hand_link"/>
+    <child link="r_moment_arm_link"/>
+    <origin rpy="0 0 0" xyz="0.132 -0.017 0.010"/>
+    <axis xyz="0 0 1"/>
+    <limit effort="10.6" lower="-1.570796327" upper="1.570796327" velocity="3.14"/>
+    <dynamics damping="0.1" friction="0.0"/>
+    <implicitSpringDamper>
+      True
+    </implicitSpringDamper>
+  </joint>
+  <transmission name="r_finger_1_joint_tran">
+    <type>
+      transmission_interface/SimpleTransmission
+    </type>
+    <joint name="r_finger_1_joint">
+      <hardwareInterface>
+        hardware_interface/EffortJointInterface
+      </hardwareInterface>
+    </joint>
+    <actuator name="r_finger_1_joint_motor">
+      <hardwareInterface>
+        hardware_interface/EffortJointInterface
+      </hardwareInterface>
+      <mechanicalReduction>
+        1
+      </mechanicalReduction>
+    </actuator>
+  </transmission>
+  <link name="r_moment_arm_link">
+    <collision>
+      <origin rpy="0.00 0.00 0.00" xyz="0.00 0.00 0.00"/>
+      <geometry>
+        <mesh filename="../meshes/gripper_onrobot_rg2/collision/RG2_RightMomentArm_col.STL"/>
+      </geometry>
+    </collision>
+    <visual>
+      <origin rpy="0.00 0.00 0.00" xyz="0.00 0.00 0.00"/>
+      <geometry>
+        <mesh filename="../meshes/gripper_onrobot_rg2/visual/RG2_RightMomentArm_vis.STL"/>
+      </geometry>
+    </visual>
+    <inertial>
+      <origin rpy="0.00 0.00 0.00" xyz="0.017004 -0.006397 -0.010300"/>
+      <mass value="0.160209"/>
+      <inertia ixx="0.000023" ixy="-0.000019" ixz="0.000000" iyy="0.000072" iyz="0.000000" izz="0.000083"/>
+    </inertial>
+  </link>
+  <joint name="r_finger_2_joint" type="revolute">
+    <parent link="r_moment_arm_link"/>
+    <child link="r_finger_link"/>
+    <origin rpy="0 0 0" xyz="0.049 -0.026 0.000"/>
+    <axis xyz="0 0 1"/>
+    <limit effort="10.6" lower="-1.570796327" upper="1.570796327" velocity="3.14"/>
+    <dynamics damping="0.1" friction="0.0"/>
+    <implicitSpringDamper>
+      True
+    </implicitSpringDamper>
+  </joint>
+  <transmission name="r_finger_2_joint_tran">
+    <type>
+      transmission_interface/SimpleTransmission
+    </type>
+    <joint name="r_finger_2_joint">
+      <hardwareInterface>
+        hardware_interface/EffortJointInterface
+      </hardwareInterface>
+    </joint>
+    <actuator name="r_finger_2_joint_motor">
+      <hardwareInterface>
+        hardware_interface/EffortJointInterface
+      </hardwareInterface>
+      <mechanicalReduction>
+        1
+      </mechanicalReduction>
+    </actuator>
+  </transmission>
+  <link name="r_finger_link">
+    <collision>
+      <origin rpy="0.00 0.00 0.00" xyz="0.00 0.00 0.00"/>
+      <geometry>
+        <mesh filename="../meshes/gripper_onrobot_rg2/collision/RG2_RightFinger_col.STL"/>
+      </geometry>
+      <collision_margin value="0.001"/>
+    </collision>
+    <visual>
+      <origin rpy="0.00 0.00 0.00" xyz="0.00 0.00 0.00"/>
+      <geometry>
+        <mesh filename="../meshes/gripper_onrobot_rg2/visual/RG2_RightFinger_vis.STL"/>
+      </geometry>
+    </visual>
+    <inertial>
+      <origin rpy="0.00 0.00 0.00" xyz="0.024695 0.010178 -0.010000"/>
+      <mass value="0.081637"/>
+      <inertia ixx="0.000006" ixy="0.000005" ixz="0.000000" iyy="0.000025" iyz="0.000000" izz="0.000026"/>
+    </inertial>
+  </link>
+  <joint name="r_finger_passive_joint" type="revolute">
+    <parent link="r_finger_link"/>
+    <child link="r_truss_arm_link"/>
+    <origin rpy="0 0 0" xyz="0.0165 0.0093 0.0"/>
+    <axis xyz="0 0 1"/>
+    <limit effort="10.6" lower="-1.570796327" upper="1.570796327" velocity="3.14"/>
+    <dynamics damping="0.1" friction="0.0"/>
+    <implicitSpringDamper>
+      True
+    </implicitSpringDamper>
+  </joint>
+  <transmission name="r_finger_passive_joint_tran">
+    <type>
+      transmission_interface/SimpleTransmission
+    </type>
+    <joint name="r_finger_passive_joint">
+      <hardwareInterface>
+        hardware_interface/EffortJointInterface
+      </hardwareInterface>
+    </joint>
+    <actuator name="r_finger_passive_joint_motor">
+      <hardwareInterface>
+        hardware_interface/EffortJointInterface
+      </hardwareInterface>
+      <mechanicalReduction>
+        1
+      </mechanicalReduction>
+    </actuator>
+  </transmission>
+  <link name="r_truss_arm_link">
+    <collision>
+      <origin rpy="0.00 0.00 0.00" xyz="-0.0487 0.0258 0.00"/>
+      <geometry>
+        <mesh filename="../meshes/gripper_onrobot_rg2/collision/RG2_RightTrussArm_col.STL"/>
+      </geometry>
+    </collision>
+    <visual>
+      <origin rpy="0.00 0.00 0.00" xyz="-0.0487 0.0258 0.00"/>
+      <geometry>
+        <mesh filename="../meshes/gripper_onrobot_rg2/visual/RG2_RightTrussArm_vis.STL"/>
+      </geometry>
+    </visual>
+    <inertial>
+      <origin rpy="0.00 0.00 0.00" xyz="0.023075 -0.012136 -0.010000"/>
+      <mass value="0.065927"/>
+      <inertia ixx="0.000010" ixy="-0.000010" ixz="0.000000" iyy="0.000024" iyz="0.000000" izz="0.000025"/>
+    </inertial>
+  </link>
+  <joint name="flange-rg2" type="fixed">
+    <origin rpy="3.141592653589793 -1.5707963267948966 -1.5707963267948966" xyz="0.0 0 0.0155"/>
+    <parent link="flange"/>
+    <child link="gripper_base_link"/>
+  </joint>
+  <link name="flange"/>
+  <joint name="wrist_3-flange" type="fixed">
+    <parent link="wrist_3_link"/>
+    <child link="flange"/>
+    <origin rpy="0 0 0" xyz="0 0 0"/>
+  </joint>
+  <link name="tcp">
+  </link>
+  <link name="tcp_extension">
+  </link>
+  <joint name="tcp-tcp_extension" type="fixed">
+    <origin rpy="0 0 0" xyz="0 0 0.2"/>
+    <parent link="tcp"/>
+    <child link="tcp_extension"/>
+  </joint>
+  <joint name="flange-tcp" type="fixed">
+    <origin rpy="0 0 0" xyz="0 0 0.223"/>
+    <parent link="flange"/>
+    <child link="tcp"/>
+  </joint>
+  <link name="world"/>
+  <joint name="world_joint" type="fixed">
+    <parent link="world"/>
+    <child link="base_link"/>
+    <origin rpy="0.0 0.0 0.0" xyz="0.0 0.0 0.0"/>
+  </joint>

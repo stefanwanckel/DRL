@@ -54,11 +54,17 @@ def mocap_set_action(sim, action):
 
         reset_mocap2body_xpos(sim)
         #sim.data.mocap_pos[:] = pos_delta
+
+        #real life table 
+        pos_delta = check_table_collision(sim.data.mocap_pos[0], pos_delta[0])
         sim.data.mocap_pos[:] = sim.data.mocap_pos + pos_delta
         #sim.data.mocap_quat[:] = sim.data.get_body_xquat("dummy_gripper")
-        sim.data.mocap_quat[:] = [0, 0., -1., 1.]
+        #for pushnogripper
+        #sim.data.mocap_quat[:] = [0, 0., -1., 1.]
+        #for picknplace
+        #sim.data.mocap_quat[:] = [0.2955202, 0, 0, 1.]
         #sim.data.mocap_quat[:] = sim.data.mocap_quat + quat_delta
-
+        sim.data.mocap_quat[:] = quat_delta
 
 def reset_mocap_welds(sim):
     """Resets the mocap welds that we use for actuation.
@@ -98,3 +104,17 @@ def reset_mocap2body_xpos(sim):
         assert (mocap_id != -1)
         sim.data.mocap_pos[mocap_id][:] = sim.data.body_xpos[body_idx]
         sim.data.mocap_quat[mocap_id][:] = sim.data.body_xquat[body_idx]
+
+def check_table_collision(grip_pos, relative_action):
+    """
+    If moved further than allowed distance, we overwrite the relative action with the difference
+    between the minimally allowed z position and the current gripper position
+    """
+    min_allowed_z_pos = np.array([0.54])
+    curr_grip_z_pos = grip_pos[2]
+    next_grip_z_pos = grip_pos[2] + relative_action[2]
+
+    if next_grip_z_pos < min_allowed_z_pos:
+        relative_action[2] = min_allowed_z_pos - curr_grip_z_pos
+
+    return relative_action

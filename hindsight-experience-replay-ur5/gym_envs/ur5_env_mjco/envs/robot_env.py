@@ -30,6 +30,8 @@ class RobotEnv(gym.GoalEnv):
         self.viewer = None
         self._viewers = {}
         self.model_path = model_path
+        # just for debug purposes
+        # self.render()
 
         self.metadata = {
             'render.modes': ['human', 'rgb_array'],
@@ -101,7 +103,8 @@ class RobotEnv(gym.GoalEnv):
             "distance_threshold":  self.distance_threshold,
             "reward_type":  self.reward_type,
             "max_pos_change":  self.max_pos_change,
-            "reduced_obs": self.reduced
+            "reduced_obs": self.reduced,
+            "n_substeps": self.n_substeps
         }
         return obs
 

@@ -45,6 +45,7 @@ class Ur5Env(robot_env.RobotEnv):
         self.table_height = table_height
         self.max_pos_change = max_pos_change
         self.reduced = reduced
+        self.n_substeps = n_substeps
 
         super(Ur5Env, self).__init__(
             model_path=model_path, n_substeps=n_substeps, n_actions=4,
@@ -86,10 +87,10 @@ class Ur5Env(robot_env.RobotEnv):
         pos_ctrl *= self.max_pos_change  # limit maximum change in position
         if self.has_object:
             if "no_gripper" in self.model_path:
-                rot_ctrl = [0, 0., -1., 1.]
+                rot_ctrl = [0., 0,-1, 1.]
             else:
                 if self.target_in_the_air:
-                    rot_ctrl = [0.95533649, 0., 0., -0.29552021]
+                    rot_ctrl = [0.2955202, 0, 0, 1.]
                 else:
                     rot_ctrl = [1., 0., 0., 0.]
         else:
@@ -97,7 +98,6 @@ class Ur5Env(robot_env.RobotEnv):
                 rot_ctrl = [0, 0., -1., 1.]
             else:
                 rot_ctrl = [1., 0., 0., 0.]
-        # rot_ctrl = [1., 0., 1., 0.]  # fixed rotation of the end effector, expressed as a quaternion
         gripper_ctrl = np.array([gripper_ctrl, gripper_ctrl])
         assert gripper_ctrl.shape == (2,)
         if self.block_gripper:
