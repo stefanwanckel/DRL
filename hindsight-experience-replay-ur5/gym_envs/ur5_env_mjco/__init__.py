@@ -39,6 +39,13 @@ register(
 )
 
 register(
+    id='ur5_pick_and_place_rg2-v1',
+    entry_point='ur5_env_mjco.envs.ur5_tasks.pick_and_place_rg2:Ur5PickAndPlaceEnv',
+    # kwargs=kwargs,
+    max_episode_steps=100,
+)
+
+register(
     id='ur5_slide-v1',
     entry_point='ur5_env_mjco.envs.ur5_tasks.slide:Ur5SlideEnv',
     # kwargs=kwargs,

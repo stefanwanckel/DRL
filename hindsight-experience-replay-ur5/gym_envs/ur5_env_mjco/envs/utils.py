@@ -27,6 +27,13 @@ def ctrl_set_action(sim, action):
     """
     if sim.model.nmocap > 0:
         _, action = np.split(action, (sim.model.nmocap * 7, ))
+
+    #adapt_action depending on gripper type
+    no_gripper_actrs = sim.model.actuator_trnid.shape[0]
+    if no_gripper_actrs == 4:
+        rg2_gripper_present = True
+        action = np.concatenate([action, action])
+
     if sim.data.ctrl is not None:
         for i in range(action.shape[0]):
             if sim.model.actuator_biastype[i] == 0:
@@ -58,12 +65,6 @@ def mocap_set_action(sim, action):
         #real life table 
         pos_delta = check_table_collision(sim.data.mocap_pos[0], pos_delta[0])
         sim.data.mocap_pos[:] = sim.data.mocap_pos + pos_delta
-        #sim.data.mocap_quat[:] = sim.data.get_body_xquat("dummy_gripper")
-        #for pushnogripper
-        #sim.data.mocap_quat[:] = [0, 0., -1., 1.]
-        #for picknplace
-        #sim.data.mocap_quat[:] = [0.2955202, 0, 0, 1.]
-        #sim.data.mocap_quat[:] = sim.data.mocap_quat + quat_delta
         sim.data.mocap_quat[:] = quat_delta
 
 def reset_mocap_welds(sim):

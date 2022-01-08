@@ -90,7 +90,9 @@ class Ur5Env(robot_env.RobotEnv):
                 rot_ctrl = [0., 0,-1, 1.]
             else:
                 if self.target_in_the_air:
-                    rot_ctrl = [0.2955202, 0, 0, 1.]
+                    #rot_ctrl = [0.2955202, 0, 0, 1.]
+                    #rot_ctrl  = [ 0.2705981, 0.6532815, 0.2705981, 0.6532815 ]
+                    rot_ctrl =[ -0.2705981, -0.6532815, -0.2705981, 0.6532815 ]
                 else:
                     rot_ctrl = [1., 0., 0., 0.]
         else:

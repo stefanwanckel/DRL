@@ -1,75 +1,104 @@
 <mujoco>
-	<compiler angle="radian" coordinate="local" meshdir="../stls" texturedir="../textures"></compiler>
+	<body mocap="true" name="robot0:mocap" pos="0 0 0">
+		<geom conaffinity="0" contype="0" pos="0 0 0" rgba="0 0.5 0 0.7" size="0.005 0.005 0.005" type="box"></geom>
+		<geom conaffinity="0" contype="0" pos="0 0 0" rgba="0 0.5 0 0.1" size="1 0.005 0.005" type="box"></geom>
+		<geom conaffinity="0" contype="0" pos="0 0 0" rgba="0 0.5 0 0.1" size="0.005 1 0.001" type="box"></geom>
+		<geom conaffinity="0" contype="0" pos="0 0 0" rgba="0 0.5 0 0.1" size="0.005 0.005 1" type="box"></geom>
+	</body>
 
-	<asset>
-	 	<mesh name="robot0:rg2_right_truss_arm"          file="RG2_RightTrussArm_vis.STL"   />
-        <mesh name="robot0:rg2_right_moment_arm"         file="RG2_RightMomentArm_vis.STL"   />
-        <mesh name="robot0:rg2_right_finger"             file="RG2_RightFinger_vis.STL"   />
-        <mesh name="robot0:rg2_left_truss_arm"           file="RG2_LeftTrussArm_vis.STL"   />
-        <mesh name="robot0:rg2_left_moment_arm"          file="RG2_LeftMomentArm_vis.STL"   />
-        <mesh name="robot0:rg2_left_finger"              file="RG2_LeftFinger_vis.STL"   />
-        <mesh name="robot0:rg2_hand"                     file="RG2_Hand_vis.STL"   />
-	</asset>
-	<worldbody>
+		<body pos="0. 0. 0.15" name="table1">
+			<geom size="0.125 0.175 0.3" type="box" mass="2000" material="table_mat"></geom>
+			<geom size="0.09 0.09 0.2" pos="0. 0. 0.4" type="cylinder" mass="2000" material="table_mat"></geom>
 
+			<body name="robot0:base_link" pos="0 0 0.5">
+				<inertial pos="0 0 0" quat="0.5 0.5 -0.5 0.5" mass="4" diaginertia="0.0072 0.00443333 0.00443333" />
+				<geom type="mesh"  mesh="robot0:base" material="robot0:mat0"/>
 
-    
-	<body name="flange_rg2" pos="0.0 0 0.0155" >
+				<body name="robot0:shoulder_link" pos="0 0 0.089159">
+					<inertial pos="0 0 0" mass="3.7" diaginertia="0.0102675 0.0102675 0.00666" />
+					<joint name="robot0:shoulder_joint" class="UR5e" pos="0 0 0" axis="0 0 1" limited="true" range="-3.14159 3.14159" />
+					<geom type="mesh"  mesh="robot0:shoulder" material="robot0:mat0"/>
 
-		<body name="gripper_base_link" pos="0.0 0 0">
+					<body name="robot0:upperarm_link" pos="0 0.13585 0" quat="0.707107 0 0.707107 0">
+						<inertial pos="0 0 0.28" mass="8.393" diaginertia="0.226891 0.226891 0.0151074" />
+						<joint name="robot0:shoulder_lift_joint" class="UR5e" pos="0 0 0" axis="0 1 0" limited="true" range="-3.14159 3.14159"/> <!--Range= -3.14159 3.14159-->
+						<geom type="mesh"  mesh="robot0:upperarm" material="robot0:mat0"/>
 
-			<!-- nest each child piece inside the parent body tags -->
-			<body name="hand_link" pos="0 0 0">
-				<joint name="hand_link_joint" axis="0 0 1" />
-				<geom name="hand_link_geom" type="mesh" mesh="robot0:rg2_hand"/>
-				<inertial pos="0.061902 0.000129 -0.000005" mass="1.684558" diaginertia="0.000862 0.002401 0.002620" />
-				
-				<body name="left_moment_arm" pos="0.132 0.017 0.010">
-					<joint name="left_moment_arm_joint" axis="0 0 1"  damping="0.1" limited="true" range="-1.5707963271.570796327"/>
-					<geom name="left_moment_arm_geom" type="mesh" mesh="robot0:rg2_left_moment_arm" />
-					<inertial pos="0.017004 0.006397 -0.010300" mass="0.160209" fullinertia="0.000023  0.000072 0.000083 0.000019 0.000000 0.000000"/>
-					
-					<body name="l_finger_link" pos="0.049 0.026 0.000" >
-						<joint name="l_finger_joint" axis="0 0 1"  damping="0.1" limited="true" range="-1.570796327 1.570796327"/>
-						<geom name="l_finger_geom" type="mesh" mesh="robot0:rg2_left_finger" />
-						<inertial pos="0.024695 -0.010178 -0.010001" mass="0.081638" fullinertia="0.000006 0.000025 0.000026 -0.000005 0.000000 0.000000"/>
+						<body name="robot0:forearm_link" pos="0 -0.1197 0.425">
+							<inertial pos="0 0 0.25" mass="2.275" diaginertia="0.0494433 0.0494433 0.004095" />
+							<joint name="robot0:elbow_joint" class="UR5e" pos="0 0 0" axis="0 1 0" limited="true" range="-3.14159 3.14159" />
+							<geom type="mesh"  mesh="robot0:forearm" material="robot0:mat0"/>
 
-					<body name="l_truss_arm_link" pos="0.0165 -0.0093 0.0">
-						<joint name="l_finger_passive_joint" axis="0 0 1"  damping="0.1" limited="true" range="-1.570796327 1.570796327"/>
-						<geom name="l_finger_link" pos="-0.0487 -0.0258 0.00" type="mesh" mesh="robot0:rg2_left_truss_arm" />
-						<inertial pos="0.023075 0.012136 -0.010000" mass="0.065927" fullinertia="0.000010 0.000024 0.000025 0.000010 0.000000 0.000000"/>
-					</body>
-					</body>
-				</body>
+							<body name="robot0:wrist_1_link" pos="0 0 0.39225" quat="0.707107 0 0.707107 0">
+								<inertial pos="0 0 0" quat="0.5 0.5 -0.5 0.5" mass="1.219" diaginertia="0.21942 0.111173 0.111173" />
+								<joint name="robot0:wrist_1_joint" class="UR5e" pos="0 0 0" axis="0 1 0" limited="true" range="-3.14159 3.14159"  />
+								<geom type="mesh"  mesh="robot0:wrist1" material="robot0:mat0"/>
 
+								<body name="robot0:wrist_2_link" pos="0 0.093 0" >
+									<inertial pos="0 0 0" quat="0.5 0.5 -0.5 0.5" mass="1.219" diaginertia="0.21942 0.111173 0.111173" />
+									<joint name="robot0:wrist_2_joint" class="UR5e" pos="0 0 0" axis="0 0 1" limited="true" range="-3.14159 3.14159" />
+									<geom type="mesh"  mesh="robot0:wrist2" material="robot0:mat0"/>
 
+									<body name="robot0:wrist_3_link" pos="0 0 0.09465">
+										<inertial pos="0 0 0" quat="0.5 0.5 -0.5 0.5" mass="0.1879" diaginertia="0.033822 0.0171365 0.0171365" />
+										<joint name="robot0:wrist_3_joint" class="UR5e" pos="0 0 0" axis="0 1 0" limited="true" range="-3.14159 3.14159" />
+										<geom type="mesh"  mesh="robot0:wrist3" material="robot0:mat0"/>
+									<!-- gripper start -->
 
-				<body name="right_moment_arm" pos="0.132 -0.017 0.010">
-					<joint name="right_moment_arm_joint" axis="0 0 1"  damping="0.1" limited="true" range="-1.570796327 1.570796327"/>
-					<geom name="right_moment_arm_geom"  type="mesh" mesh="robot0:rg2_right_moment_arm" />
-					<inertial pos="0.017004 0.006397 -0.010300" mass="0.160209" fullinertia="0.000023  0.000072 0.000083 0.000019 0.000000 0.000000"/>
+											<body name="gripper_base_link">
 
-					<body name="r_finger_link" pos="0.049 -0.026 0.000" >
-						<joint name="r_finger_joint" axis="0 0 1"  damping="0.1" limited="true" range="-1.570796327 1.570796327"/>
-						<geom name="r_finger_geom" type="mesh" mesh="robot0:rg2_right_finger" />
-						<inertial pos="0.024695 0.010178 -0.010000" mass="0.160209" fullinertia="0.000006 0.000025 0.000026 -0.000005 0.000000 0.000000"/>
-					
-						<body name="r_truss_arm_link" pos="0.0165 0.0093 0.0">
-							<joint name="r_finger_passive_joint" axis="0 0 1"  damping="0.1" limited="true" range="-1.570796327 1.570796327"/>
-							<geom name="r_finger_link" pos="-0.0487 0.0258 0.00" type="mesh" mesh="robot0:rg2_right_truss_arm" />
-							<inertial pos="0.023075 -0.012136 -0.010000" mass="0.065927" fullinertia="0.000010 0.000024 0.000025 0.000010 0.000000 0.000000"/>
+												<!-- nest each child piece inside the parent body tags -->
+												<body name="hand_link" pos="0.0 0.075 0" euler="0 0 1.5708">
+													<geom name="hand_link_geom" type="mesh" mesh="robot0:rg2_hand"/>
+													<inertial pos="0.061902 0.000129 -0.000005" mass="1.684558" diaginertia="0.000862 0.002401 0.002620" />
+													<!-- Site that feeds back position is defined from hand link here -->
+													<site name="robot0:grip" pos="0.18 0. 0" rgba="0 0 1 0.3" size="0.01"></site>
+
+													<body name="left_moment_arm" pos="0.132 0.017 0.010">
+														<joint name="left_moment_arm_joint" axis="0 0 1"  damping="100" limited="true" range="-0.45  1.570796327"/>
+														<geom name="left_moment_arm_geom" type="mesh" mesh="robot0:rg2_left_moment_arm" />
+														<inertial pos="0.017004 0.006397 -0.010300" mass="0.160209" fullinertia="0.000023  0.000072 0.000083 0.000019 0.000000 0.000000"/>
+						
+														<body name="l_finger_link" pos="0.049 0.026 0.000" >
+															<joint name="l_finger_joint" axis="0 0 -1"  damping="100" limited="true" range="-1.570796327 1.570796327"/>
+															<geom name="l_finger_geom" type="mesh" mesh="robot0:rg2_left_finger" />
+															<inertial pos="0.024695 -0.010178 -0.010001" mass="0.081638" fullinertia="0.000006 0.000025 0.000026 -0.000005 0.000000 0.000000"/>
+
+												<!-- <body name="l_truss_arm_link" pos="0.0165 -0.0093 0.0">
+													<joint name="l_finger_passive_joint" axis="0 0 1"  damping="0.1" limited="true" range="-1.570796327 1.570796327"/>
+													<geom name="l_finger_link" pos="-0.0487 -0.0258 0.00" type="mesh" mesh="robot0:rg2_left_truss_arm" />
+													<inertial pos="0.023075 0.012136 -0.010000" mass="0.065927" fullinertia="0.000010 0.000024 0.000025 0.000010 0.000000 0.000000"/>
+												</body> -->
+														</body>
+													</body>
+
+													<body name="right_moment_arm" pos="0.132 -0.017 0.010">
+														<joint name="right_moment_arm_joint" axis="0 0 -1"  damping="100" limited="true" range="-1.570796327 0.45"/>
+														<geom name="right_moment_arm_geom"  type="mesh" mesh="robot0:rg2_right_moment_arm" />
+														<inertial pos="0.017004 0.006397 -0.010300" mass="0.160209" fullinertia="0.000023  0.000072 0.000083 0.000019 0.000000 0.000000"/>
+
+															<body name="r_finger_link" pos="0.049 -0.026 0.000" >
+																<joint name="r_finger_joint" axis="0 0 1"  damping="100" limited="true" range="-1.570796327 1.570796327"/>
+																<geom name="r_finger_geom" type="mesh" mesh="robot0:rg2_right_finger" />
+																<inertial pos="0.024695 0.010178 -0.010000" mass="0.160209" fullinertia="0.000006 0.000025 0.000026 -0.000005 0.000000 0.000000"/>
+													
+														<!-- <body name="r_truss_arm_link" pos="0.0165 0.0093 0.0">
+															<joint name="r_finger_passive_joint" axis="0 0 1"  damping="0.1" limited="true" range="-1.570796327 1.570796327"/>
+															<geom name="r_finger_link" pos="-0.0487 0.0258 0.00" type="mesh" mesh="robot0:rg2_right_truss_arm" />
+															<inertial pos="0.023075 -0.012136 -0.010000" mass="0.065927" fullinertia="0.000010 0.000024 0.000025 0.000010 0.000000 0.000000"/>
+														</body> -->
+															</body>
+													</body>
+												</body>
+											</body>
+									<!-- gripper end -->
+									</body>
+								</body>
+							</body>
 						</body>
 					</body>
-
-					
 				</body>
-
 			</body>
 		</body>
-	</body>
-</worldbody>
-    <contact>
-        <exclude body1="hand_link" body2="l_truss_arm_link"></exclude>
-		<exclude body1="r_truss_arm_link" body2="hand_link"></exclude> 
-    </contact>
+
 </mujoco>

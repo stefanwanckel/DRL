@@ -95,6 +95,19 @@ def get_demo_model_path(args, last_model, is_archived):
                 print("Last model name: ", load_last_model(
                     args.save_dir, args.env_name))
             time.sleep(1)
+    elif args.env_name == "ur5_pick_and_place_rg2-v1":
+        if last_model:
+            if is_archived:
+                model_path = os.path.join(
+                    args.save_dir, args.env_name, args.project_dir, load_last_archived_model(args.save_dir, args.env_name, args.project_dir))
+                print("Last model name: ", load_last_archived_model(
+                    args.save_dir, args.env_name, args.project_dir))
+            else:
+                model_path = os.path.join(
+                    args.save_dir, args.env_name, load_last_model(args.save_dir, args.env_name))
+                print("Last model name: ", load_last_model(
+                    args.save_dir, args.env_name))
+            time.sleep(1)
         else:
             model_path = args.save_dir + args.env_name + \
                 '/2021-12-11T17:18:10.390514_epoch_18.pt'

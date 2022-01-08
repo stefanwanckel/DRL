@@ -1,8 +1,8 @@
-env.spec.id:  ur5_push_no_gripper-v1
+env.spec.id:  ur5_pick_and_place-v1
 args: 
 ------------------------------------------
 ARGS                     VALUE          
-|env_name               | ur5_push_no_gripper-v1|
+|env_name               | ur5_pick_and_place-v1|
 |n_epochs               | 80             |
 |n_cycles               | 50             |
 |n_batches              | 40             |
@@ -28,19 +28,19 @@ ARGS                     VALUE
 |demo_length            | 20             |
 |cuda                   | 0              |
 |num_rollouts_per_mpi   | 2              |
-|continue_training      | 0              |
+|continue_training      | 1              |
 ------------------------------------------
 env_inits: 
 ENV_INIT                 VALUE          
-|gripper_extra_height   | -0.8           |
+|gripper_extra_height   | 0.5            |
 |has_object             | 1              |
-|target_in_the_air      | 0              |
+|target_in_the_air      | 1              |
 |target_offset          | 0.0            |
-|obj_range              | 0.2            |
-|target_range           | 0.2            |
-|distance_threshold     | 0.05           |
+|obj_range              | 0.15           |
+|target_range           | 0.15           |
+|distance_threshold     | 0.025          |
 |reward_type            | sparse         |
-|max_pos_change         | 0.05           |
+|max_pos_change         | 0.025          |
 |reduced_obs            | 1              |
 |n_substeps             | 10             |
 ------------------------------------------
@@ -51,3 +51,65 @@ env_dimensions:
 |action_max             | 1.0            |
 |max_timesteps          | 100            |
 ------------------------------------------
+CONTINUE TRAINING...
+Continuing from 2022-01-06T17:26:32.261117_epoch_31.pt 
+log file from last prior training:
+
+Traceback (most recent call last):
+  File "train.py", line 55, in <module>
+Traceback (most recent call last):
+  File "train.py", line 55, in <module>
+    Traceback (most recent call last):
+  File "train.py", line 55, in <module>
+launch(args)
+  File "train.py", line 44, in launch
+Traceback (most recent call last):
+  File "train.py", line 55, in <module>
+    ddpg_trainer = ddpg_agent(args, env, env_params)
+  File "/home/stefan/Documents/Masterarbeit/DRL/hindsight-experience-replay-ur5/rl_modules/ddpg_agent.py", line 66, in __init__
+    launch(args)
+  File "train.py", line 44, in launch
+    launch(args)
+  File "train.py", line 44, in launch
+    ddpg_trainer = ddpg_agent(args, env, env_params)
+  File "/home/stefan/Documents/Masterarbeit/DRL/hindsight-experience-replay-ur5/rl_modules/ddpg_agent.py", line 66, in __init__
+    args.save_dir, env_name, MPI.COMM_WORLD.Get_rank())
+  File "/home/stefan/Documents/Masterarbeit/DRL/hindsight-experience-replay-ur5/rl_modules/utils.py", line 36, in load_saved_state_dicts
+    ddpg_trainer = ddpg_agent(args, env, env_params)
+  File "/home/stefan/Documents/Masterarbeit/DRL/hindsight-experience-replay-ur5/rl_modules/ddpg_agent.py", line 66, in __init__
+    launch(args)
+  File "train.py", line 44, in launch
+    args.save_dir, env_name, MPI.COMM_WORLD.Get_rank())
+    ddpg_trainer = ddpg_agent(args, env, env_params)
+  File "/home/stefan/Documents/Masterarbeit/DRL/hindsight-experience-replay-ur5/rl_modules/ddpg_agent.py", line 66, in __init__
+  File "/home/stefan/Documents/Masterarbeit/DRL/hindsight-experience-replay-ur5/rl_modules/utils.py", line 27, in load_saved_state_dicts
+    model_path, map_location=lambda storage, loc: storage)
+    with open(os.path.join(save_dir, env_name, project_dir, log_name), "r") as log:
+  File "/home/stefan/anaconda3/envs/tiagongHER/lib/python3.7/site-packages/torch/serialization.py", line 525, in load
+    args.save_dir, env_name, MPI.COMM_WORLD.Get_rank())
+  File "/home/stefan/Documents/Masterarbeit/DRL/hindsight-experience-replay-ur5/rl_modules/utils.py", line 36, in load_saved_state_dicts
+FileNotFoundError: [Errno 2] No such file or directory: 'saved_models/ur5_pick_and_place-v1/06-01-2022_1_SR20_cylinder/ur5_push_no_gripper-v1.log'
+    args.save_dir, env_name, MPI.COMM_WORLD.Get_rank())
+    model_path, map_location=lambda storage, loc: storage)
+  File "/home/stefan/anaconda3/envs/tiagongHER/lib/python3.7/site-packages/torch/serialization.py", line 525, in load
+  File "/home/stefan/Documents/Masterarbeit/DRL/hindsight-experience-replay-ur5/rl_modules/utils.py", line 36, in load_saved_state_dicts
+    model_path, map_location=lambda storage, loc: storage)
+  File "/home/stefan/anaconda3/envs/tiagongHER/lib/python3.7/site-packages/torch/serialization.py", line 525, in load
+    with _open_file_like(f, 'rb') as opened_file:
+    with _open_file_like(f, 'rb') as opened_file:
+  File "/home/stefan/anaconda3/envs/tiagongHER/lib/python3.7/site-packages/torch/serialization.py", line 212, in _open_file_like
+    with _open_file_like(f, 'rb') as opened_file:
+  File "/home/stefan/anaconda3/envs/tiagongHER/lib/python3.7/site-packages/torch/serialization.py", line 212, in _open_file_like
+  File "/home/stefan/anaconda3/envs/tiagongHER/lib/python3.7/site-packages/torch/serialization.py", line 212, in _open_file_like
+    return _open_file(name_or_buffer, mode)
+  File "/home/stefan/anaconda3/envs/tiagongHER/lib/python3.7/site-packages/torch/serialization.py", line 193, in __init__
+    return _open_file(name_or_buffer, mode)
+  File "/home/stefan/anaconda3/envs/tiagongHER/lib/python3.7/site-packages/torch/serialization.py", line 193, in __init__
+    return _open_file(name_or_buffer, mode)
+  File "/home/stefan/anaconda3/envs/tiagongHER/lib/python3.7/site-packages/torch/serialization.py", line 193, in __init__
+    super(_open_file, self).__init__(open(name, mode))
+    super(_open_file, self).__init__(open(name, mode))
+FileNotFoundError:     super(_open_file, self).__init__(open(name, mode))
+FileNotFoundError: [Errno 2] No such file or directory: 'saved_models/ur5_pick_and_place-v1/06-01-2022_1_SR20_cylinder/2022-01-06T17:26:32.261117_epoch_31.pt'
+FileNotFoundError: [Errno 2] No such file or directory: 'saved_models/ur5_pick_and_place-v1/06-01-2022_1_SR20_cylinder/2022-01-06T17:26:32.261117_epoch_31.pt'
+[Errno 2] No such file or directory: 'saved_models/ur5_pick_and_place-v1/06-01-2022_1_SR20_cylinder/2022-01-06T17:26:32.261117_epoch_31.pt'

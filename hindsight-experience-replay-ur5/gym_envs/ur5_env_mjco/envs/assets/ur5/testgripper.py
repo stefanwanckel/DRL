@@ -4,7 +4,7 @@ import time
 import ur5_env_mjco
 import numpy as np
 
-MODEL_XML_PATH = os.path.join("assets", "ur5", "robot_RG2_no_truss.xml")
+MODEL_XML_PATH = os.path.join("assets", "ur5", "pick_and_place_RG2.xml")
 
 
 model = mujoco_py.load_model_from_path(MODEL_XML_PATH)
