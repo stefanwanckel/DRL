@@ -8,6 +8,7 @@ import numpy as np
 import ur5_env_mjco
 import os
 import time
+from testsScripts.test_video_recorder_3 import VideoRecorder
 # process the inputs
 
 np.set_printoptions(2)
@@ -27,7 +28,7 @@ def process_inputs(o, g, o_mean, o_std, g_mean, g_std, args):
 
 if __name__ == '__main__':
     args = get_args()
-
+    
     dash = "-"*42
     for i, arg in enumerate(vars(args)):
         if i == 0:
@@ -39,8 +40,10 @@ if __name__ == '__main__':
             print("|{:<22s} | {:<15}|".format(arg, getattr(args, arg)))
         if i == len(vars(args))-1:
             print(dash)
+
     # load the model from file
     # commented out code is in case of use of models with saved actor_network only
+
     last_model = True
     is_archived = False
     if args.project_dir is not None:
@@ -55,6 +58,7 @@ if __name__ == '__main__':
     env = gym.make(args.env_name)
     # get the env param
     observation = env.reset()
+    env.render()
     # get the environment params
     env_params = {'obs': observation['observation'].shape[0],
                   'goal': observation['desired_goal'].shape[0],
@@ -68,7 +72,11 @@ if __name__ == '__main__':
     actor_network.eval()
     lstGoals = []
     success_counter = 0
+    args.demo_length=3
     for i in range(args.demo_length):
+        filename= args.env_name + "eval_" + str(i) 
+        VR = VideoRecorder(filename)
+
         observation = env.reset()
 
         # start to do the demo
@@ -77,12 +85,14 @@ if __name__ == '__main__':
         lstGoals.append(g)
         t_success = -1
         for t in range(env._max_episode_steps):  # env._max_episode_steps):
-
             env.render()
+            VR.capture_frame()
             inputs = process_inputs(obs, g, o_mean, o_std, g_mean, g_std, args)
             with torch.no_grad():
                 pi = actor_network(inputs)
             action = pi.detach().numpy().squeeze()
+            print("action: ",action)
+
             # put actions into the environment
             observation_new, reward, _, info = env.step(action)
             obs = observation_new['observation']
@@ -94,8 +104,10 @@ if __name__ == '__main__':
                 print(dash)
             if t_success == -1 and info['is_success'] == 1:
                 t_success = t
+        VR.stop_recording()
         if info['is_success'] == 1:
             success_counter += 1
         print('Episode-No.: {} \n\t is success: {},\t overall success: {}/{} after {}/{} steps'.format(
             i, info['is_success'], success_counter, args.demo_length, t_success+1, env._max_episode_steps))
         #print('Episode {} has goal {}'.format(i, lstGoals[i]))
+        

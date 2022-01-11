@@ -38,20 +38,27 @@
     <!--Contact config. We dont need contact exemptions for ur5-->
     <contact>
         <exclude body1="l_finger_link" body2="r_finger_link"></exclude>
+
+        <exclude body1="left_moment_arm" body2="l_finger_link"></exclude>
+        <exclude body1="right_moment_arm" body2="r_finger_link"></exclude>
+        <exclude body1="right_moment_arm" body2="hand_link"></exclude>
+        <exclude body1="left_moment_arm" body2="hand_link"></exclude>
+
+
     </contact>
     
     <default>
         <geom contype='1' conaffinity='1' condim='4'  margin="1e-3" solref=".01 1" solimp=".99 .99 .01" />
         <joint armature="0.01" damping=".1"/>
         <default class="UR5">
-            <joint damping='65'/>
+            <joint damping='200'/>
             <default class="robot0:Gripper">
                 <geom condim="4" margin="0.001" type="box" user="0"></geom>
                 <joint armature="100" damping="1000" limited="true" solimplimit="0.99 0.999 0.01" solreflimit="0.01 1" type="slide"></joint>
             </default>
         </default>
         <default class="UR5e">
-            <joint damping='45'/>
+            <joint damping='200'/>
         </default>
         <default class="GRIPPER">
             <joint damping='5'/>

@@ -28,11 +28,11 @@ ARGS                     VALUE
 |demo_length            | 20             |
 |cuda                   | 0              |
 |num_rollouts_per_mpi   | 2              |
-|continue_training      | 0              |
+|continue_training      | 1              |
 ------------------------------------------
 env_inits: 
 ENV_INIT                 VALUE          
-|gripper_extra_height   | 0.0            |
+|gripper_extra_height   | -0.1           |
 |has_object             | 1              |
 |target_in_the_air      | 1              |
 |target_offset          | 0.0            |
@@ -40,9 +40,9 @@ ENV_INIT                 VALUE
 |target_range           | 0.15           |
 |distance_threshold     | 0.05           |
 |reward_type            | sparse         |
-|max_pos_change         | 0.025          |
+|max_pos_change         | 0.05           |
 |reduced_obs            | 1              |
-|n_substeps             | 20             |
+|n_substeps             | 10             |
 ------------------------------------------
 env_dimensions: 
 |obs                    | 19             |
@@ -51,3 +51,274 @@ env_dimensions:
 |action_max             | 1.0            |
 |max_timesteps          | 100            |
 ------------------------------------------
+CONTINUE TRAINING...
+Continuing from 2022-01-10T15:42:54.217507_epoch_43.pt 
+log file from last prior training:
+
+env.spec.id:  ur5_pick_and_place_rg2-v1
+
+args: 
+
+------------------------------------------
+
+ARGS                     VALUE          
+
+|env_name               | ur5_pick_and_place_rg2-v1|
+
+|n_epochs               | 80             |
+
+|n_cycles               | 50             |
+
+|n_batches              | 40             |
+
+|save_interval          | 5              |
+
+|seed                   | 123            |
+
+|num_workers            | 1              |
+
+|replay_strategy        | future         |
+
+|clip_return            | 50             |
+
+|save_dir               | saved_models/  |
+
+|noise_eps              | 0.2            |
+
+|random_eps             | 0.3            |
+
+|buffer_size            | 1000000        |
+
+|replay_k               | 4              |
+
+|clip_obs               | 200            |
+
+|batch_size             | 256            |
+
+|gamma                  | 0.98           |
+
+|action_l2              | 1              |
+
+|lr_actor               | 0.001          |
+
+|lr_critic              | 0.001          |
+
+|polyak                 | 0.95           |
+
+|n_test_rollouts        | 10             |
+
+|clip_range             | 5              |
+
+|demo_length            | 20             |
+
+|cuda                   | 0              |
+
+|num_rollouts_per_mpi   | 2              |
+
+|continue_training      | 0              |
+
+------------------------------------------
+
+env_inits: 
+
+ENV_INIT                 VALUE          
+
+|gripper_extra_height   | -0.1           |
+
+|has_object             | 1              |
+
+|target_in_the_air      | 1              |
+
+|target_offset          | 0.0            |
+
+|obj_range              | 0.15           |
+
+|target_range           | 0.15           |
+
+|distance_threshold     | 0.05           |
+
+|reward_type            | sparse         |
+
+|max_pos_change         | 0.05           |
+
+|reduced_obs            | 1              |
+
+|n_substeps             | 20             |
+
+------------------------------------------
+
+env_dimensions: 
+
+|obs                    | 19             |
+
+|goal                   | 3              |
+
+|action                 | 4              |
+
+|action_max             | 1.0            |
+
+|max_timesteps          | 100            |
+
+
+
+Object mass = 0.1
+
+object_damping = 0.1
+
+
+
+------------------------------------------
+
+[2022-01-10 14:11:37.799387] epoch is: 0, eval success rate is: 0.075, std is: 0.043
+
+[2022-01-10 14:13:37.366173] epoch is: 1, eval success rate is: 0.075, std is: 0.083
+
+[2022-01-10 14:15:47.378252] epoch is: 2, eval success rate is: 0.050, std is: 0.050
+
+[2022-01-10 14:17:41.303171] epoch is: 3, eval success rate is: 0.050, std is: 0.050
+
+[2022-01-10 14:19:33.193328] epoch is: 4, eval success rate is: 0.025, std is: 0.043
+
+[2022-01-10 14:21:50.276010] epoch is: 5, eval success rate is: 0.000, std is: 0.000
+
+[2022-01-10 14:23:42.058095] epoch is: 6, eval success rate is: 0.075, std is: 0.043
+
+[2022-01-10 14:25:34.208296] epoch is: 7, eval success rate is: 0.075, std is: 0.083
+
+[2022-01-10 14:27:28.013816] epoch is: 8, eval success rate is: 0.075, std is: 0.043
+
+[2022-01-10 14:29:22.333534] epoch is: 9, eval success rate is: 0.125, std is: 0.083
+
+[2022-01-10 14:31:18.950276] epoch is: 10, eval success rate is: 0.100, std is: 0.122
+
+[2022-01-10 14:33:34.194685] epoch is: 11, eval success rate is: 0.050, std is: 0.087
+
+[2022-01-10 14:35:33.708789] epoch is: 12, eval success rate is: 0.075, std is: 0.083
+
+[2022-01-10 14:37:37.905823] epoch is: 13, eval success rate is: 0.075, std is: 0.083
+
+[2022-01-10 14:39:35.402690] epoch is: 14, eval success rate is: 0.075, std is: 0.043
+
+[2022-01-10 14:41:37.764866] epoch is: 15, eval success rate is: 0.050, std is: 0.087
+
+[2022-01-10 14:43:33.318715] epoch is: 16, eval success rate is: 0.050, std is: 0.050
+
+[2022-01-10 14:45:34.785695] epoch is: 17, eval success rate is: 0.225, std is: 0.109
+
+[2022-01-10 14:48:31.905789] epoch is: 18, eval success rate is: 0.200, std is: 0.122
+
+[2022-01-10 14:50:27.804978] epoch is: 19, eval success rate is: 0.275, std is: 0.130
+
+[2022-01-10 14:52:26.225427] epoch is: 20, eval success rate is: 0.100, std is: 0.071
+
+[2022-01-10 14:54:33.257563] epoch is: 21, eval success rate is: 0.350, std is: 0.112
+
+[2022-01-10 14:56:31.924114] epoch is: 22, eval success rate is: 0.375, std is: 0.109
+
+[2022-01-10 14:58:29.941222] epoch is: 23, eval success rate is: 0.550, std is: 0.087
+
+[2022-01-10 15:00:30.546806] epoch is: 24, eval success rate is: 0.600, std is: 0.122
+
+[2022-01-10 15:02:31.814831] epoch is: 25, eval success rate is: 0.575, std is: 0.217
+
+[2022-01-10 15:04:34.348920] epoch is: 26, eval success rate is: 0.225, std is: 0.083
+
+[2022-01-10 15:06:35.345740] epoch is: 27, eval success rate is: 0.200, std is: 0.071
+
+[2022-01-10 15:08:38.903244] epoch is: 28, eval success rate is: 0.050, std is: 0.050
+
+[2022-01-10 15:10:44.886374] epoch is: 29, eval success rate is: 0.400, std is: 0.071
+
+[2022-01-10 15:12:48.932181] epoch is: 30, eval success rate is: 0.675, std is: 0.192
+
+[2022-01-10 15:15:41.826477] epoch is: 31, eval success rate is: 0.575, std is: 0.109
+
+[2022-01-10 15:17:52.411605] epoch is: 32, eval success rate is: 0.475, std is: 0.109
+
+[2022-01-10 15:19:51.913675] epoch is: 33, eval success rate is: 0.550, std is: 0.166
+
+[2022-01-10 15:21:56.612762] epoch is: 34, eval success rate is: 0.375, std is: 0.148
+
+[2022-01-10 15:23:58.409288] epoch is: 35, eval success rate is: 0.400, std is: 0.141
+
+[2022-01-10 15:26:07.572563] epoch is: 36, eval success rate is: 0.375, std is: 0.109
+
+[2022-01-10 15:28:22.638663] epoch is: 37, eval success rate is: 0.500, std is: 0.071
+
+[2022-01-10 15:30:36.283371] epoch is: 38, eval success rate is: 0.325, std is: 0.083
+
+[2022-01-10 15:32:57.929310] epoch is: 39, eval success rate is: 0.600, std is: 0.100
+
+[2022-01-10 15:35:17.494394] epoch is: 40, eval success rate is: 0.450, std is: 0.150
+
+[2022-01-10 15:37:38.649851] epoch is: 41, eval success rate is: 0.675, std is: 0.192
+
+[2022-01-10 15:40:50.547293] epoch is: 42, eval success rate is: 0.600, std is: 0.158
+
+[2022-01-10 15:42:54.217254] epoch is: 43, eval success rate is: 0.600, std is: 0.158
+
+------------------------------------------
+[2022-01-10 15:51:21.852440] epoch is: 0, eval success rate is: 0.025, std is: 0.043
+[2022-01-10 15:53:39.010840] epoch is: 1, eval success rate is: 0.100, std is: 0.122
+[2022-01-10 15:55:25.743508] epoch is: 2, eval success rate is: 0.125, std is: 0.083
+[2022-01-10 15:57:12.394959] epoch is: 3, eval success rate is: 0.100, std is: 0.071
+[2022-01-10 15:59:04.177876] epoch is: 4, eval success rate is: 0.075, std is: 0.083
+[2022-01-10 16:00:57.145937] epoch is: 5, eval success rate is: 0.050, std is: 0.050
+[2022-01-10 16:05:12.959657] epoch is: 6, eval success rate is: 0.050, std is: 0.087
+[2022-01-10 16:09:35.481470] epoch is: 7, eval success rate is: 0.125, std is: 0.043
+[2022-01-10 16:13:59.612579] epoch is: 8, eval success rate is: 0.150, std is: 0.112
+[2022-01-10 16:18:24.426999] epoch is: 9, eval success rate is: 0.175, std is: 0.043
+[2022-01-10 16:22:51.966981] epoch is: 10, eval success rate is: 0.100, std is: 0.100
+[2022-01-10 16:27:14.375596] epoch is: 11, eval success rate is: 0.050, std is: 0.050
+[2022-01-10 16:31:37.569897] epoch is: 12, eval success rate is: 0.125, std is: 0.130
+[2022-01-10 16:36:05.554451] epoch is: 13, eval success rate is: 0.175, std is: 0.148
+[2022-01-10 16:40:27.467424] epoch is: 14, eval success rate is: 0.225, std is: 0.192
+[2022-01-10 16:44:59.320762] epoch is: 15, eval success rate is: 0.325, std is: 0.109
+[2022-01-10 16:49:27.150121] epoch is: 16, eval success rate is: 0.275, std is: 0.109
+[2022-01-10 16:51:34.427187] epoch is: 17, eval success rate is: 0.425, std is: 0.192
+[2022-01-10 16:53:41.610942] epoch is: 18, eval success rate is: 0.700, std is: 0.122
+[2022-01-10 16:55:52.682606] epoch is: 19, eval success rate is: 0.850, std is: 0.166
+[2022-01-10 16:58:12.002721] epoch is: 20, eval success rate is: 0.550, std is: 0.180
+[2022-01-10 17:00:35.392876] epoch is: 21, eval success rate is: 0.900, std is: 0.071
+[2022-01-10 17:02:38.384409] epoch is: 22, eval success rate is: 0.875, std is: 0.043
+[2022-01-10 17:04:42.099920] epoch is: 23, eval success rate is: 0.950, std is: 0.050
+[2022-01-10 17:06:53.421635] epoch is: 24, eval success rate is: 0.825, std is: 0.083
+[2022-01-10 17:08:57.151636] epoch is: 25, eval success rate is: 0.675, std is: 0.043
+[2022-01-10 17:11:05.082195] epoch is: 26, eval success rate is: 0.800, std is: 0.071
+[2022-01-10 17:13:37.299173] epoch is: 27, eval success rate is: 0.750, std is: 0.087
+[2022-01-10 17:15:48.591975] epoch is: 28, eval success rate is: 0.825, std is: 0.179
+[2022-01-10 17:17:57.790565] epoch is: 29, eval success rate is: 0.925, std is: 0.043
+[2022-01-10 17:20:04.745750] epoch is: 30, eval success rate is: 0.950, std is: 0.050
+[2022-01-10 17:22:19.311513] epoch is: 31, eval success rate is: 0.925, std is: 0.043
+[2022-01-10 17:24:43.325394] epoch is: 32, eval success rate is: 0.950, std is: 0.050
+[2022-01-10 17:26:55.135743] epoch is: 33, eval success rate is: 0.900, std is: 0.071
+[2022-01-10 17:28:50.816970] epoch is: 34, eval success rate is: 0.975, std is: 0.043
+[2022-01-10 17:31:02.196269] epoch is: 35, eval success rate is: 0.950, std is: 0.050
+[2022-01-10 17:33:02.548034] epoch is: 36, eval success rate is: 1.000, std is: 0.000
+[2022-01-10 17:35:10.203938] epoch is: 37, eval success rate is: 0.950, std is: 0.087
+[2022-01-10 17:37:24.507587] epoch is: 38, eval success rate is: 0.825, std is: 0.083
+[2022-01-10 17:39:29.886413] epoch is: 39, eval success rate is: 1.000, std is: 0.000
+[2022-01-10 17:41:43.999836] epoch is: 40, eval success rate is: 0.950, std is: 0.050
+[2022-01-10 17:44:15.034488] epoch is: 41, eval success rate is: 0.975, std is: 0.043
+[2022-01-10 17:46:24.408556] epoch is: 42, eval success rate is: 1.000, std is: 0.000
+[2022-01-10 17:48:45.809598] epoch is: 43, eval success rate is: 0.975, std is: 0.043
+[2022-01-10 17:50:51.067390] epoch is: 44, eval success rate is: 0.950, std is: 0.087
+[2022-01-10 17:53:03.585505] epoch is: 45, eval success rate is: 1.000, std is: 0.000
+[2022-01-10 17:55:24.653816] epoch is: 46, eval success rate is: 1.000, std is: 0.000
+[2022-01-10 17:57:51.842474] epoch is: 47, eval success rate is: 0.975, std is: 0.043
+[2022-01-10 18:00:20.267927] epoch is: 48, eval success rate is: 0.925, std is: 0.083
+[2022-01-10 18:02:40.510732] epoch is: 49, eval success rate is: 0.950, std is: 0.050
+[2022-01-10 18:04:54.263501] epoch is: 50, eval success rate is: 0.950, std is: 0.050
+[2022-01-10 18:07:14.483798] epoch is: 51, eval success rate is: 0.975, std is: 0.043
+[2022-01-10 18:09:53.219751] epoch is: 52, eval success rate is: 1.000, std is: 0.000
+[2022-01-10 18:12:02.042253] epoch is: 53, eval success rate is: 0.950, std is: 0.087
+[2022-01-10 18:14:11.412812] epoch is: 54, eval success rate is: 1.000, std is: 0.000
+[2022-01-10 18:16:23.345232] epoch is: 55, eval success rate is: 0.950, std is: 0.050
+[2022-01-10 18:18:44.625488] epoch is: 56, eval success rate is: 0.975, std is: 0.043
+[2022-01-10 18:21:15.390263] epoch is: 57, eval success rate is: 1.000, std is: 0.000
+[2022-01-10 18:23:34.981698] epoch is: 58, eval success rate is: 0.975, std is: 0.043
+[2022-01-10 18:25:47.591534] epoch is: 59, eval success rate is: 0.975, std is: 0.043
+[2022-01-10 18:28:06.403464] epoch is: 60, eval success rate is: 1.000, std is: 0.000
+[2022-01-10 18:30:27.441956] epoch is: 61, eval success rate is: 0.975, std is: 0.043
+[2022-01-10 18:32:28.873488] epoch is: 62, eval success rate is: 0.975, std is: 0.043
+[2022-01-10 18:34:46.528763] epoch is: 63, eval success rate is: 1.000, std is: 0.000

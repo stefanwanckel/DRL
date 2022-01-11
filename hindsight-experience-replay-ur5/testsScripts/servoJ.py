@@ -13,7 +13,9 @@ import time
 # acceleration = 0.4
 # dt = 1.0/500  # 2ms
 # lookahead_time = 0.1
-# gain = 300
+# gain = velocity = 0.5
+Parameters = 10
+
 joint_q = [-0.7866423765765589,
         -1.8796035252013148,
         -1.7409639358520508, 

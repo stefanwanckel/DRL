@@ -13,15 +13,16 @@ viewer = mujoco_py.MjViewer(sim)
 state = sim.get_state()
 
 # shoulderPos = sim.get_body_xpos("")
-viewer.cam.distance = 1
-viewer.cam.azimuth = 132.
-viewer.cam.elevation = -10.
+print(viewer.cam.distance)
+viewer.cam.distance = 1.9
+viewer.cam.azimuth = -123
+viewer.cam.elevation = -27.5
 joint_names = sim.model.joint_names
 
 show = True
 i = 0
 alpha = 1
-joint_delta = -0.2
+joint_delta = -0.1
 jointvalues_before = []
 jointvalues_after = []
 joint_dict = {}
@@ -43,13 +44,12 @@ def ctrl_set_action(sim, action):
 
 
 def gripper_close(joint_delta, sim):
-    new_rma_qpos = sim.data.get_joint_qpos(
-        "right_moment_arm_joint")+joint_delta
-    new_lma_qpos = sim.data.get_joint_qpos("left_moment_arm_joint")-joint_delta
+    new_rma_qpos = sim.data.get_joint_qpos("right_moment_arm_joint")+joint_delta
+    new_lma_qpos = sim.data.get_joint_qpos("left_moment_arm_joint")+joint_delta
     sim.data.set_joint_qpos('right_moment_arm_joint', new_rma_qpos)
     sim.data.set_joint_qpos('left_moment_arm_joint',  new_lma_qpos)
 
-    new_rfj_qpos = sim.data.get_joint_qpos("r_finger_joint")-alpha*joint_delta
+    new_rfj_qpos = sim.data.get_joint_qpos("r_finger_joint")+alpha*joint_delta
     new_lfj_qpos = sim.data.get_joint_qpos("l_finger_joint")+alpha*joint_delta
     sim.data.set_joint_qpos('r_finger_joint', new_rfj_qpos)
     sim.data.set_joint_qpos('l_finger_joint',  new_lfj_qpos)
@@ -68,8 +68,7 @@ for i in range(5000):
         # set gripper action
         pos_ctrl = [0, 0, 0]  # not considered in ctrl_set_action
         rot_ctrl = [0, 0, 0, 0]  # not considered in ctrl_set_action
-        gripper_ctrl = [joint_delta, -joint_delta, -joint_delta,
-                        joint_delta]  # fingerr, fingerl, armr, arml
+        gripper_ctrl = [joint_delta, joint_delta]  # fingerr, fingerl, armr, arml
         ctrl_action = np.concatenate([pos_ctrl, rot_ctrl, gripper_ctrl])
 
         # ctrl action only consideres the values after the seventh entry corresponging to gripper actuators (ignoring the 7 robot joints )
@@ -79,6 +78,9 @@ for i in range(5000):
         for name in joint_names:
             jointvalues_after.append(sim.data.get_joint_qpos(name))
 
+        print(viewer.cam.distance)
+        print(viewer.cam.azimuth)
+        print(viewer.cam.elevation)
     sim.step()
     viewer.render()
 

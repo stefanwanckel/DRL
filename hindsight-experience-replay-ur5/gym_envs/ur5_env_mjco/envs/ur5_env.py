@@ -85,21 +85,9 @@ class Ur5Env(robot_env.RobotEnv):
         pos_ctrl, gripper_ctrl = action[:3], action[3]
 
         pos_ctrl *= self.max_pos_change  # limit maximum change in position
-        if self.has_object:
-            if "no_gripper" in self.model_path:
-                rot_ctrl = [0., 0,-1, 1.]
-            else:
-                if self.target_in_the_air:
-                    #rot_ctrl = [0.2955202, 0, 0, 1.]
-                    #rot_ctrl  = [ 0.2705981, 0.6532815, 0.2705981, 0.6532815 ]
-                    rot_ctrl =[ -0.2705981, -0.6532815, -0.2705981, 0.6532815 ]
-                else:
-                    rot_ctrl = [1., 0., 0., 0.]
-        else:
-            if "no_gripper" in self.model_path:
-                rot_ctrl = [0, 0., -1., 1.]
-            else:
-                rot_ctrl = [1., 0., 0., 0.]
+        # insert select_orn function here
+        rot_ctrl = self.select_orientation()
+
         gripper_ctrl = np.array([gripper_ctrl, gripper_ctrl])
         assert gripper_ctrl.shape == (2,)
         if self.block_gripper:
@@ -202,7 +190,7 @@ class Ur5Env(robot_env.RobotEnv):
             # IMPORTANT: Apparently, self.set_joint_qpos sets the joints relative to its OWN coordinate frame.
             object_qpos = self.sim.data.get_joint_qpos('object0:joint')
 
-            object_qpos[:3] = np.array([-0.1, -0.1, +0.02])
+            object_qpos[:3] = np.array([-0.1, -0.1, 0])
             # print("object_qpos: ", object_qpos)
             assert object_qpos.shape == (7,)
             # object_qpos[:2] += self.np_random.uniform(-self.obj_range,
@@ -235,11 +223,13 @@ class Ur5Env(robot_env.RobotEnv):
                 goal[2] = 0.51
             else:
                 goal[2] = self.height_offset
-            # if self.target_in_the_air and self.np_random.uniform() < 0.8:
-            if self.target_in_the_air:
+            if self.target_in_the_air and self.np_random.uniform() < 0.8:
+                # if self.target_in_the_air:
                 # if self.target_in_the_air:
                 goal[2] += self.np_random.uniform(
                     self.target_range, 2*self.target_range)
+                # goal[2] += self.np_random.uniform(
+                #     0, self.target_range)
         else:
             goal = self.initial_gripper_xpos[:3] + \
                 self.np_random.uniform(-self.target_range,
@@ -264,16 +254,8 @@ class Ur5Env(robot_env.RobotEnv):
         # gripper_rotation = np.array([1., 0., 1., 0.])
         # rot_eul = [math.pi,math.pi/2,0]
         # gripper_rotation = rotations.euler2quat(rot_eul)
-        if self.has_object:
-            if "no_gripper" in self.model_path:
-                gripper_rotation = np.array([0., 0., -1., 1.])
-            else:
-                gripper_rotation = np.array([1., 0., 0., 0.])
-        else:
-            if "no_gripper" in self.model_path:
-                gripper_rotation = np.array([0., 0., -1., 1.])
-            else:
-                gripper_rotation = np.array([1., 0., 0., 0.])
+        # insert select_orn function here
+        gripper_rotation = self.select_orientation()
 
         self.sim.data.set_mocap_pos('robot0:mocap', gripper_target)
         self.sim.data.set_mocap_quat('robot0:mocap', gripper_rotation)
@@ -284,5 +266,29 @@ class Ur5Env(robot_env.RobotEnv):
         self.initial_gripper_xpos = self.sim.data.get_site_xpos(
             'robot0:grip').copy()
 
-    def render(self, mode='human', width=500, height=500):
+    def render(self, mode='human', width=1920, height=1080):
         return super(Ur5Env, self).render(mode, width, height)
+
+    def select_orientation(self):
+        """
+        Return orientation depending on task
+        """
+
+        if self.has_object:
+            if "no_gripper" in self.model_path:
+                rot_ctrl = [0., 0, -1, 1.]
+            else:
+                if self.target_in_the_air:
+                    if "rg2" in self.model_path.lower():
+                        rot_ctrl = [0.2705981, -0.6532815,
+                                    0.2705981, 0.6532815]
+                    else:
+                        rot_ctrl = [0.2955202, 0, 0, 1.]
+                else:
+                    rot_ctrl = [1., 0., 0., 0.]
+        else:
+            if "no_gripper" in self.model_path:
+                rot_ctrl = [0, 0., -1., 1.]
+            else:
+                rot_ctrl = [1., 0., 0., 0.]
+        return rot_ctrl

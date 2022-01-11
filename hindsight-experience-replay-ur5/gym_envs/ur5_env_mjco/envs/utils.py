@@ -6,6 +6,7 @@ try:
 except ImportError as e:
     raise error.DependencyNotInstalled(
         "{}. (HINT: you need to install mujoco_py, and also perform the setup instructions here: https://github.com/openai/mujoco-py/.)".format(e))
+_rg2_n_actuators = 2
 
 
 def robot_get_obs(sim):
@@ -28,11 +29,13 @@ def ctrl_set_action(sim, action):
     if sim.model.nmocap > 0:
         _, action = np.split(action, (sim.model.nmocap * 7, ))
 
-    #adapt_action depending on gripper type
-    no_gripper_actrs = sim.model.actuator_trnid.shape[0]
-    if no_gripper_actrs == 4:
-        rg2_gripper_present = True
-        action = np.concatenate([action, action])
+    # adapt_action depending on gripper type
+    if sim.model.actuator_trnid is not None:
+        no_gripper_actrs = sim.model.actuator_trnid.shape[0]
+        if no_gripper_actrs == _rg2_n_actuators:
+            rg2_gripper_present = True
+            #action needs to be of size 4 if counter regulating the finger joints
+            #action = np.concatenate([action, action])
 
     if sim.data.ctrl is not None:
         for i in range(action.shape[0]):
@@ -62,10 +65,22 @@ def mocap_set_action(sim, action):
         reset_mocap2body_xpos(sim)
         #sim.data.mocap_pos[:] = pos_delta
 
-        #real life table 
-        pos_delta = check_table_collision(sim.data.mocap_pos[0], pos_delta[0])
+        # real life table
+        rg2_gripper_offset = 0
+        robot_lower_end_pos = sim.data.mocap_pos[0]
+        if sim.model.actuator_trnid is not None:
+            no_gripper_actrs = sim.model.actuator_trnid.shape[0]
+            rg2_gripper_offset = 0
+            if no_gripper_actrs == _rg2_n_actuators:
+                rg2_gripper_present = True
+                robot_lower_end_pos = sim.data.get_site_xpos('robot0:grip')
+                rg2_gripper_offset = 0.01
+
+        #pos_delta = check_table_collision(robot_lower_end_pos, pos_delta[0], gripper_specific_offset=rg2_gripper_offset)
+
         sim.data.mocap_pos[:] = sim.data.mocap_pos + pos_delta
         sim.data.mocap_quat[:] = quat_delta
+
 
 def reset_mocap_welds(sim):
     """Resets the mocap welds that we use for actuation.
@@ -106,12 +121,14 @@ def reset_mocap2body_xpos(sim):
         sim.data.mocap_pos[mocap_id][:] = sim.data.body_xpos[body_idx]
         sim.data.mocap_quat[mocap_id][:] = sim.data.body_xquat[body_idx]
 
-def check_table_collision(grip_pos, relative_action):
+
+def check_table_collision(grip_pos, relative_action, gripper_specific_offset=0):
     """
     If moved further than allowed distance, we overwrite the relative action with the difference
     between the minimally allowed z position and the current gripper position
     """
-    min_allowed_z_pos = np.array([0.54])
+
+    min_allowed_z_pos = np.array([0.50]) + gripper_specific_offset
     curr_grip_z_pos = grip_pos[2]
     next_grip_z_pos = grip_pos[2] + relative_action[2]
 

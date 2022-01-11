@@ -1,4 +1,5 @@
 {
     "python.pythonPath": "/home/stefan/anaconda3/envs/tiagongHER/bin/python",
-    "editor.formatOnSave": false
+    "editor.formatOnSave": false,
+
 }

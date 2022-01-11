@@ -52,15 +52,15 @@
 													<geom name="hand_link_geom" type="mesh" mesh="robot0:rg2_hand"/>
 													<inertial pos="0.061902 0.000129 -0.000005" mass="1.684558" diaginertia="0.000862 0.002401 0.002620" />
 													<!-- Site that feeds back position is defined from hand link here -->
-													<site name="robot0:grip" pos="0.18 0. 0" rgba="0 0 1 0.3" size="0.01"></site>
+													<site name="robot0:grip" pos="0.21 0. 0" rgba="0 0 1 0.3" size="0.01"></site>
 
 													<body name="left_moment_arm" pos="0.132 0.017 0.010">
-														<joint name="left_moment_arm_joint" axis="0 0 1"  damping="100" limited="true" range="-0.45  1.570796327"/>
+														<joint name="left_moment_arm_joint" axis="0 0 -1"  damping="100" limited="true" range="-0.45  0.45"/>
 														<geom name="left_moment_arm_geom" type="mesh" mesh="robot0:rg2_left_moment_arm" />
 														<inertial pos="0.017004 0.006397 -0.010300" mass="0.160209" fullinertia="0.000023  0.000072 0.000083 0.000019 0.000000 0.000000"/>
 						
 														<body name="l_finger_link" pos="0.049 0.026 0.000" >
-															<joint name="l_finger_joint" axis="0 0 -1"  damping="100" limited="true" range="-1.570796327 1.570796327"/>
+															<!-- <joint name="l_finger_joint" axis="0 0 1"  damping="100" limited="true" range="-0.45  0.45"/> -->
 															<geom name="l_finger_geom" type="mesh" mesh="robot0:rg2_left_finger" />
 															<inertial pos="0.024695 -0.010178 -0.010001" mass="0.081638" fullinertia="0.000006 0.000025 0.000026 -0.000005 0.000000 0.000000"/>
 
@@ -73,12 +73,12 @@
 													</body>
 
 													<body name="right_moment_arm" pos="0.132 -0.017 0.010">
-														<joint name="right_moment_arm_joint" axis="0 0 -1"  damping="100" limited="true" range="-1.570796327 0.45"/>
+														<joint name="right_moment_arm_joint" axis="0 0 1"  damping="100" limited="true" range="-1.570796327 0.45"/>
 														<geom name="right_moment_arm_geom"  type="mesh" mesh="robot0:rg2_right_moment_arm" />
 														<inertial pos="0.017004 0.006397 -0.010300" mass="0.160209" fullinertia="0.000023  0.000072 0.000083 0.000019 0.000000 0.000000"/>
 
 															<body name="r_finger_link" pos="0.049 -0.026 0.000" >
-																<joint name="r_finger_joint" axis="0 0 1"  damping="100" limited="true" range="-1.570796327 1.570796327"/>
+																<!-- <joint name="r_finger_joint" axis="0 0 -1"  damping="100" limited="true" range="-0.450.45"/> -->
 																<geom name="r_finger_geom" type="mesh" mesh="robot0:rg2_right_finger" />
 																<inertial pos="0.024695 0.010178 -0.010000" mass="0.160209" fullinertia="0.000006 0.000025 0.000026 -0.000005 0.000000 0.000000"/>
 													

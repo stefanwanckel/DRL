@@ -63,6 +63,8 @@ def get_args():
                         default=2, help='the rollouts per mpi')
     parser.add_argument("--continue-training", action="store_true",
                         help="continue training from last model")
+    parser.add_argument("--record_demo", action="store_true",
+                        help="just if u want to record video")
 
     args = parser.parse_args()
 

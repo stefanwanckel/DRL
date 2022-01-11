@@ -1,0 +1,5 @@
+pyrect
+pyautogui; sys_platform == 'linux'
+xlib; sys_platform == 'linux'
+ewmh; sys_platform == 'linux'
+pyobjc; sys_platform == 'darwin'

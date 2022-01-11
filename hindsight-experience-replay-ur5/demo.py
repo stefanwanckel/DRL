@@ -2,12 +2,17 @@ import torch
 from numpy.lib.function_base import _average_dispatcher
 from rl_modules.models import actor
 from utils.model_loader import load_last_model, get_demo_model_path
+from utils.video_recorder import VideoRecorder
 from arguments import get_args
 import gym
 import numpy as np
 import ur5_env_mjco
 import os
 import time
+
+
+import cv2
+import matplotlib.pyplot as plt
 # process the inputs
 
 np.set_printoptions(2)
@@ -24,6 +29,19 @@ def process_inputs(o, g, o_mean, o_std, g_mean, g_std, args):
     inputs = torch.tensor(inputs, dtype=torch.float32)
     return inputs
 
+def write_frames_to_video(frames_arr):
+    fourcc = cv2.VideoWriter_fourcc(*"XVID")
+    frames_in_color = [cv2.cvtColor(frame, cv2.COLOR_BGR2RGB) for frame in frames_arr]
+    #frames_in_color = [np.array(frame) for frame in frames_arr]
+    # for frame in frames_in_color:
+    #     cv2.imshow("img",frame)
+    fps = 15
+    SCREEN_SIZE = tuple((frames_in_color[0].shape[1],frames_in_color[0].shape[1]))
+    out = cv2.VideoWriter("output.avi", fourcc, fps, SCREEN_SIZE)
+    for i,frame in enumerate(frames_in_color):
+        out.write(frame)
+        cv2.imwrite(os.path.join("testsScripts",f"img_{i}.png"),frame)
+    out.release()
 
 if __name__ == '__main__':
     args = get_args()
@@ -41,6 +59,7 @@ if __name__ == '__main__':
             print(dash)
     # load the model from file
     # commented out code is in case of use of models with saved actor_network only
+    _save_video= True
     last_model = True
     is_archived = False
     if args.project_dir is not None:
@@ -69,6 +88,9 @@ if __name__ == '__main__':
     lstGoals = []
     success_counter = 0
     for i in range(args.demo_length):
+        if args.record_demo:
+            filename= args.env_name + "eval_" + str(i) 
+            VR = VideoRecorder(filename)
         observation = env.reset()
 
         # start to do the demo
@@ -79,13 +101,17 @@ if __name__ == '__main__':
         for t in range(env._max_episode_steps):  # env._max_episode_steps):
 
             env.render()
+            if args.record_demo:
+                VR.capture_frame()
             inputs = process_inputs(obs, g, o_mean, o_std, g_mean, g_std, args)
             with torch.no_grad():
                 pi = actor_network(inputs)
             action = pi.detach().numpy().squeeze()
+            #print("action: ",action)
             # put actions into the environment
             observation_new, reward, _, info = env.step(action)
             obs = observation_new['observation']
+        
             if t == 0 and i == 0:
                 print(dash)
                 print("{:<25s}{:<15s}".format("ENV_INIT", "VALUE"))
@@ -96,6 +122,9 @@ if __name__ == '__main__':
                 t_success = t
         if info['is_success'] == 1:
             success_counter += 1
+        if args.record_demo:
+            VR.stop_recording()
         print('Episode-No.: {} \n\t is success: {},\t overall success: {}/{} after {}/{} steps'.format(
             i, info['is_success'], success_counter, args.demo_length, t_success+1, env._max_episode_steps))
         #print('Episode {} has goal {}'.format(i, lstGoals[i]))
+
