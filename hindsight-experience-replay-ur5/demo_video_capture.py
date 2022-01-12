@@ -79,7 +79,7 @@ if __name__ == '__main__':
 
         observation = env.reset()
 
-        # start to do the demo
+        # start to do the demo1
         obs = observation['observation']
         g = observation['desired_goal']
         lstGoals.append(g)

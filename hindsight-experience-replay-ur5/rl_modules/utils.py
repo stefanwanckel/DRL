@@ -21,8 +21,8 @@ def load_saved_state_dicts(save_dir, env_name, rank):
         # project_dir = "08-01-2022_0_raw_ct"
         # log_name = "ur5_pick_and_place_1.log"
         
-        model_name = "2022-01-10T15:42:54.217507_epoch_43.pt"
-        project_dir = "10-01-2022_raw_0_"
+        model_name = "2022-01-12T13:28:40.849638_epoch_45.pt"
+        project_dir = "12-01-2022_raw_1_random_object_pos"
         log_name = "ur5_pick_and_place_rg2-v1.log"
         if rank == 0:
             print("Continuing from {} ".format(model_name))

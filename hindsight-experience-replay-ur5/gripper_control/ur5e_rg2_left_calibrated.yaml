@@ -29,7 +29,7 @@ finger_links:
   - r_finger_link
   - l_finger_link
 attach_link: gripper_base_link
-gripping_force_thresh: 10
+gripping_force_thresh: 1
 
 ignore_collisions:
   gripper: [r_truss_arm_link, r_finger_link, r_moment_arm_link, l_truss_arm_link, l_finger_link, l_moment_arm_link, hand_link]

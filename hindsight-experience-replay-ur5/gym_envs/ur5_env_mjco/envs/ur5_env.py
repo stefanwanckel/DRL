@@ -168,6 +168,7 @@ class Ur5Env(robot_env.RobotEnv):
         lookat = self.sim.data.body_xpos[body_id]
         for idx, value in enumerate(lookat):
             self.viewer.cam.lookat[idx] = value
+        self.viewer._hide_overlay = False
         self.viewer.cam.distance = 2.5
         self.viewer.cam.azimuth = -180.
         self.viewer.cam.elevation = -25.
@@ -193,8 +194,8 @@ class Ur5Env(robot_env.RobotEnv):
             object_qpos[:3] = np.array([-0.1, -0.1, 0])
             # print("object_qpos: ", object_qpos)
             assert object_qpos.shape == (7,)
-            # object_qpos[:2] += self.np_random.uniform(-self.obj_range,
-            #                                           self.obj_range, size=2)
+            object_qpos[:2] += self.np_random.uniform(-self.obj_range,
+                                                     self.obj_range, size=2)
             # object_qpos[2] = 0.5  # self.table_height  # + self.height_offset
             self.sim.data.set_joint_qpos('object0:joint', object_qpos)
 

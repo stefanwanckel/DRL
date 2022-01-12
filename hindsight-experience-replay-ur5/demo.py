@@ -107,7 +107,7 @@ if __name__ == '__main__':
             with torch.no_grad():
                 pi = actor_network(inputs)
             action = pi.detach().numpy().squeeze()
-            #print("action: ",action)
+            #print("action: ",action[-1])
             # put actions into the environment
             observation_new, reward, _, info = env.step(action)
             obs = observation_new['observation']

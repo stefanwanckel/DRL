@@ -7,9 +7,15 @@ import os
 import sys
 sys.path.append(os.path.abspath('../test_scripts/'))
 from utils import *
-r_pos_1 = 0.001*np.array([313.2, -592.6, -280.2])
-r_pos_2 = 0.001*np.array([518.9, -371.2, -279.6])
-r_pos_4 = 0.001*np.array([113.8, -381.5, -281.8])
+_rg2=True
+r_pos_1 = 0.001*np.array([325.1,-615.7,-47.6])
+r_pos_2 = 0.001*np.array([526.7,-391.4,-47.8])
+r_pos_4 = 0.001*np.array([123.9,-410.6,-49.9])
+if _rg2:
+    z_offset = np.array([0,0,-210])*0.001
+    r_pos_1 =r_pos_1+z_offset
+    r_pos_2 =r_pos_2+z_offset
+    r_pos_4 =r_pos_4+z_offset
 #r_pos_5 = 0.001*np.array([209.7, -259.4, -675.1])
 lst_r_pos = np.array([r_pos_1, r_pos_2, r_pos_4])
 
