@@ -110,7 +110,7 @@ def setup_vis_push_w_image(nTests, startPos, SampleRange, axisLimitExtends, g_ro
     gs = GridSpec(4, 4, figure=fig, hspace=0.5, height_ratios=[3, 1, 1, 1])
 
     # fig.tight_layout()
-    fig.suptitle("TCP Planar View PUSH - Episode {}".format(nTests))
+    fig.suptitle("TCP Planar View Pick and Place ")
     fig.canvas.set_window_title("Episode No. {}".format(nTests))
     plt.axis('off')
 
@@ -144,8 +144,8 @@ def setup_vis_push_w_image(nTests, startPos, SampleRange, axisLimitExtends, g_ro
     ax1.set_ylabel("Y-axis [m]", fontsize=title_fontsize)
     ax2.set_ylabel("Z-axis [m]", fontsize=title_fontsize)
 
-    ax1.plot(g_robotCF[0], g_robotCF[1], 'o', color="g")
-    ax2.plot(g_robotCF[0], g_robotCF[2], 'o', color="g")
+    ax1.plot(g_robotCF[0], g_robotCF[1], 'o', color="g", markersize=4)
+    ax2.plot(g_robotCF[0], g_robotCF[2], 'o', color="g", markersize=4)
     graph, = ax1.plot([], [], 'o', color="r")
     sampleSpace_xy = Circle((startPos[0], startPos[1]),
                             radius=SampleRange+0.05, fill=False)

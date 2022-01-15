@@ -15,6 +15,7 @@ from utils.real_demo_visualization import setup_vis_reach
 import pickle
 import datetime
 from gripper_control.ur5e_robot import Ur5eRobot
+from CV.Camera.CameraWrapper import CameraWrapper
 
 np.set_printoptions(precision=3, suppress=True)
 # imports for robot control
@@ -52,6 +53,7 @@ if ON_REAL_ROBOT:
     config_file_path = os.path.join(
         "gripper_control", "ur5e_rg2_left_calibrated.yaml")
     ur5e_robot = Ur5eRobot("ur5e", robot_ip, 50003, config_file_path, 0)
+    #TODO CameraWrapper()
 
     # move robot to start configuration
 old_joint_q = [-0.7866423765765589,
@@ -236,7 +238,6 @@ date_n_time = today + " " + time
 settings = OrderedDict()
 settings["date_n_time"] = date_n_time
 settings["env_name"] = env_name
-settings["model_name"] = model_name
 settings["model_name"] = model_name
 settings["model_path"] = model_path
 settings["robot_start_pos"] = joint_q

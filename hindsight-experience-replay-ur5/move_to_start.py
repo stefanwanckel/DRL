@@ -15,11 +15,7 @@ R = Ur5eRobot(robot_namespace, robot_ip=robot_IP, robot_port=50003,
               file="gripper_control/ur5e_rg2_left_calibrated.yaml", base_pose=0)
 
 joint_q = [-0.7866423765765589,
-           -1.8796035252013148,
-           -1.7409639358520508,
-           -1.0964625638774415,
-           1.5797905921936035,
-           -0.0025427977191370132]
+-1.8796035252013148,-1.7409639358520508,-1.0964625638774415,1.5797905921936035,-0.0025427977191370132]
 push_joint_q = np.deg2rad(
     np.array([102.2, -42.2, 113.0, -161.5, 270.4, 1.6]))
 
@@ -27,6 +23,6 @@ push_joint_q = np.deg2rad(
 # instead of using rtde_c we use the ur5erobot class
 # R.setTCPoffset()
 #R.moveL_offset([0, 0, -0.1, 0, 0, 0])
-R.servo_joint_position(push_joint_q)
+R.servo_joint_position(joint_q)
 # rtde_c.moveJ(joint_q)
 time.sleep(1)

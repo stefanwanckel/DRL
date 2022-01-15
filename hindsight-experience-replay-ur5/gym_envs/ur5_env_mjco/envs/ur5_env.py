@@ -138,8 +138,15 @@ class Ur5Env(robot_env.RobotEnv):
             # gripper_state = np.zeros(0)
             # gripper_vel = np.zeros(0)
         else:
-            gripper_state = robot_qpos[-2:]
-            gripper_vel = robot_qvel[-2:] * dt
+            if "rg2" in self.model_path.lower():
+                rmaj = self.sim.data.get_joint_qpos("right_moment_arm_joint")
+                lmaj = self.sim.data.get_joint_qpos("left_moment_arm_joint")
+                gripper_state = np.array([rmaj, lmaj])
+                gripper_vel = np.zeros(2)
+            else:
+                gripper_state = robot_qpos[-2:]
+                gripper_vel=robot_qvel[-2:] * dt
+                gripper_vel = np.zeros(2)
 
         if not self.has_object:
             achieved_goal = grip_pos.copy()

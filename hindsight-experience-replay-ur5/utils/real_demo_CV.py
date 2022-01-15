@@ -41,7 +41,7 @@ def get_goal_position(CameraWrapper, goal_marker_ID=2):
     while int(goal_marker_ID) not in marker_Transformations.keys() and counter < 50:
         img = CameraWrapper.get_latest_img()
         _, marker_Transformations, rvec, tvec = aruco_pose_estimation(img, aruco_dict_type=aruco_marker_type,
-                                                                      matrix_coefficients=CameraWrapper.mtx, distortion_coefficients=CameraWrapper.dist, actual_size=0.1)
+                                                                      matrix_coefficients=CameraWrapper.mtx, distortion_coefficients=CameraWrapper.dist, actual_size=0.04)
         counter += 1
 
     assert marker_Transformations[int(
@@ -66,7 +66,8 @@ def get_object_position(CameraWrapper, object_marker_ID):
     dict_type = "DICT_5X5_100"
     aruco_marker_type = ARUCO_DICT[dict_type]
 
-    object_center_aruco_f = np.array([0, 0, -0.025, 1])
+    object_center_aruco_f = np.array([0, 0, -0.0275, 1])
+    #object_center_aruco_f = np.array([0, 0, 0.0, 1])
 
     counter = 0
     marker_Transformations = {}

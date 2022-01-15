@@ -22,10 +22,13 @@ joint_names = sim.model.joint_names
 show = True
 i = 0
 alpha = 1
-joint_delta = -0.1
+joint_delta = 0.1
 jointvalues_before = []
 jointvalues_after = []
 joint_dict = {}
+
+
+
 
 
 def ctrl_set_action(sim, action):
@@ -70,6 +73,8 @@ for i in range(5000):
         rot_ctrl = [0, 0, 0, 0]  # not considered in ctrl_set_action
         gripper_ctrl = [joint_delta, joint_delta]  # fingerr, fingerl, armr, arml
         ctrl_action = np.concatenate([pos_ctrl, rot_ctrl, gripper_ctrl])
+        print("right_arm_joint: ", sim.data.get_joint_qpos("right_moment_arm_joint"))
+        print("left_arm_joint: ", sim.data.get_joint_qpos("left_moment_arm_joint"))
 
         # ctrl action only consideres the values after the seventh entry corresponging to gripper actuators (ignoring the 7 robot joints )
         ctrl_set_action(sim, ctrl_action)
@@ -78,9 +83,9 @@ for i in range(5000):
         for name in joint_names:
             jointvalues_after.append(sim.data.get_joint_qpos(name))
 
-        print(viewer.cam.distance)
-        print(viewer.cam.azimuth)
-        print(viewer.cam.elevation)
+        # print(viewer.cam.distance)
+        # print(viewer.cam.azimuth)
+        # print(viewer.cam.elevation)
     sim.step()
     viewer.render()
 
@@ -89,4 +94,5 @@ for i, name in enumerate(joint_names):
     joint_dict[name] = (jointvalues_before[i], jointvalues_before[i])
 
 for key in joint_dict.keys():
-    print(key, joint_dict[key])
+    pass
+    # print(key, joint_dict[key])

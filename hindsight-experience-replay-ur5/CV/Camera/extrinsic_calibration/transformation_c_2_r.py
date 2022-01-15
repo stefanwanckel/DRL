@@ -1,6 +1,3 @@
-
-
-
 import pickle
 import numpy as np
 import os
@@ -8,11 +5,11 @@ import sys
 sys.path.append(os.path.abspath('../test_scripts/'))
 from utils import *
 _rg2=True
-r_pos_1 = 0.001*np.array([325.1,-615.7,-47.6])
-r_pos_2 = 0.001*np.array([526.7,-391.4,-47.8])
-r_pos_4 = 0.001*np.array([123.9,-410.6,-49.9])
+r_pos_1 = 0.001*np.array([258.6,-640.9,-45.5])
+r_pos_2 = 0.001*np.array([460.5,-422.6,-45.6])
+r_pos_4 = 0.001*np.array([58.0,-442.6,-45.6])
 if _rg2:
-    z_offset = np.array([0,0,-210])*0.001
+    z_offset = np.array([0,0,-225])*0.001
     r_pos_1 =r_pos_1+z_offset
     r_pos_2 =r_pos_2+z_offset
     r_pos_4 =r_pos_4+z_offset

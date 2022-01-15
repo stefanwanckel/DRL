@@ -24,7 +24,15 @@ np.set_printoptions(precision=3, suppress=True)
 # imports for sim environment and agent
 # imports for visualization
 ON_REAL_ROBOT = True
-fig_path = os.path.join("Results", "push", "plane_view")
+folder_name = "test_" 
+test_number = 1
+fig_path = os.path.join("Results", "push")
+fig_folder_name = os.path.join(fig_path,folder_name+str(int(time.time())))
+data_folder=os.path.join(fig_folder_name,"data")
+if not os.path.exists(fig_folder_name):
+    os.makedirs(fig_folder_name)
+if not os.path.exists(data_folder):
+    os.makedirs(data_folder)
 # get arguments for demo import model
 args = get_args()
 env_name = "ur5_push_no_gripper-v1"
@@ -57,6 +65,7 @@ if ON_REAL_ROBOT:
     config_file_path = os.path.join(
         "gripper_control", "ur5e_rg2_left_calibrated.yaml")
     ur5e_robot = Ur5eRobot("ur5e", robot_ip, 50003, config_file_path, 0)
+    time.slee(1)
     # set up camera
     myCam = CameraWrapper()
     myCam.warmup_cam()
@@ -92,7 +101,7 @@ SampleRange = 0.30
 goal_threshold = 0.07
 # setup figure  limits
 axisLimitExtends = 0.20
-goal_marker_ID_lst = [5]
+goal_marker_ID_lst = [9]
 
 # Init lists
 x = []

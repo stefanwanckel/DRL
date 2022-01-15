@@ -20,6 +20,6 @@ echo starting demo...
 
 #start python demo for ur5_pick_and_place_rg2-v1
 #python demo.py --env-name "ur5_pick_and_place_rg2-v1" 
-python demo.py --env-name "ur5_pick_and_place_rg2-v1" --project-dir "12-01-2022_raw_1_random_object_pos"
+python demo.py --env-name "ur5_pick_and_place_rg2-v1" --project-dir "definitive"
 
 
