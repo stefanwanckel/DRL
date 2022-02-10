@@ -1,0 +1,12 @@
+date_n_time : 06/02/2022 00:28:37
+env_name : ur5_push_no_gripper-v1
+model_name : /2022-02-05T18:09:04.675423_epoch_28.pt
+model_path : saved_models/ur5_push_no_gripper-v1/05-02-2022/2022-02-05T18:09:04.675423_epoch_28.pt
+robot_start_pos : [-0.7866423765765589, -1.8796035252013148, -1.7409639358520508, -1.0964625638774415, 1.5797905921936035, -0.0025427977191370132]
+step_size : 0.05
+Sample_range : 0.3
+goal_threshold : 0.05
+axis_limit_extends : 0.2
+n_evaluations : 1
+n_timesteps : 50
+n_substeps : 1

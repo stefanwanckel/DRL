@@ -6,4 +6,8 @@ _old
 *.zip
 *.stl
 *.dae
+*.png
+*.svg
+hindsight-experience-replay-ur5/saved_models/
+
 hindsight-experience-replay-ur5/CV/librealsense/*
