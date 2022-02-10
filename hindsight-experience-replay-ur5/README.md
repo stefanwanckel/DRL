@@ -46,4 +46,3 @@ Following table contains the success rate during training.
 | **pick-and-place** | <img src="https://raw.githubusercontent.com/stefanwanckel/DRL/hindsight-experience-replay-ur5/Results/pick_and_place/videos_pnp_real/vid_4.gif" width=600> | <img src="https://raw.githubusercontent.com/stefanwanckel/DRL/hindsight-experience-replay-ur5/Results/pick_and_place/videos_pnp_real/vid_17.gif" width=300> | <img src="https://raw.githubusercontent.com/stefanwanckel/DRL/hindsight-experience-replay-ur5/Results/pick_and_place/videos_pnp_real/vid_18.gif" width=300> |
 
 
-<img src="https://raw.githubusercontent.com/stefanwanckel/DRL/hindsight-experience-replay-ur5/Results/pick_and_place/videos_pnp_real/vid_4.gif" width=600>
