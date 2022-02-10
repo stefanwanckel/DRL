@@ -346,12 +346,12 @@ for nTests in range(nEvaluations):
                     np.linalg.norm(object_pos-g_robotCF)))
                 # saving plots
 
-                INFO[nTests] = info
+                
                 if ON_REAL_ROBOT and nTests == range(nEvaluations)[-1]:
                     #ur5e_robot.controller.stopScript()
                     myCam.stop_cam()
-                    plt.close()
-                    
+                    plt.close() 
+            INFO[nTests] = info      
             #info_path = os.path.join("Results", "pick_and_place")
             with open(os.path.join(data_folder, 'INFO.pkl'), 'wb') as f:
                 pickle.dump(INFO, f)

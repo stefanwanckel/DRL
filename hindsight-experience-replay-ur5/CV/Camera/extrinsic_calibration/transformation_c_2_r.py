@@ -2,12 +2,15 @@ import pickle
 import numpy as np
 import os
 import sys
-sys.path.append(os.path.abspath('../test_scripts/'))
-from utils import *
-_rg2=True
-r_pos_1 = 0.001*np.array([258.6,-640.9,-45.5])
-r_pos_2 = 0.001*np.array([460.5,-422.6,-45.6])
-r_pos_4 = 0.001*np.array([58.0,-442.6,-45.6])
+# from utils.real_demo_CV import get_goal_position, get_object_position
+# from CV.Camera.CameraWrapper import CameraWrapper
+
+from CV.Camera.test_scripts.utils import *
+
+_rg2=False
+r_pos_1 = 0.001*np.array([336.2,-607.3,-231.5])
+r_pos_2 = 0.001*np.array([541.1,-389.4,-231.2])
+r_pos_4 = 0.001*np.array([138.1,-396.0,-233.8])
 if _rg2:
     z_offset = np.array([0,0,-225])*0.001
     r_pos_1 =r_pos_1+z_offset
@@ -17,7 +20,7 @@ if _rg2:
 lst_r_pos = np.array([r_pos_1, r_pos_2, r_pos_4])
 
 marker_transformation = pickle.load(
-    open("marker_transformation.p", "rb"))
+    open("./marker_transformation.p", "rb"))
 # extract t_vec
 
 c_pos_1 = marker_transformation[1][:3, 3]
@@ -39,3 +42,12 @@ np.save("Camera_to_robot_transformation", T_c_2_r)
 print("Camera_to_robot_transformation\n", T_c_2_r)
 print("Sample POint:\n", r_pos_1_prime)
 print("Done")
+
+# 361, -493, -191
+
+if __name__=='__main__':
+    myCam = CameraWrapper()
+    myCam.warmup_cam()
+
+    obs,_ = get_object_position(myCam, 6)
+    print('OBJECT: ', obs)

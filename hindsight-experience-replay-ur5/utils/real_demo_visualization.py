@@ -9,7 +9,7 @@ def setup_vis_reach(nTests, startPos, SampleRange, axisLimitExtends, g_robotCF, 
 
     fig, (ax1, ax2) = plt.subplots(1, 2)
     fig.tight_layout()
-    fig.suptitle("TCP Planar View REACH - Episode {}".format(nTests))
+    fig.suptitle("TCP Planar View REACH")
     fig.canvas.set_window_title("Episode No. {}".format(nTests))
     ax = fig.gca()
 
@@ -78,8 +78,8 @@ def setup_vis_push(nTests, startPos, SampleRange, axisLimitExtends, g_robotCF, g
     ax1.set_ylabel("Y-axis [m]")
     ax2.set_ylabel("Z-axis [m]")
 
-    ax1.plot(g_robotCF[0], g_robotCF[1], 'o', color="g")
-    ax2.plot(g_robotCF[0], g_robotCF[2], 'o', color="g")
+    ax1.plot(g_robotCF[0], g_robotCF[1], 'o', color="g",markersize=4)
+    ax2.plot(g_robotCF[0], g_robotCF[2], 'o', color="g",markersize=4)
     graph, = ax1.plot([], [], 'o', color="r")
     sampleSpace_xy = Circle((startPos[0], startPos[1]),
                             radius=SampleRange+0.05, fill=False)

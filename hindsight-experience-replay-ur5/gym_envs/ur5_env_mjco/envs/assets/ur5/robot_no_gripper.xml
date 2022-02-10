@@ -47,7 +47,7 @@
 
 									<body childclass="cls_dummy_gripper" name="dummy_gripper" pos="0 0.06 0">
 										<geom pos="0 0 0" size="0.015" type="sphere" name="dummy_gripper_geom" condim="4" friction="1 0.05 0.01" ></geom>
-										<site name="robot0:grip" pos="0 0 0" rgba="0 0 1 0.3" size="0.01"></site>									
+										<site name="robot0:grip" pos="0 0 0" rgba="0 0 1 1" size="0.01"></site>									
 									</body>
 								</body>	
 							</body>

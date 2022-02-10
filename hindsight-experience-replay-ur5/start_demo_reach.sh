@@ -2,7 +2,7 @@
 echo starting demo...
 
 #start python demo for ur5_reach_no_gripper-v1
-#python demo.py --env-name "ur5_reach_no_gripper-v1" --project-dir "08-01-2022_reach_1_raw"
+#python demo.py --env-name "ur5_reach_no_gripper-v1" --project-dir "08-01-2022_reach_1_raw" --record_demo
 python demo.py --env-name "ur5_reach_no_gripper-v1"
 
 

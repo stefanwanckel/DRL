@@ -15,7 +15,7 @@
 		<include file="robot_no_gripper.xml"></include>
 		
 		<body pos="0.6 0 0.1" name="table0">
-			<geom size="0.25 0.35 0.2" type="box" mass="2000" material="table_mat"></geom>
+			<!-- <geom size="0.25 0.35 0.2" type="box" mass="2000" material="table_mat"></geom> -->
 			<site name="target0" pos="0 0 0.3" size="0.02 0.02 0.02" rgba="1 0 0 1" type="sphere"></site>
 		</body>
 

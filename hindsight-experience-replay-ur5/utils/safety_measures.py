@@ -6,7 +6,8 @@ def check_table_collision(grip_pos, relative_action):
     If moved further than allowed distance, we overwrite the relative action with the difference
     between the minimally allowed z position and the current gripper position
     """
-    min_allowed_z_pos = np.array([-0.265])
+    #min_allowed_z_pos = np.array([-0.270])
+    min_allowed_z_pos = np.array([-0.230]) 
     curr_grip_z_pos = grip_pos[2]
     next_grip_z_pos = grip_pos[2] + relative_action[2]
 

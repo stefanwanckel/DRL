@@ -16,12 +16,14 @@ import pickle
 import datetime
 from gripper_control.ur5e_robot import Ur5eRobot
 from CV.Camera.CameraWrapper import CameraWrapper
+import cv2
 
 np.set_printoptions(precision=3, suppress=True)
 # imports for robot control
 # imports for sim environment and agent
 # imports for visualization
 ON_REAL_ROBOT = True
+USE_CAM = False
 # get arguments for demo import model
 args = get_args()
 env_name = "ur5_reach_no_gripper-v1"
@@ -47,13 +49,26 @@ actor_network.eval()
 
 # setup conneciton to robot
 if ON_REAL_ROBOT:
+    fig_path = os.path.join("Results", "reach")
+    folder_name = "test_" + str(int(time.time()))
+
+    fig_folder_name = os.path.join(fig_path, folder_name)
+    data_folder = os.path.join(fig_folder_name, "data")
+
+    if not os.path.exists(fig_folder_name):
+        os.makedirs(fig_folder_name)
+    if not os.path.exists(data_folder):
+        os.makedirs(data_folder)
     #rtde_c = rtde_control.RTDEControlInterface("192.168.178.232")
     #rtde_r = rtde_receive.RTDEReceiveInterface("192.168.178.232")
     robot_ip = "192.168.178.232"
     config_file_path = os.path.join(
         "gripper_control", "ur5e_rg2_left_calibrated.yaml")
     ur5e_robot = Ur5eRobot("ur5e", robot_ip, 50003, config_file_path, 0)
-    #TODO CameraWrapper()
+    if USE_CAM:
+        myCam = CameraWrapper()
+        myCam.warmup_cam()
+        image_feed = []
 
     # move robot to start configuration
 old_joint_q = [-0.7866423765765589,
@@ -63,13 +78,15 @@ old_joint_q = [-0.7866423765765589,
                1.5797905921936035,
                -0.0025427977191370132]
 reach_joint_q = np.deg2rad(
-    np.array([93.7, -43.7, 117.3, -171.8, 270.4, -46.5]))
+    np.array([-45.1,-127.4,-104.1,-38.7,90.4,-0.1]))
 # start motion was here
 if ON_REAL_ROBOT:
     ur5e_robot.servo_joint_position(reach_joint_q)
     TCPpose = ur5e_robot.receiver.getActualTCPPose()
     startPos = TCPpose[0:3]
-    orn = TCPpose[3:]
+    orn = TCPpose[3:]#
+    if USE_CAM:
+        image_feed.append(myCam.get_latest_img())
 else:
     TCP_pos_path = os.path.join(
         "Results", "real_robot", "Reach_TCP_start_pose.json")
@@ -80,7 +97,7 @@ else:
 
 currPos = startPos
 # setting parameters for robot motion
-stepSize = 0.05
+stepSize = 0.025
 SampleRange = 0.20
 goal_threshold = 0.05
 # setup figure  limits
@@ -91,16 +108,18 @@ x = []
 y = []
 z = []
 info = {}
-nEvaluations = 3
+nEvaluations = 1
 INFO = OrderedDict()
 for nTests in range(nEvaluations):
 
     # Move to start and get TCP pose
     if ON_REAL_ROBOT:
-        ur5e_robot.servo_joint_position(joint_q)
+        ur5e_robot.servo_joint_position(reach_joint_q)
         TCPpose = ur5e_robot.receiver.getActualTCPPose()
         startPos = TCPpose[0:3]
         orn = TCPpose[3:]
+        if USE_CAM:
+            image_feed.append(myCam.get_latest_img())
     else:
         TCP_pos_path = os.path.join(
             "Results", "real_robot", "Reach_TCP_start_pose.json")
@@ -177,6 +196,9 @@ for nTests in range(nEvaluations):
                 time.sleep(0.05)
                 actual_newPos = np.array(
                     ur5e_robot.receiver.getActualTCPPose()[0:3])
+                if USE_CAM:
+                    image_feed.append(myCam.get_latest_img())
+
             else:
                 actual_newPos = newPos
 
@@ -220,27 +242,26 @@ for nTests in range(nEvaluations):
                 print("Success! Norm is {}".format(
                     np.linalg.norm(actual_newPos-g_robotCF)))
                 # saving plots
-                fig_path = os.path.join("Results", "reach", "plane_view")
                 plt.savefig(os.path.join(
-                    fig_path, "plane_view_episode_"+str(nTests)+".svg"))
+                    fig_folder_name, "plane_view_episode_"+str(nTests)+".svg"))
                 INFO[nTests] = info
-                if ON_REAL_ROBOT and nTests == range(nEvaluations)[-1]:
-                    ur5e_robot.controller.stopScript()
+                if ON_REAL_ROBOT and nTests == range(nEvaluations)[-1] and USE_CAM:
+                    myCam.stop_cam()
                 break
-    info_path = os.path.join("Results", "reach")
-    with open(os.path.join(info_path, 'INFO.pkl'), 'wb') as f:
+    with open(os.path.join(data_folder, 'INFO.pkl'), 'wb') as f:
         pickle.dump(INFO, f)
+
 today = datetime.date.today()
 today = today.strftime("%d/%m/%Y")
-time = datetime.datetime.now()
-time = current_time = time.strftime("%H:%M:%S")
-date_n_time = today + " " + time
+_time = datetime.datetime.now()
+_time = current_time = time.strftime("%H:%M:%S")
+date_n_time = today + " " + _time
 settings = OrderedDict()
 settings["date_n_time"] = date_n_time
 settings["env_name"] = env_name
 settings["model_name"] = model_name
 settings["model_path"] = model_path
-settings["robot_start_pos"] = joint_q
+settings["robot_start_pos"] = reach_joint_q
 settings["step_size"] = stepSize
 settings["Sample_range"] = SampleRange
 settings["goal_threshold"] = goal_threshold
@@ -248,7 +269,12 @@ settings["axis_limit_extends"] = axisLimitExtends
 settings["n_evaluations"] = nEvaluations
 settings["n_timesteps"] = n_timesteps
 settings["n_substeps"] = n_substeps
-with open(os.path.join(info_path, 'settings.txt'), 'w') as f:
+
+with open(os.path.join(data_folder, 'settings.txt'), 'w') as f:
     for key, val in settings.items():
         f.write(f"{key} : {val}\n")
     print("DONE")
+
+if ON_REAL_ROBOT and USE_CAM:
+    for i,img in enumerate(image_feed):
+        cv2.imwrite(os.path.join(fig_folder_name, "img_"+str(i) + ".png"), img)

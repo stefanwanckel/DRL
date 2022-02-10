@@ -22,7 +22,7 @@ echo $log_file
 #mpirun -np 4 python -u train.py --env-name="ur5_push_no_gripper-v1" 2>&1 | tee $log_file
 #mpirun -np 4 python -u train.py --env-name="ur5_push_no_gripper-v1" --continue-training 2>&1 | tee $log_file
 #train the ur5_reach-v1:
-#mpirun -np 4 python -u train.py --env-name='ur5_reach_no_gripper-v1' --continue-training 2>&1 | tee $log_file
+mpirun -np 4 python -u train.py --env-name='ur5_reach_no_gripper-v1' 2>&1 | tee $log_file
 #train the ur5_push-v1:
 #mpirun -np 4 python -u train.py --env-name='ur5_push-v1' 2>&1 | tee push.log
 #train the ur5_PickAndPlace-v1:
@@ -32,5 +32,5 @@ echo $log_file
 
 #mpirun -np 4 python -u train.py --env-name='ur5_pick_and_place_rg2-v1' --continue-training 2>&1 | tee $log_file
 
-mpirun -np 4 python -u train.py --env-name='ur5_pick_and_place_rg2-v1' 2>&1 | tee $log_file
+#mpirun -np 4 python -u train.py --env-name='ur5_pick_and_place_rg2-v1' 2>&1 | tee $log_file
 

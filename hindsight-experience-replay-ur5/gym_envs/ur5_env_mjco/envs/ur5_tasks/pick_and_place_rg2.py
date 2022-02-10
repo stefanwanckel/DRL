@@ -24,7 +24,7 @@ class Ur5PickAndPlaceEnv(ur5_env.Ur5Env, utils.EzPickle):
             # "r_finger_joint": _initial_gripper_spread
         }
         ur5_env.Ur5Env.__init__(
-            self, MODEL_XML_PATH, has_object=True, block_gripper=False, n_substeps=5,
+            self, MODEL_XML_PATH, has_object=True, block_gripper=False, n_substeps=20,
             gripper_extra_height=-0.1, target_in_the_air=True, target_offset=0.0,
             obj_range=0.15, target_range=0.15, distance_threshold=0.05,
             initial_qpos=rg2_initial_qpos, reward_type=reward_type,

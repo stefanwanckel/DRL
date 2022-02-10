@@ -9,8 +9,8 @@ import numpy as np
 import ur5_env_mjco
 import os
 import time
-
-
+from collections import OrderedDict
+import pickle
 import cv2
 import matplotlib.pyplot as plt
 # process the inputs
@@ -45,7 +45,7 @@ def write_frames_to_video(frames_arr):
 
 if __name__ == '__main__':
     args = get_args()
-
+    INFO = OrderedDict()
     dash = "-"*42
     for i, arg in enumerate(vars(args)):
         if i == 0:
@@ -92,10 +92,18 @@ if __name__ == '__main__':
             filename= args.env_name + "eval_" + str(i) 
             VR = VideoRecorder(filename)
         observation = env.reset()
-
+        the_info = {}
         # start to do the demo
         obs = observation['observation']
         g = observation['desired_goal']
+        the_info = {}
+        the_info["obs"] = []
+        the_info["goal"] = []
+        the_info["action"] = []
+        the_info["reward"] = []
+        the_info["obs"].append(obs)
+        the_info["goal"].append(g)
+      
         lstGoals.append(g)
         t_success = -1
         for t in range(env._max_episode_steps):  # env._max_episode_steps):
@@ -107,13 +115,17 @@ if __name__ == '__main__':
             with torch.no_grad():
                 pi = actor_network(inputs)
             action = pi.detach().numpy().squeeze()
-            print("*"*50)
-            print("action: ",action[-1])
-            print("obs: ",obs)
+            the_info["action"].append(action)
+            # print("*"*50)
+            # print("action: ",action[-1])
+            # print("obs: ",obs)
             # put actions into the environment
             observation_new, reward, _, info = env.step(action)
+            the_info["reward"].append(reward)
+            
             obs = observation_new['observation']
-        
+            the_info["obs"].append(obs)
+
             if t == 0 and i == 0:
                 print(dash)
                 print("{:<25s}{:<15s}".format("ENV_INIT", "VALUE"))
@@ -122,11 +134,14 @@ if __name__ == '__main__':
                 print(dash)
             if t_success == -1 and info['is_success'] == 1:
                 t_success = t
+        INFO[i]=the_info
         if info['is_success'] == 1:
             success_counter += 1
         if args.record_demo:
             VR.stop_recording()
         print('Episode-No.: {} \n\t is success: {},\t overall success: {}/{} after {}/{} steps'.format(
             i, info['is_success'], success_counter, args.demo_length, t_success+1, env._max_episode_steps))
+        with open("Results/simulation/reach/reach_data.pkl","wb") as pkl:
+            pickle.dump(INFO,pkl)
         #print('Episode {} has goal {}'.format(i, lstGoals[i]))
 

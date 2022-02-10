@@ -32,8 +32,8 @@ class Ur5PushEnv(ur5_env.Ur5Env, utils.EzPickle):
             # 'object0:joint': [0, 0, 0.4, 1., 0., 0., 1.]
         }
         ur5_env.Ur5Env.__init__(
-            self, MODEL_XML_PATH, has_object=True, block_gripper=True, n_substeps=10,
+            self, MODEL_XML_PATH, has_object=True, block_gripper=True, n_substeps=20,
             gripper_extra_height=-0.8   , target_in_the_air=False, target_offset=0.0,
-            obj_range=0.20, target_range=0.20, distance_threshold=0.05,
+            obj_range=0.15, target_range=0.20, distance_threshold=0.05,
             initial_qpos=old_initial_qpos, reward_type=reward_type, table_height=0.4, max_pos_change=0.05, reduced=True)
         utils.EzPickle.__init__(self)

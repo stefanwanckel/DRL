@@ -55,7 +55,8 @@ def get_goal_position(CameraWrapper, goal_marker_ID=2):
 
 def map_c_2_r(marker_pos_camera_frame):
     T_matrix_path = os.path.join(
-        "CV", "Camera", "extrinsic_calibration", "Camera_to_robot_transformation.npy")
+       "CV", "Camera", "extrinsic_calibration", "Camera_to_robot_transformation.npy")
+    #T_matrix_path = os.path.join("Camera_to_robot_transformation.npy")
     T = np.load(T_matrix_path)
     marker_pos_robot_frame = np.dot(T.T, marker_pos_camera_frame)
     return marker_pos_robot_frame
@@ -66,7 +67,8 @@ def get_object_position(CameraWrapper, object_marker_ID):
     dict_type = "DICT_5X5_100"
     aruco_marker_type = ARUCO_DICT[dict_type]
 
-    object_center_aruco_f = np.array([0, 0, -0.0275, 1])
+    object_center_aruco_f = np.array([0, 0, 0, 1])
+    #object_center_aruco_f = np.array([0, 0, -0.0275, 1])
     #object_center_aruco_f = np.array([0, 0, 0.0, 1])
 
     counter = 0
@@ -81,11 +83,11 @@ def get_object_position(CameraWrapper, object_marker_ID):
         object_marker_ID)] is not None, 'OCCLUSION: no object marker found'
 
     marker_pos_robot_frame = map_c_2_r(marker_Transformations[int(object_marker_ID)][:, 3])  # aruco [0,0,0]
-
     object_center_r_f = np.zeros(4)
     object_center_r_f[:3] = map_c_2_r(np.dot(
         marker_Transformations[int(object_marker_ID)], object_center_aruco_f))[:3]
     object_position = object_center_r_f
+
     return object_position, img
 
 

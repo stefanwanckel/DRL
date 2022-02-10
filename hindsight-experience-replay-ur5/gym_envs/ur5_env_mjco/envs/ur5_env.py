@@ -175,9 +175,9 @@ class Ur5Env(robot_env.RobotEnv):
         lookat = self.sim.data.body_xpos[body_id]
         for idx, value in enumerate(lookat):
             self.viewer.cam.lookat[idx] = value
-        self.viewer._hide_overlay = False
-        self.viewer.cam.distance = 2.5
-        self.viewer.cam.azimuth = -180.
+        self.viewer._hide_overlay = True
+        self.viewer.cam.distance = 2.0
+        self.viewer.cam.azimuth = -45.
         self.viewer.cam.elevation = -25.
         self.viewer._video_path = "/home/stefan/Documents/Masterarbeit/DRL/video_%07d.mp4"
         self.viewer._image_path = "/home/stefan/Documents/Masterarbeit/DRL/frame_%07d.png"

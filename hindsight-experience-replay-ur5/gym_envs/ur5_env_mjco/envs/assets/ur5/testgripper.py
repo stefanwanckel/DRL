@@ -21,7 +21,7 @@ joint_names = sim.model.joint_names
 show = True
 i = 0
 alpha = 1
-joint_delta = 0.3
+joint_delta = 0.1
 jointvalues_before = []
 jointvalues_after = []
 joint_dict = {}
@@ -40,7 +40,7 @@ def gripper_close(joint_delta, sim):
     sim.data.set_joint_qpos('l_finger_joint',  new_lfj_qpos)
 
 
-timesteps_motion = [100]
+timesteps_motion = [1000, 2000, 3000]
 for i in range(5000):
     if i == 0:
         for name in joint_names:
@@ -62,14 +62,14 @@ for i in range(5000):
         # sim.data.set_joint_qpos('r_finger_passive_joint', new_rfp_qpos)
         # sim.data.set_joint_qpos('l_finger_passive_joint', new_lfp_qpos)
 
-        print(sim.data.get_joint_qpos("r_finger_joint"))
-        new_rfj_qpos = sim.data.get_joint_qpos(
-            "r_finger_joint")-alpha*joint_delta
-        new_lfj_qpos = sim.data.get_joint_qpos(
-            "l_finger_joint")+alpha*joint_delta
-        sim.data.set_joint_qpos('r_finger_joint', new_rfj_qpos)
-        sim.data.set_joint_qpos('l_finger_joint',  new_lfj_qpos)
-        print(sim.data.get_joint_qpos("r_finger_joint"))
+        #print(sim.data.get_joint_qpos("r_finger_joint"))
+        # new_rfj_qpos = sim.data.get_joint_qpos(
+        #     "r_finger_joint")-alpha*joint_delta
+        # new_lfj_qpos = sim.data.get_joint_qpos(
+        #     "l_finger_joint")+alpha*joint_delta
+        # sim.data.set_joint_qpos('r_finger_joint', new_rfj_qpos)
+        # sim.data.set_joint_qpos('l_finger_joint',  new_lfj_qpos)
+        # print(sim.data.get_joint_qpos("r_finger_joint"))
 
     if i == 4800:
         for name in joint_names:

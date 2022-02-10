@@ -9,7 +9,8 @@ sys.path.append('/home/stefan/Documents/Masterarbeit/DRL/hindsight-experience-re
 
 class VideoRecorder():
     def __init__(self, filename):
-        self.output_path = os.path.join("Results", "videos")
+        self.output_path = os.path.join("Results", "simulation","reach")
+        self.counter=0
         self.filename=filename
         self.fps = 15
         screen_size = pyautogui.size()
@@ -27,6 +28,9 @@ class VideoRecorder():
         curr_img = np.array(curr_img)
         curr_img = curr_img[self.y_offset:,:,:]
         curr_img = cv2.cvtColor(curr_img, cv2.COLOR_BGR2RGB)
+        cv2.imwrite(os.path.join(self.output_path,"reach_"+str(self.counter)+".png"), curr_img)
+        self.counter+=1
+
         self.writer.write(curr_img)
 
     def stop_recording(self):
