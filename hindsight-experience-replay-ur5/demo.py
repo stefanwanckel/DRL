@@ -134,6 +134,9 @@ if __name__ == '__main__':
                 print(dash)
             if t_success == -1 and info['is_success'] == 1:
                 t_success = t
+            if info['is_success'] == 1:
+                print(f"episode {i} succeeded after {t} steps, next evaluation starts...")
+                break
         INFO[i]=the_info
         if info['is_success'] == 1:
             success_counter += 1
