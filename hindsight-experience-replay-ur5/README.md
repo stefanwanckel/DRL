@@ -44,8 +44,6 @@ Following table contains the success rate during training.
 | | **Success** | **Fail** | **Weird** |
 | :-------------: | :-------------: | :-------------: | :-------------: | 
 | **Reach** | <img src="https://raw.githubusercontent.com/stefanwanckel/DRL/master/hindsight-experience-replay-ur5/Results/reach/videos_pnp_real/vid_4.gif" width=500> | - | - |
-| :-------------: | :-------------: | :-------------: | :-------------: | 
-| **Push** | <img src="https://raw.githubusercontent.com/stefanwanckel/DRL/master/hindsight-experience-replay-ur5/Results/push/videos_pnp_real/vid_3.gif" width=500> | <img src="https://raw.githubusercontent.com/stefanwanckel/DRL/master/hindsight-experience-replay-ur5/Results/push/videos_pnp_real/vid_10.gif" width=500> | <img src="https://raw.githubusercontent.com/stefanwanckel/DRL/master/hindsight-experience-replay-ur5/Results/push/videos_pnp_real/vid_14.gif" width=500> |
-| :-------------: | :-------------: | :-------------: | :-------------: | 
+| **Push** | <img src="https://raw.githubusercontent.com/stefanwanckel/DRL/master/hindsight-experience-replay-ur5/Results/push/videos/vid_3.gif" width=500> | <img src="https://raw.githubusercontent.com/stefanwanckel/DRL/master/hindsight-experience-replay-ur5/Results/push/videos/vid_10.gif" width=500> | <img src="https://raw.githubusercontent.com/stefanwanckel/DRL/master/hindsight-experience-replay-ur5/Results/push/videos/vid_14.gif" width=500> |
 | **Pick-and-Place** | <img src="https://raw.githubusercontent.com/stefanwanckel/DRL/master/hindsight-experience-replay-ur5/Results/pick_and_place/videos_pnp_real/vid_4.gif" width=500> | <img src="https://raw.githubusercontent.com/stefanwanckel/DRL/master/hindsight-experience-replay-ur5/Results/pick_and_place/videos_pnp_real/vid_18.gif" width=500> | <img src="https://raw.githubusercontent.com/stefanwanckel/DRL/master/hindsight-experience-replay-ur5/Results/pick_and_place/videos_pnp_real/vid_17.gif" width=500> |
 
