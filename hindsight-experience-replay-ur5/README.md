@@ -41,9 +41,9 @@ The following table contains the success rate during training.
 |<img src="https://raw.githubusercontent.com/stefanwanckel/DRL/master/hindsight-experience-replay-ur5/Results/videos/ur5_pick-v1_ddpg-her_2021-05-20.gif" width=600> | insert gif of slide here |
 
 ### Videos UR5e
-All videos of UR5e solving the tasks reach, push and pick-and-place can be found here: 
-The following table contains one video of each task for *success*, *fail* and *anomaly*. 
-Reach succeeded in every evaluation. Therefore, no videos for *fail* and *anomaly* are presented.
+All videos of UR5e solving the tasks reach, push and pick-and-place can be found here: <br>
+The following table contains one video of each task for *success*, *fail* and *anomaly*. <br>
+Reach succeeded in every evaluation. Therefore, no videos for *fail* and *anomaly* are presented.<br>
 
 | | **Success** | **Fail** | **Anomaly** |
 | :-------------: | :-------------: | :-------------: | :-------------: | 
